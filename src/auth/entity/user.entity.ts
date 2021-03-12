@@ -6,6 +6,7 @@ import {
   Unique,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 @Unique(['username'])
@@ -13,6 +14,7 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({ example: 'pedro' })
   @Column()
   username: string;
 
