@@ -1,11 +1,12 @@
+import { SecurityModule } from './security/security.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@atlasjs/config';
-import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { AppConfig } from './app.keys';
 
 @Module({
-  imports: [ConfigModule.forRoot({}), DatabaseModule, AuthModule],
+  imports: [
+        SecurityModule, ConfigModule.forRoot({}), DatabaseModule],
   controllers: [],
   providers: [],
 })
