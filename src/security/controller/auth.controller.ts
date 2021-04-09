@@ -7,7 +7,7 @@ import {
   ApiTags,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import {User} from "../entity/user.entity";
+import {UserEntity} from "../entity/user.entity";
 
 @ApiTags('auth')
 @Controller('auth')
@@ -18,7 +18,7 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'Registro de los usuarios',
-    type: User,
+    type: UserEntity,
   })
   @Post('/signup')
   signUp(

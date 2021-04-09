@@ -114,4 +114,11 @@ export class UserRepository {
     private async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);
     }
+
+    async findByName(username: string): Promise<UserEntity> {
+        const user: UserEntity = await this.userRepository.findOne(username, {
+            where: {status: 'ACTIVE'}
+        });
+        return user;
+    }
 }
