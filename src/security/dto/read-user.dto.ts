@@ -5,21 +5,21 @@ export class ReadUserDto {
   @IsNumber()
   readonly id: number;
 
-  @IsEmail()
-  @IsOptional()
-  readonly email: string;
-
   @IsString()
   @IsNotEmpty()
   readonly username: string;
 
+  @IsEmail()
+  @IsOptional()
+  readonly email: string;
+
   @IsNotEmpty()
   readonly roles: ReadRoleDto[]
 
-  constructor(id: number, email: string, username: string, roles: ReadRoleDto[]) {
+  constructor(id: number, username: string, email: string, roles: ReadRoleDto[]) {
     this.id = id;
-    this.email = email;
     this.username = username;
+    this.email = email;
     this.roles = roles;
   }
 }

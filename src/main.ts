@@ -4,16 +4,16 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api');
   const options = new DocumentBuilder()
-    .setTitle('API-SITGDL')
-    .setDescription('Sistema de Información Geografico para OSEA')
+    .setTitle('API-BASE')
+    .setDescription('Api básica con Nestjs')
     .setVersion('1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
 
-  SwaggerModule.setup('api/', app, document, {
+  SwaggerModule.setup('api/docs', app, document, {
     explorer: true,
     swaggerOptions: {
       filter: true,

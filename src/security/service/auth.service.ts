@@ -8,7 +8,6 @@ import { UserRepository } from './../repository/user.repository';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserRepository)
     private userRepository: UserRepository,
     private jwtService: JwtService,
   ) {}
