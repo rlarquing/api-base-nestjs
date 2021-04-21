@@ -2,7 +2,7 @@ import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common
 import {Between, DeleteResult} from 'typeorm';
 import {TrazaRepository} from './../repository/traza.repository';
 import {TrazaDto} from "../dto/traza.dto";
-import {TrazaEntity} from "../entity/traza.entity";
+import {HISTORY_ACTION, TrazaEntity} from "../entity/traza.entity";
 import {TrazaMapper} from "../mapper/traza.mapper";
 import {UserEntity} from "../entity/user.entity";
 
@@ -24,9 +24,14 @@ export class TrazaService {
         return this.trazaMapper.entityToDto(traza);
     }
 
-    async create(traza: TrazaEntity): Promise<TrazaEntity> {
-        const saveTraza: TrazaEntity = await this.trazaRepository.create(traza);
-        return saveTraza;
+    async create(user: UserEntity, entity: any, action: HISTORY_ACTION): Promise<void> {
+        const traza: TrazaEntity = new TrazaEntity();
+        traza.user = user;
+        traza.model = entity.model;
+        traza.data = entity;
+        traza.action = action;
+        traza.record = entity.id;
+       await this.trazaRepository.create(traza);
     }
 
     async delete(id: number): Promise<DeleteResult> {
@@ -34,7 +39,7 @@ export class TrazaService {
     }
 
     async getFiltrados(user:UserEntity, filtro: any): Promise<any> {
-        return await this.trazaRepository.getFiltrados(filtro);
+        return await this.trazaRepository.getFiltrados(user, filtro);
     }
 
 }

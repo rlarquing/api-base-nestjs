@@ -33,11 +33,8 @@ export class TrazaRepository {
         return traza;
     }
 
-    async create(trazaEntity: TrazaEntity): Promise<TrazaEntity> {
-        const saveTraza: TrazaEntity = await this.trazaRepository.save(
-            trazaEntity,
-        );
-        return saveTraza;
+    async create(trazaEntity: TrazaEntity): Promise<void> {
+       await this.trazaRepository.save(trazaEntity);
     }
 
     async delete(id: number): Promise<DeleteResult> {

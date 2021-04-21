@@ -37,7 +37,7 @@ export class UserRepository {
         if (!rol) {
             throw new NotFoundException('No existe el rol');
         }
-        user.roles.push(rol);
+        user.roles=[rol];
         try {
             await user.save();
         } catch (error) {
@@ -59,7 +59,7 @@ export class UserRepository {
     }
 
     async get(id: number): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findOne(id, {
+        const user: UserEntity = await this.userRepository.findOne({
             where: {status: 'ACTIVE'}
         });
         return user;
@@ -116,8 +116,8 @@ export class UserRepository {
     }
 
     async findByName(username: string): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findOne(username, {
-            where: {status: 'ACTIVE'}
+        const user: UserEntity = await this.userRepository.findOne({
+            where: {status: 'ACTIVE', username: username}
         });
         return user;
     }

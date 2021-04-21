@@ -14,6 +14,9 @@ import { RoleEntity } from './../entity/role.entity';
 @Entity('user', { schema: 'mod_auth' })
 @Unique(['username'])
 export class UserEntity extends BaseEntity {
+
+  model: string = 'UserEntity';
+
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -32,7 +35,7 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', nullable: true })
   salt: string;
 
-  @ManyToMany((type) => RoleEntity, (role) => role.users)
+  @ManyToMany((type) => RoleEntity, (role) => role.users, {eager: true})
   @JoinTable()
   roles: RoleEntity[];
 

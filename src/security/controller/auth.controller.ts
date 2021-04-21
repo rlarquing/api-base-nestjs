@@ -1,11 +1,10 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import {Body, Controller, Post, ValidationPipe} from '@nestjs/common';
 import { AuthService } from './../service/auth.service';
 import { AuthCredentialsDto } from './../dto';
 import {
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiBearerAuth,
 } from '@nestjs/swagger';
 import {UserEntity} from "../entity/user.entity";
 

@@ -12,12 +12,15 @@ import {plainToClass} from 'class-transformer';
 import {UserMapper} from "../mapper/user.mapper";
 import {RoleMapper} from "../mapper/role.mapper";
 import {RoleEntity} from "../entity/role.entity";
+import {HISTORY_ACTION} from "../entity/traza.entity";
+import {TrazaService} from "./traza.service";
 
 @Injectable()
 export class UserService {
     constructor(
         private userRepository: UserRepository,
         private roleRepository: RoleRepository,
+        private trazaService: TrazaService,
         private userMapper: UserMapper,
         private roleMapper: RoleMapper,
     ) {
@@ -43,19 +46,23 @@ export class UserService {
             this.roleMapper.entityToDto(rol)));
     }
 
-    async create(userDto: UserDto): Promise<ReadUserDto>{
-        const savedUser: UserEntity = await this.userRepository.create(userDto);
-        return this.userMapper.entityToDto(savedUser, savedUser.roles.map((rol: RoleEntity) =>
+    async create(user: UserEntity, userDto: UserDto): Promise<ReadUserDto> {
+        const userEntity: UserEntity = await this.userRepository.create(userDto);
+        await this.trazaService.create(user, userEntity, HISTORY_ACTION.ADD);
+        return this.userMapper.entityToDto(userEntity, userEntity.roles.map((rol: RoleEntity) =>
             this.roleMapper.entityToDto(rol)));
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto): Promise<ReadUserDto> {
-        const updatedUser: UserEntity = await this.userRepository.update(id, updateUserDto);
-        return this.userMapper.entityToDto(updatedUser, updatedUser.roles.map((rol: RoleEntity) =>
+    async update(user: UserEntity, id: number, updateUserDto: UpdateUserDto): Promise<ReadUserDto> {
+        const userEntity: UserEntity = await this.userRepository.update(id, updateUserDto);
+        await this.trazaService.create(user, userEntity, HISTORY_ACTION.MOD);
+        return this.userMapper.entityToDto(userEntity, userEntity.roles.map((rol: RoleEntity) =>
             this.roleMapper.entityToDto(rol)));
     }
 
-    async delete(id: number): Promise<void> {
+    async delete(user: UserEntity, id: number): Promise<void> {
+        const userEntity: UserEntity = await this.userRepository.get(id);
+        await this.trazaService.create(user, userEntity, HISTORY_ACTION.DEL);
         return await this.userRepository.delete(id);
     }
 

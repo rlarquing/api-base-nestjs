@@ -22,7 +22,7 @@ export class RoleRepository {
     }
 
     async get(id: number): Promise<RoleEntity> {
-        const rol: RoleEntity = await this.roleRepository.findOne(id, {
+        const rol: RoleEntity = await this.roleRepository.findOne({
             where: {status: 'ACTIVE'}, relations: ['users']
         });
         return rol;
