@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {Module} from '@nestjs/common';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {UserController} from "./controller/user.controller";
 import {RoleController} from "./controller/role.controller";
@@ -17,10 +17,15 @@ import {RoleRepository} from "./repository/role.repository";
 import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule, ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../app.keys";
+import {TrazaController} from "./controller/traza.controller";
+import {TrazaEntity} from "./entity/traza.entity";
+import {TrazaService} from "./service/traza.service";
+import {TrazaRepository} from "./repository/traza.repository";
+import {TrazaMapper} from "./mapper/traza.mapper";
 
 @Module({
     imports: [
-        PassportModule.register({ defaultStrategy: 'jwt' }),
+        PassportModule.register({defaultStrategy: 'jwt'}),
         JwtModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -33,9 +38,10 @@ import {AppConfig} from "../app.keys";
                 };
             },
         }),
-        TypeOrmModule.forFeature([UserEntity, RoleEntity])],
-    controllers: [UserController,RoleController,AuthController],
-    providers: [UserService, RoleService, AuthService, UserMapper, RoleMapper, UserRepository, RoleRepository, JwtStrategy],
+        TypeOrmModule.forFeature([UserEntity, RoleEntity, TrazaEntity])],
+    controllers: [UserController, RoleController, AuthController, TrazaController],
+    providers: [UserService, RoleService, AuthService, UserMapper, RoleMapper, UserRepository, RoleRepository, JwtStrategy, TrazaService, TrazaRepository, TrazaMapper],
     exports: [JwtStrategy, PassportModule],
 })
-export class SecurityModule {}
+export class SecurityModule {
+}
