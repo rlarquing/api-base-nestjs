@@ -4,6 +4,7 @@ import {Between, DeleteResult, Repository} from "typeorm";
 import {TrazaEntity} from "../entity/traza.entity";
 import {UserEntity} from "../entity/user.entity";
 import {UserRepository} from "./user.repository";
+import {paginate, IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 
 @Injectable()
 export class TrazaRepository {
@@ -20,6 +21,10 @@ export class TrazaRepository {
             relations: ['user']
         });
         return trazaEntity;
+    }
+
+    async paginate(options: IPaginationOptions): Promise<Pagination<TrazaEntity>>{
+        return await paginate<TrazaEntity>(this.trazaRepository, options);
     }
 
     async get(id: number): Promise<TrazaEntity> {

@@ -34,7 +34,7 @@ export class RoleRepository {
     }
 
     async update(id: number, updateRoleDto: UpdateRoleDto): Promise<RoleEntity> {
-        const foundRole: RoleEntity = await this.get(id);
+        const foundRole: RoleEntity = await this.roleRepository.findOne(id);
         if (!foundRole) {
             throw new NotFoundException('No existe el rol');
         }

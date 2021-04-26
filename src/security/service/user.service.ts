@@ -48,6 +48,8 @@ export class UserService {
 
     async create(user: UserEntity, userDto: UserDto): Promise<ReadUserDto> {
         const userEntity: UserEntity = await this.userRepository.create(userDto);
+        delete userEntity.salt;
+        delete userEntity.password;
         await this.trazaService.create(user, userEntity, HISTORY_ACTION.ADD);
         return this.userMapper.entityToDto(userEntity, userEntity.roles.map((rol: RoleEntity) =>
             this.roleMapper.entityToDto(rol)));
@@ -55,6 +57,8 @@ export class UserService {
 
     async update(user: UserEntity, id: number, updateUserDto: UpdateUserDto): Promise<ReadUserDto> {
         const userEntity: UserEntity = await this.userRepository.update(id, updateUserDto);
+        delete userEntity.salt;
+        delete userEntity.password;
         await this.trazaService.create(user, userEntity, HISTORY_ACTION.MOD);
         return this.userMapper.entityToDto(userEntity, userEntity.roles.map((rol: RoleEntity) =>
             this.roleMapper.entityToDto(rol)));
@@ -62,6 +66,8 @@ export class UserService {
 
     async delete(user: UserEntity, id: number): Promise<void> {
         const userEntity: UserEntity = await this.userRepository.get(id);
+        delete userEntity.salt;
+        delete userEntity.password;
         await this.trazaService.create(user, userEntity, HISTORY_ACTION.DEL);
         return await this.userRepository.delete(id);
     }

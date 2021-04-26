@@ -76,7 +76,7 @@ export class UserRepository {
     }
 
     async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
-        const foundUser: UserEntity = await this.get(id);
+        const foundUser: UserEntity = await this.userRepository.findOne(id);
         if (!foundUser) {
             throw new NotFoundException('No existe el user');
         }
