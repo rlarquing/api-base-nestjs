@@ -8,6 +8,7 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 import { UserEntity } from '../entity/user.entity';
+import {ApiProperty} from "@nestjs/swagger";
 
 @Entity('roles', { schema: 'mod_auth' })
 export class RoleEntity extends BaseEntity {
@@ -17,9 +18,11 @@ export class RoleEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @ApiProperty({ description: 'Nombre del rol', example: 'Administrador' })
   @Column({ type: 'varchar', length: 20, nullable: false })
   nombre: string;
 
+  @ApiProperty({ description: 'Descripción del rol', example: 'Tiene permiso total del api' })
   @Column({ type: 'text', nullable: false })
   descripcion: string;
 

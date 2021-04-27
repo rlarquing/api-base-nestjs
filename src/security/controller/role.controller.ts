@@ -10,10 +10,13 @@ import {UserEntity} from "../entity/user.entity";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
+import {ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
+@ApiTags('Roles')
 @Controller('roles')
 @Roles(RoleType.ADMINISTRADOR)
 @UseGuards(AuthGuard(), RoleGuard)
+@ApiBearerAuth('access-token')
 export class RoleController {
     constructor(
         private roleService: RoleService,
@@ -22,6 +25,16 @@ export class RoleController {
     }
 
     @Get()
+    @ApiOperation({ summary: 'Obtener el listado de roles' })
+    @ApiResponse({
+        status: 200,
+        description: 'Listado de roles',
+        type: ReadRoleDto,
+    })
+    @ApiNotFoundResponse({
+        status: 404,
+        description: 'Not found. Roles no encontrados.',
+    })
     getAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -36,21 +49,48 @@ export class RoleController {
         });
     }
 
+    @ApiOperation({ summary: 'Obtener un rol' })
+    @ApiResponse({
+        status: 200,
+        description: 'Muestra la información de un rol',
+        type: ReadRoleDto,
+    })
+    @ApiNotFoundResponse({
+        status: 404,
+        description: 'Not found. Rol no encontrado.',
+    })
     @Get(':id')
     get(@Param('id', ParseIntPipe) id: number): Promise<ReadRoleDto> {
         return this.roleService.get(id);
     }
 
+    @ApiOperation({ summary: 'Crear un rol' })
+    @ApiResponse({
+        status: 201,
+        description: 'Crea un rol',
+        type: ReadRoleDto,
+    })
     @Post()
     async create(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto): Promise<ReadRoleDto> {
         return await this.roleService.create(user, createRoleDto);
     }
 
+    @ApiOperation({ summary: 'Actualizar un rol' })
+    @ApiResponse({
+        status: 200,
+        description: 'Actualiza un rol',
+        type: ReadRoleDto,
+    })
     @Patch(':id')
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() rol: UpdateRoleDto): Promise<ReadRoleDto> {
         return await this.roleService.update(user, id, rol);
     }
 
+    @ApiOperation({ summary: 'Eliminar un rol' })
+    @ApiResponse({
+        status: 200,
+        description: 'Elimina de un rol',
+    })
     @Delete(':id')
     async delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.roleService.delete(user, id);
