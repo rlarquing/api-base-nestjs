@@ -8,7 +8,7 @@ import {
   CreateDateColumn, Unique,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { RoleEntity } from './../entity/role.entity';
+import { RoleEntity } from './role.entity';
 
 @Entity('user', { schema: 'mod_auth' })
 @Unique(['username'])

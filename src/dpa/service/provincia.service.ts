@@ -5,9 +5,9 @@ import {
 } from '@nestjs/common';
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import {ReadProvinciaDto} from "../dto";
-import {ProvinciaRepository} from "../repository/provincia.repository";
-import {ProvinciaEntity} from "../entity/provincia.entity";
-import {ProvinciaMapper} from "../mapper/provincia.mapper";
+import {ProvinciaRepository} from "../repository";
+import {ProvinciaEntity} from "../entity";
+import {ProvinciaMapper} from "../mapper";
 
 @Injectable()
 export class ProvinciaService {

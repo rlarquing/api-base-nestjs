@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {TrazaEntity} from "../entity/traza.entity";
+import {TrazaEntity} from "../entity";
 import {TrazaDto} from "../dto/traza.dto";
 
 @Injectable()

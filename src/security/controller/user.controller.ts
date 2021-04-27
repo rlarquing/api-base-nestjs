@@ -1,11 +1,11 @@
 import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
-import {GetUser} from './../decorator/get-user.decorator';
-import {Roles} from './../decorator/role.decorator';
-import {RoleGuard} from './../guards/role.guard';
-import {ReadUserDto, UpdateUserDto, UserDto} from './../dto';
-import {UserEntity} from './../entity/user.entity';
-import {UserService} from './../service/user.service';
+import {GetUser} from '../decorator';
+import {Roles} from '../decorator';
+import {RoleGuard} from '../guards/role.guard';
+import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
+import {UserEntity} from '../entity';
+import {UserService} from '../service';
 import {RoleType} from "../enum/roletype.enum";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";

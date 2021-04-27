@@ -3,14 +3,10 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import {UserEntity} from './../entity/user.entity';
-import {UserRepository} from './../repository/user.repository';
-import {RoleRepository} from './../repository/role.repository';
-import {ReadUserDto, UpdateUserDto, UserDto} from './../dto';
-import {UserMapper} from "../mapper/user.mapper";
-import {RoleMapper} from "../mapper/role.mapper";
-import {RoleEntity} from "../entity/role.entity";
-import {HISTORY_ACTION, TrazaEntity} from "../entity/traza.entity";
+import {UserEntity, RoleEntity, HISTORY_ACTION} from '../entity';
+import {UserRepository, RoleRepository} from '../repository';
+import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
+import {UserMapper, RoleMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 

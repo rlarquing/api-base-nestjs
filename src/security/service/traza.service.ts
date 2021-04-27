@@ -1,11 +1,9 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {Between, DeleteResult} from 'typeorm';
-import {TrazaRepository} from './../repository/traza.repository';
+import {Injectable} from '@nestjs/common';
+import {DeleteResult} from 'typeorm';
+import {TrazaRepository} from '../repository';
 import {TrazaDto} from "../dto/traza.dto";
-import {HISTORY_ACTION, TrazaEntity} from "../entity/traza.entity";
-import {TrazaMapper} from "../mapper/traza.mapper";
-import {UserEntity} from "../entity/user.entity";
-import {promises} from "dns";
+import {HISTORY_ACTION, TrazaEntity, UserEntity} from "../entity";
+import {TrazaMapper} from "../mapper";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 
 @Injectable()

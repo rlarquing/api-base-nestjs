@@ -1,11 +1,11 @@
 import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
-import {GetUser} from './../decorator/get-user.decorator';
-import {Roles} from './../decorator/role.decorator';
-import {RoleGuard} from './../guards/role.guard';
-import {RoleType} from './../enum/roletype.enum';
-import {UserEntity} from './../entity/user.entity';
-import {TrazaService} from './../service/traza.service';
+import {GetUser} from '../decorator';
+import {Roles} from '../decorator';
+import {RoleGuard} from '../guards/role.guard';
+import {RoleType} from '../enum/roletype.enum';
+import {UserEntity} from '../entity';
+import {TrazaService} from '../service';
 import {TrazaDto} from "../dto/traza.dto";
 import {DeleteResult} from "typeorm";
 import {Pagination} from "nestjs-typeorm-paginate";

@@ -1,8 +1,8 @@
 import {Injectable, NotFoundException} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
-import {RoleEntity} from "../entity/role.entity";
-import {RoleMapper} from "../mapper/role.mapper";
+import {RoleEntity} from "../entity";
+import {RoleMapper} from "../mapper";
 import {CreateRoleDto, UpdateRoleDto} from "../dto";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 

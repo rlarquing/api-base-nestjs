@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {UserEntity} from "../entity/user.entity";
+import {UserEntity} from "../entity";
 import {ReadRoleDto, ReadUserDto, UserDto} from "../dto";
 
 @Injectable()

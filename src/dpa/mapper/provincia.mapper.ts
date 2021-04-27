@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
-import {ReadProvinciaDto} from './../dto'
-import {ProvinciaEntity} from "../entity/provincia.entity";
+import {ReadProvinciaDto} from '../dto'
+import {ProvinciaEntity} from "../entity";
 
 @Injectable()
 export class ProvinciaMapper {

@@ -1,5 +1,5 @@
-import {MunicipioEntity} from "../entity/municipio.entity";
-import {BadRequestException, Injectable, NotFoundException} from "@nestjs/common";
+import {MunicipioEntity} from "../entity";
+import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";

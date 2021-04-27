@@ -6,17 +6,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ProvinciaService } from './../service/provincia.service';
-import {Roles} from "../../security/decorator/role.decorator";
+import { ProvinciaService } from '../service';
+import {Roles} from "../../security/decorator";
 import {RoleType} from "../../security/enum/roletype.enum";
 import {RoleGuard} from "../../security/guards/role.guard";
-import {GetUser} from "../../security/decorator/get-user.decorator";
-import {UserEntity} from "../../security/entity/user.entity";
-import {ReadProvinciaDto} from "../dto/read-provincia.dto";
+import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {ReadRoleDto} from "../../security/dto";
 import {Pagination} from "nestjs-typeorm-paginate";
-import {ReadMunicipioDto} from "../dto";
 import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
 

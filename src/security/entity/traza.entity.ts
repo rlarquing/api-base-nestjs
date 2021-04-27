@@ -7,7 +7,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {UserEntity} from "./../entity/user.entity";
+import {UserEntity} from "./user.entity";
 
 export enum HISTORY_ACTION {
   ADD = 'Adicionar',

@@ -1,4 +1,4 @@
-import {ProvinciaEntity} from "../entity/provincia.entity";
+import {ProvinciaEntity} from "../entity";
 import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";

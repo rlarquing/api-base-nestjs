@@ -1,25 +1,22 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Param,
   ParseIntPipe,
-  Patch,
-  Post, Query,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {Roles} from "../../security/decorator/role.decorator";
 import {RoleType} from "../../security/enum/roletype.enum";
 import {RoleGuard} from "../../security/guards/role.guard";
-import {MunicipioService} from "../service/municipio.service";
+import {MunicipioService} from "../service";
 import {ReadMunicipioDto} from "../dto";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {ReadRoleDto} from "../../security/dto";
 import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
+import {Roles} from "../../security/decorator";
 
 @ApiTags('Municipios')
 @Controller('municipio')

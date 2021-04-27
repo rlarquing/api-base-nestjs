@@ -1,11 +1,9 @@
 import {BadRequestException, Injectable, NotFoundException} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Between, DeleteResult, Repository} from "typeorm";
-import {TrazaEntity} from "../entity/traza.entity";
-import {UserEntity} from "../entity/user.entity";
+import {TrazaEntity, UserEntity} from "../entity";
 import {UserRepository} from "./user.repository";
 import {paginate, IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
-import {TrazaDto} from "../dto/traza.dto";
 
 @Injectable()
 export class TrazaRepository {
@@ -17,7 +15,7 @@ export class TrazaRepository {
     ) {
     }
 
-    async getAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>>{
+    async getAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>> {
         return await paginate<TrazaEntity>(this.trazaRepository, options);
     }
 
@@ -33,7 +31,7 @@ export class TrazaRepository {
     }
 
     async create(trazaEntity: TrazaEntity): Promise<void> {
-       await this.trazaRepository.save(trazaEntity);
+        await this.trazaRepository.save(trazaEntity);
     }
 
     async delete(id: number): Promise<DeleteResult> {

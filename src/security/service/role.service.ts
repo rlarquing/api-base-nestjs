@@ -1,11 +1,9 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {CreateRoleDto, ReadRoleDto, UpdateRoleDto} from './../dto';
-import {RoleEntity} from './../entity/role.entity';
-import {RoleRepository} from "./../repository/role.repository";
-import {RoleMapper} from "../mapper/role.mapper";
+import {CreateRoleDto, ReadRoleDto, UpdateRoleDto} from '../dto';
+import {UserEntity, RoleEntity, HISTORY_ACTION} from '../entity';
+import {RoleRepository} from "../repository";
+import {RoleMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
-import {UserEntity} from "../entity/user.entity";
-import {HISTORY_ACTION} from "../entity/traza.entity";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 
 @Injectable()

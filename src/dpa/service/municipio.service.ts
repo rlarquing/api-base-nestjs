@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
-import {MunicipioMapper} from "../mapper/municipio.mapper";
+import {MunicipioMapper} from "../mapper";
 import {ReadMunicipioDto} from "../dto";
-import {MunicipioEntity} from "../entity/municipio.entity";
-import {MunicipioRepository} from "../repository/municipio.repository";
+import {MunicipioEntity} from "../entity";
+import {MunicipioRepository} from "../repository";
 
 @Injectable()
 export class MunicipioService {
