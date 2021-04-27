@@ -32,7 +32,7 @@ export class UserController {
     })
     @ApiNotFoundResponse({
         status: 404,
-        description: 'Not found. usuarios no encontrados.',
+        description: 'Usuarios no encontrados.',
     })
     getAll(
         @Query('page') page: number = 1,
@@ -57,7 +57,7 @@ export class UserController {
     })
     @ApiNotFoundResponse({
         status: 404,
-        description: 'Not found. Usuario no encontrado.',
+        description: 'Usuario no encontrado.',
     })
     async get(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
         return await this.userService.get(id);

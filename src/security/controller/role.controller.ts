@@ -32,7 +32,7 @@ export class RoleController {
     })
     @ApiNotFoundResponse({
         status: 404,
-        description: 'Not found. Roles no encontrados.',
+        description: 'Roles no encontrados.',
     })
     getAll(
         @Query('page') page: number = 1,
@@ -57,7 +57,7 @@ export class RoleController {
     })
     @ApiNotFoundResponse({
         status: 404,
-        description: 'Not found. Rol no encontrado.',
+        description: 'Rol no encontrado.',
     })
     get(@Param('id', ParseIntPipe) id: number): Promise<ReadRoleDto> {
         return this.roleService.get(id);

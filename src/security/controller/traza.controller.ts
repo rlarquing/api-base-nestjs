@@ -33,7 +33,7 @@ export class TrazaController {
     })
     @ApiNotFoundResponse({
         status: 404,
-        description: 'Not found. trazas no encontradas.',
+        description: 'Trazas no encontradas.',
     })
     getAll(
         @Query('page') page: number = 1,
@@ -58,7 +58,7 @@ export class TrazaController {
     })
     @ApiNotFoundResponse({
         status: 404,
-        description: 'Not found. Traza no encontrada.',
+        description: 'Traza no encontrada.',
     })
     get(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
         return this.trazaService.get(id);

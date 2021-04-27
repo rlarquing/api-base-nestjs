@@ -36,7 +36,7 @@ export class MunicipioController {
   @ApiResponse({
     status: 200,
     description: 'Listado de los municipios',
-    type: ReadRoleDto,
+    type: ReadMunicipioDto,
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -57,15 +57,15 @@ export class MunicipioController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Obtener un rol' })
+  @ApiOperation({ summary: 'Obtener un municipio' })
   @ApiResponse({
     status: 200,
-    description: 'Muestra la información de un rol',
-    type: ReadRoleDto,
+    description: 'Muestra la información de un municipio',
+    type: ReadMunicipioDto,
   })
   @ApiNotFoundResponse({
     status: 404,
-    description: 'Not found. Rol no encontrado.',
+    description: 'Municipio no encontrado.',
   })
   get(
     @Param('id', ParseIntPipe) id: number,
@@ -73,6 +73,16 @@ export class MunicipioController {
     return this.municipioService.get(id);
   }
 
+  @ApiOperation({ summary: 'Listado de los municipios de una provincia' })
+  @ApiResponse({
+    status: 200,
+    description: 'Muestra la información de los municipios de una provincia',
+    type: ReadMunicipioDto,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Municipios no encontrados.',
+  })
   @Get('/provincia/:id')
   getByProvincia(@Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto[]> {
