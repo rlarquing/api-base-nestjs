@@ -6,6 +6,7 @@ export class ReadRoleDto{
 
     @Expose({name: 'identificador'})
     @IsNumber()
+    @ApiProperty({ description: 'id del rol.', example: 1 })
     id: number;
 
     @Expose()

@@ -49,6 +49,7 @@ export class TrazaController {
         });
     }
 
+    @Get(':id')
     @ApiOperation({ summary: 'Obtener una traza' })
     @ApiResponse({
         status: 200,
@@ -59,7 +60,6 @@ export class TrazaController {
         status: 404,
         description: 'Not found. Traza no encontrada.',
     })
-    @Get(':id')
     get(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
         return this.trazaService.get(id);
 
@@ -74,12 +74,12 @@ export class TrazaController {
         return await this.trazaService.delete(id);
     }
 
+    @Post('filtro/por')
     @ApiOperation({ summary: 'Filtrar por un usuario y los parametros establecidos' })
     @ApiResponse({
         status: 201,
         description: 'Filtra por un usuario y parametros que se le puedan pasar',
     })
-    @Post('filtro/por')
     async getAllFiltrados(@GetUser() user: UserEntity, @Body() filtro: any): Promise<any> {
         return await this.trazaService.getFiltrados(user, filtro);
     }

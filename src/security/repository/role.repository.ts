@@ -21,7 +21,7 @@ export class RoleRepository {
     }
 
     async get(id: number): Promise<RoleEntity> {
-        const rol: RoleEntity = await this.roleRepository.findOne({
+        const rol: RoleEntity = await this.roleRepository.findOne(id,{
             where: {status: 'ACTIVE'}
         });
         return rol;

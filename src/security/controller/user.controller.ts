@@ -48,6 +48,7 @@ export class UserController {
         });
     }
 
+    @Get(':id')
     @ApiOperation({ summary: 'Obtener un usuario' })
     @ApiResponse({
         status: 200,
@@ -58,42 +59,40 @@ export class UserController {
         status: 404,
         description: 'Not found. Usuario no encontrado.',
     })
-    @Get(':id')
     async get(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
         return await this.userService.get(id);
 
     }
 
+    @Post()
     @ApiOperation({ summary: 'Crear un usuario' })
     @ApiResponse({
         status: 201,
         description: 'Crea un usuario',
         type: ReadUserDto,
     })
-    @Post()
-    @Post()
     async create(@GetUser() user: UserEntity, @Body() userDto: UserDto): Promise<ReadUserDto> {
         return await this.userService.create(user, userDto);
     }
 
+    @Patch(':id')
     @ApiOperation({ summary: 'Actualizar un usuario' })
     @ApiResponse({
         status: 200,
         description: 'Actualiza un usuario',
         type: ReadUserDto,
     })
-    @Patch(':id')
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<ReadUserDto> {
         return await this.userService.update(user, id, updateUserDto);
 
     }
 
+    @Delete(':id')
     @ApiOperation({ summary: 'Eliminar un usuario' })
     @ApiResponse({
         status: 200,
         description: 'Elimina de un usuario',
     })
-    @Delete(':id')
     delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<void> {
         return this.userService.delete(user, id);
 

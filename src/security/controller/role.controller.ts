@@ -48,6 +48,7 @@ export class RoleController {
         });
     }
 
+    @Get(':id')
     @ApiOperation({ summary: 'Obtener un rol' })
     @ApiResponse({
         status: 200,
@@ -58,39 +59,38 @@ export class RoleController {
         status: 404,
         description: 'Not found. Rol no encontrado.',
     })
-    @Get(':id')
     get(@Param('id', ParseIntPipe) id: number): Promise<ReadRoleDto> {
         return this.roleService.get(id);
     }
 
+    @Post()
     @ApiOperation({ summary: 'Crear un rol' })
     @ApiResponse({
         status: 201,
         description: 'Crea un rol',
         type: ReadRoleDto,
     })
-    @Post()
     async create(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto): Promise<ReadRoleDto> {
         return await this.roleService.create(user, createRoleDto);
     }
 
+    @Patch(':id')
     @ApiOperation({ summary: 'Actualizar un rol' })
     @ApiResponse({
         status: 200,
         description: 'Actualiza un rol',
         type: ReadRoleDto,
     })
-    @Patch(':id')
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() rol: UpdateRoleDto): Promise<ReadRoleDto> {
         return await this.roleService.update(user, id, rol);
     }
 
+    @Delete(':id')
     @ApiOperation({ summary: 'Eliminar un rol' })
     @ApiResponse({
         status: 200,
         description: 'Elimina de un rol',
     })
-    @Delete(':id')
     async delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<void> {
         return await this.roleService.delete(user, id);
 

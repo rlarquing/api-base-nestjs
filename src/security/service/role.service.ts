@@ -29,7 +29,7 @@ export class RoleService {
         }
         const rol: RoleEntity = await this.roleRepository.get(id);
         if (!rol) {
-            throw new NotFoundException();
+            throw new NotFoundException('El rol no se encuentra.');
         }
         return this.roleMapper.entityToDto(rol);
     }

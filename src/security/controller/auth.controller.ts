@@ -12,18 +12,19 @@ import {
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Post('/signup')
   @ApiOperation({ summary: 'Registrar usuario' })
   @ApiResponse({
     status: 201,
     description: 'Registro de los usuarios',
   })
-  @Post('/signup')
   signUp(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<void> {
     return this.authService.signUp(authCredentialsDto);
   }
 
+  @Post('/signin')
   @ApiOperation({ summary: 'Logeo de usuarios' })
   @ApiResponse({
     status: 201,
@@ -34,7 +35,6 @@ export class AuthController {
     status: 401,
     description: 'Mensaje de usuario o contraseña incorrecto',
   })
-  @Post('/signin')
   signIn(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
