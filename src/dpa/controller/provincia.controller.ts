@@ -18,7 +18,7 @@ import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
 
 @ApiTags('Provincias')
-@Controller('provincia')
+@Controller('provincias')
 @Roles(
     RoleType.ADMINISTRADOR,
     RoleType.USUARIO,

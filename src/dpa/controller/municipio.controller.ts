@@ -19,7 +19,7 @@ import {ConfigService} from "@atlasjs/config";
 import {Roles} from "../../security/decorator";
 
 @ApiTags('Municipios')
-@Controller('municipio')
+@Controller('municipios')
 @Roles(
     RoleType.ADMINISTRADOR,
     RoleType.USUARIO,
