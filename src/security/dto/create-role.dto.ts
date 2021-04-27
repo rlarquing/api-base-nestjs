@@ -1,11 +1,22 @@
-import{IsString, MaxLength} from "class-validator"
+import {IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator"
+import {ApiProperty} from "@nestjs/swagger";
 export class CreateRoleDto{
+
+    @IsNotEmpty()
     @IsString()
-    @MaxLength(50, {message: 'this name is not valid'})
-    readonly nombre : string;
+    @MinLength(4, {
+        message: 'El nombre debe de tener al menos 4 carácteres.'
+    })
+    @MaxLength(20, {
+        message: 'El nombre debe tener como máximo 20 carácteres.'
+    })
+    @ApiProperty({description: 'Nombre del rol.', example: 'Administrador'})
+    nombre : string;
+
+    @IsNotEmpty()
     @IsString()
-    @MaxLength(100, {message: 'this decription is not valid'})
-    readonly descripcion: string;
+    @ApiProperty({description: 'Descripción del rol.', example: 'Tiene permiso total del api.'})
+    descripcion: string;
 
 
     constructor(nombre: string, descripcion: string) {

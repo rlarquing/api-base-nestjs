@@ -10,13 +10,12 @@ import {UserEntity} from "../entity/user.entity";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
-import {ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('Roles')
 @Controller('roles')
 @Roles(RoleType.ADMINISTRADOR)
 @UseGuards(AuthGuard(), RoleGuard)
-@ApiBearerAuth('access-token')
 export class RoleController {
     constructor(
         private roleService: RoleService,

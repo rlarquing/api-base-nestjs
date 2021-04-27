@@ -8,7 +8,6 @@ import {
   CreateDateColumn, Unique,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { ApiProperty } from '@nestjs/swagger';
 import { RoleEntity } from './../entity/role.entity';
 
 @Entity('user', { schema: 'mod_auth' })
@@ -20,15 +19,12 @@ export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @ApiProperty({ example: 'pedro' })
   @Column({ type: 'varchar', unique: true, length: 25, nullable: false })
   username: string;
 
-  @ApiProperty({ example: 'pedro@camaguey.geocuba.cu' })
   @Column({ type: 'varchar', nullable: true })
   email: string;
 
-  @ApiProperty({ example: 'Asd1234*' })
   @Column({ type: 'varchar', nullable: false })
   password: string;
 

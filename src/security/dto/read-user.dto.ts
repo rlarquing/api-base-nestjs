@@ -1,20 +1,26 @@
 import {IsNumber, IsEmail, IsString, IsOptional, IsNotEmpty} from 'class-validator';
 import {ReadRoleDto} from "./read-role.dto";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 
 export class ReadUserDto {
+
   @IsNumber()
-  readonly id: number;
+  @ApiProperty({description: 'id del usuario.', example: 1})
+  id: number;
 
   @IsString()
   @IsNotEmpty()
-  readonly username: string;
+  @ApiProperty({description: 'Nombre del usuario.', example: 'juan'})
+  username: string;
 
   @IsEmail()
   @IsOptional()
-  readonly email: string;
+  @ApiPropertyOptional({description: 'Email del usuario.', example: 'juan@camaguey.geocuba.cu'})
+  email: string;
 
   @IsNotEmpty()
-  readonly roles: ReadRoleDto[]
+  @ApiProperty({description: 'Roles del usuario.', type: [ReadRoleDto]})
+  roles: ReadRoleDto[]
 
   constructor(id: number, username: string, email: string, roles: ReadRoleDto[]) {
     this.id = id;
