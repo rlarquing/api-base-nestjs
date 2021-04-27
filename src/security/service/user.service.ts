@@ -32,11 +32,11 @@ export class UserService {
 
     async get(id: number): Promise<ReadUserDto> {
         if (!id) {
-            throw new BadRequestException('id must be sent');
+            throw new BadRequestException('El id no puede ser vacio');
         }
         const user: UserEntity = await this.userRepository.get(id);
         if (!user) {
-            throw new NotFoundException();
+            throw new NotFoundException('El usuario no se encuentra.');
         }
         return this.userMapper.entityToDto(user, user.roles.map((rol: RoleEntity) =>
             this.roleMapper.entityToDto(rol)));
