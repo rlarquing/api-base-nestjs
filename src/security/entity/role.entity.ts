@@ -23,7 +23,7 @@ export class RoleEntity extends BaseEntity {
   @Column({ type: 'text', nullable: false })
   descripcion: string;
 
-  @ManyToMany((type) => UserEntity, (user) => user.roles, {eager:false})
+  @ManyToMany((type) => UserEntity, (user) => user.roles)
   @JoinColumn()
   users: UserEntity[];
 

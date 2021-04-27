@@ -3,11 +3,13 @@ import { AuthCredentialsDto } from './../dto/auth-credentials.dto';
 import { UserEntity } from './../entity/user.entity';
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserMapper} from "../mapper/user.mapper";
-import {Repository} from "typeorm";
+import {FindConditions, Repository} from "typeorm";
 import * as bcrypt from 'bcrypt';
 import {RoleEntity} from "../entity/role.entity";
 import { RoleType } from './../enum/roletype.enum'
-import {UpdateRoleDto, UpdateUserDto, UserDto} from "../dto";
+import {UpdateUserDto, UserDto} from "../dto";
+import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {TrazaEntity} from "../entity/traza.entity";
 
 @Injectable()
 export class UserRepository {
@@ -51,11 +53,15 @@ export class UserRepository {
         }
     }
 
-    async getAll(): Promise<UserEntity[]> {
-        const users: UserEntity[] = await this.userRepository.find({
-            where: {status: 'ACTIVE'},
-        });
-        return users;
+    async getAll(options: IPaginationOptions): Promise<Pagination<UserEntity>>{
+        // Ejemplo funcional de como trabajar con queryBuilder
+        // const queryBuilder = this.userRepository.createQueryBuilder('u');
+        // queryBuilder.leftJoinAndSelect('u.roles', 'roles')
+        // queryBuilder.where('u.status = :status', { status: 'ACTIVE' });
+        // return await paginate<UserEntity>(queryBuilder, options);
+        return await paginate<UserEntity>(this.userRepository,options,{ where: {status: 'ACTIVE'}, relations: ['roles']});
+
+
     }
 
     async get(id: number): Promise<UserEntity> {

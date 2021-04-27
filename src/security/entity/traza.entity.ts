@@ -23,7 +23,7 @@ export class TrazaEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity,{eager: true})
   @JoinColumn({ name: 'user' })
   user: UserEntity;
 

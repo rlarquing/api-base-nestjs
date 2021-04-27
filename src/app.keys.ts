@@ -3,4 +3,5 @@ export enum AppConfig {
   TYPE = 'TYPE',
   SSL = 'SSL',
   SECRET = 'SECRET',
+  URL = 'URL',
 }

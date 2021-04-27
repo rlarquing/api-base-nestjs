@@ -8,53 +8,46 @@ import {UserEntity} from './../entity/user.entity';
 import {TrazaService} from './../service/traza.service';
 import {TrazaDto} from "../dto/traza.dto";
 import {DeleteResult} from "typeorm";
-import {TrazaEntity} from "../entity/traza.entity";
 import {Pagination} from "nestjs-typeorm-paginate";
+import {ConfigService} from "@atlasjs/config";
+import {AppConfig} from "../../app.keys";
 
 @Controller('trazas')
+@Roles(RoleType.ADMINISTRADOR)
+@UseGuards(AuthGuard(), RoleGuard)
 export class TrazaController {
-    constructor(private trazaService: TrazaService) {
+    constructor(
+        private trazaService: TrazaService,
+        private configService: ConfigService
+    ) {
     }
 
-    @Roles(RoleType.ADMINISTRADOR)
-    @UseGuards(AuthGuard(), RoleGuard)
     @Get()
-    getAll(): Promise<TrazaDto[]> {
-        return this.trazaService.getAll();
-    }
-
-    @Roles(RoleType.ADMINISTRADOR)
-    @UseGuards(AuthGuard(), RoleGuard)
-    @Get('listado')
-    index(
+    getAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
-    ): Promise<Pagination<TrazaEntity>> {
+    ): Promise<Pagination<TrazaDto>> {
         limit = limit > 100 ? 100 : limit;
-        return this.trazaService.paginate({
+        const url = this.configService.config[AppConfig.URL];
+        const port= this.configService.config[AppConfig.PORT];
+        return this.trazaService.getAll({
             page,
             limit,
-            route: 'http://localhost:5000/trazas',
+            route: url+':'+port+'/trazas',
         });
     }
 
-    @Roles(RoleType.ADMINISTRADOR)
-    @UseGuards(AuthGuard(), RoleGuard)
     @Get(':id')
     get(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
         return this.trazaService.get(id);
 
     }
 
-    @Roles(RoleType.ADMINISTRADOR)
-    @UseGuards(AuthGuard(), RoleGuard)
     @Delete(':id')
     async delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
         return await this.trazaService.delete(id);
     }
 
-    @Roles(RoleType.ADMINISTRADOR)
-    @UseGuards(AuthGuard(), RoleGuard)
     @Post('filtro/por')
     async getAllFiltrados(@GetUser() user: UserEntity, @Body() filtro: any): Promise<any> {
         return await this.trazaService.getFiltrados(user, filtro);

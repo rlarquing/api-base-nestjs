@@ -5,7 +5,8 @@ import {RoleRepository} from "./../repository/role.repository";
 import {RoleMapper} from "../mapper/role.mapper";
 import {TrazaService} from "./traza.service";
 import {UserEntity} from "../entity/user.entity";
-import {HISTORY_ACTION, TrazaEntity} from "../entity/traza.entity";
+import {HISTORY_ACTION} from "../entity/traza.entity";
+import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 
 @Injectable()
 export class RoleService {
@@ -16,9 +17,10 @@ export class RoleService {
     ) {
     }
 
-    async getAll(): Promise<ReadRoleDto[]> {
-        const roles: RoleEntity[] = await this.roleRepository.getAll();
-        return roles.map((rol: RoleEntity) => this.roleMapper.entityToDto(rol));
+    async getAll(options: IPaginationOptions): Promise<Pagination<ReadRoleDto>> {
+        const roles: Pagination<RoleEntity> = await this.roleRepository.getAll(options);
+        const readRoleDto: ReadRoleDto[] = roles.items.map((rol: RoleEntity) => this.roleMapper.entityToDto(rol));
+        return new Pagination(readRoleDto, roles.meta, roles.links);
     }
 
     async get(id: number): Promise<ReadRoleDto> {
@@ -50,5 +52,4 @@ export class RoleService {
         await this.trazaService.create(user, roleEntity, HISTORY_ACTION.DEL);
         return await this.roleRepository.delete(id);
     }
-
 }

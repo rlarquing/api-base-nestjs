@@ -16,13 +16,10 @@ export class TrazaService {
     ) {
     }
 
-    async getAll(): Promise<TrazaDto[]> {
-        const trazas: TrazaEntity[] = await this.trazaRepository.getAll();
-        return trazas.map((traza) => this.trazaMapper.entityToDto(traza));
-    }
-
-    async paginate(options: IPaginationOptions): Promise<Pagination<TrazaEntity>>{
-        return await this.trazaRepository.paginate(options);
+    async getAll(options: IPaginationOptions): Promise<Pagination<TrazaDto>> {
+        const trazas: Pagination<TrazaEntity> = await this.trazaRepository.getAll(options);
+        const trazaDto: TrazaDto[] = trazas.items.map((traza: TrazaEntity) => this.trazaMapper.entityToDto(traza));
+        return new Pagination(trazaDto, trazas.meta, trazas.links);
     }
 
     async get(id: number): Promise<TrazaDto> {
@@ -38,14 +35,14 @@ export class TrazaService {
         traza.data = entity;
         traza.action = action;
         traza.record = entity.id;
-       await this.trazaRepository.create(traza);
+        await this.trazaRepository.create(traza);
     }
 
     async delete(id: number): Promise<DeleteResult> {
         return await this.trazaRepository.delete(id);
     }
 
-    async getFiltrados(user:UserEntity, filtro: any): Promise<any> {
+    async getFiltrados(user: UserEntity, filtro: any): Promise<any> {
         return await this.trazaRepository.getFiltrados(user, filtro);
     }
 

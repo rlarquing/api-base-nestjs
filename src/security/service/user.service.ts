@@ -3,17 +3,16 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
 import {UserEntity} from './../entity/user.entity';
 import {UserRepository} from './../repository/user.repository';
 import {RoleRepository} from './../repository/role.repository';
-import {CreateRoleDto, ReadRoleDto, ReadUserDto, UpdateUserDto, UserDto} from './../dto';
-import {plainToClass} from 'class-transformer';
+import {ReadUserDto, UpdateUserDto, UserDto} from './../dto';
 import {UserMapper} from "../mapper/user.mapper";
 import {RoleMapper} from "../mapper/role.mapper";
 import {RoleEntity} from "../entity/role.entity";
-import {HISTORY_ACTION} from "../entity/traza.entity";
+import {HISTORY_ACTION, TrazaEntity} from "../entity/traza.entity";
 import {TrazaService} from "./traza.service";
+import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 
 @Injectable()
 export class UserService {
@@ -26,12 +25,13 @@ export class UserService {
     ) {
     }
 
-    async getAll(): Promise<ReadUserDto[]> {
-        const users: UserEntity[] = await this.userRepository.getAll();
-        return users.map((user: UserEntity) =>
+    async getAll(options: IPaginationOptions): Promise<Pagination<ReadUserDto>> {
+        const users: Pagination<UserEntity> = await this.userRepository.getAll(options);
+        const readUserDto: ReadUserDto[] = users.items.map((user: UserEntity) =>
             this.userMapper.entityToDto(user,
                 user.roles.map((rol: RoleEntity) =>
                     this.roleMapper.entityToDto(rol))));
+        return new Pagination(readUserDto, users.meta, users.links);
     }
 
     async get(id: number): Promise<ReadUserDto> {

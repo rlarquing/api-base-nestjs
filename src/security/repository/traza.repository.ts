@@ -5,6 +5,7 @@ import {TrazaEntity} from "../entity/traza.entity";
 import {UserEntity} from "../entity/user.entity";
 import {UserRepository} from "./user.repository";
 import {paginate, IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
+import {TrazaDto} from "../dto/traza.dto";
 
 @Injectable()
 export class TrazaRepository {
@@ -16,14 +17,7 @@ export class TrazaRepository {
     ) {
     }
 
-    async getAll(): Promise<TrazaEntity[]> {
-        const trazaEntity: TrazaEntity[] = await this.trazaRepository.find({
-            relations: ['user']
-        });
-        return trazaEntity;
-    }
-
-    async paginate(options: IPaginationOptions): Promise<Pagination<TrazaEntity>>{
+    async getAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>>{
         return await paginate<TrazaEntity>(this.trazaRepository, options);
     }
 
