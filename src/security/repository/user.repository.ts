@@ -63,7 +63,7 @@ export class UserRepository {
     }
 
     async get(id: number): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findOne({
+        const user: UserEntity = await this.userRepository.findOne(id,{
             where: {status: 'ACTIVE'}
         });
         return user;
