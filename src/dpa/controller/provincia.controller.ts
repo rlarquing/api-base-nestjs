@@ -16,6 +16,8 @@ import {ReadRoleDto} from "../../security/dto";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
+import {getManager} from "typeorm";
+import {ProvinciaEntity} from "../entity";
 
 @ApiTags('Provincias')
 @Controller('provincias')
@@ -71,5 +73,10 @@ export class ProvinciaController {
         @Param('id', ParseIntPipe) id: number,
     ): Promise<ReadProvinciaDto> {
         return this.provinciaService.get(id);
+    }
+
+    @Get('obtener/json')
+    async obtenerJson(): Promise<any>{
+        return await this.provinciaService.obtenerJson();
     }
 }

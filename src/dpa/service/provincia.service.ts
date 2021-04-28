@@ -33,5 +33,7 @@ export class ProvinciaService {
     return this.provinciaMapper.entityToDto(provincia);
   }
 
-
+async obtenerJson(): Promise<any>{
+    return await this.provinciaRepository.obtenerJson();
+}
 }

@@ -1,8 +1,8 @@
 import {ProvinciaEntity} from "../entity";
 import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {Repository} from "typeorm";
 
 
 @Injectable()
@@ -18,5 +18,14 @@ export class ProvinciaRepository {
 
     async get(id: number): Promise<ProvinciaEntity> {
         return await this.provinciaRepository.findOne(id);
+    }
+
+    async obtenerJson(): Promise<any> {
+        const json= await this.provinciaRepository.createQueryBuilder('p').
+           select("json_build_object( 'id', id, 'nombre', nombre)", "properties").
+           addSelect("ST_AsGeoJSON(p.geom)::json", "geometry")
+            .getRawOne(); ;
+
+        return json ;
     }
 }
