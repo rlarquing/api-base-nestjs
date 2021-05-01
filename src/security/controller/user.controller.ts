@@ -34,14 +34,14 @@ export class UserController {
         status: 404,
         description: 'Usuarios no encontrados.',
     })
-    getAll(
+    async getAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<ReadUserDto>> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port= this.configService.config[AppConfig.PORT];
-        return this.userService.getAll({
+        return await this.userService.getAll({
             page,
             limit,
             route: url+':'+port+'/users',

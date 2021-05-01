@@ -69,10 +69,10 @@ export class ProvinciaController {
         status: 404,
         description: 'provincia no encontrada.',
     })
-    get(
+    async get(
         @Param('id', ParseIntPipe) id: number,
     ): Promise<ReadProvinciaDto> {
-        return this.provinciaService.get(id);
+        return await this.provinciaService.get(id);
     }
 
     @Get('obtener/json')

@@ -35,14 +35,14 @@ export class TrazaController {
         status: 404,
         description: 'Trazas no encontradas.',
     })
-    getAll(
+    async getAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<TrazaDto>> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port= this.configService.config[AppConfig.PORT];
-        return this.trazaService.getAll({
+        return await this.trazaService.getAll({
             page,
             limit,
             route: url+':'+port+'/trazas',
@@ -60,8 +60,8 @@ export class TrazaController {
         status: 404,
         description: 'Traza no encontrada.',
     })
-    get(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
-        return this.trazaService.get(id);
+    async get(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
+        return await this.trazaService.get(id);
 
     }
     @ApiOperation({ summary: 'Eliminar una traza' })

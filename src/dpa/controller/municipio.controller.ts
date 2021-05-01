@@ -67,10 +67,10 @@ export class MunicipioController {
     status: 404,
     description: 'Municipio no encontrado.',
   })
-  get(
+  async get(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto> {
-    return this.municipioService.get(id);
+    return await this.municipioService.get(id);
   }
 
   @ApiOperation({ summary: 'Listado de los municipios de una provincia' })
@@ -84,8 +84,8 @@ export class MunicipioController {
     description: 'Municipios no encontrados.',
   })
   @Get('/provincia/:id')
-  getByProvincia(@Param('id', ParseIntPipe) id: number,
+  async getByProvincia(@Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto[]> {
-    return this.municipioService.getByProvincia(id);
+    return await this.municipioService.getByProvincia(id);
   }
 }

@@ -18,10 +18,10 @@ export class AuthController {
     status: 201,
     description: 'Registro de los usuarios',
   })
-  signUp(
+  async signUp(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<void> {
-    return this.authService.signUp(authCredentialsDto);
+    return await this.authService.signUp(authCredentialsDto);
   }
 
   @Post('/signin')
@@ -35,9 +35,9 @@ export class AuthController {
     status: 401,
     description: 'Mensaje de usuario o contraseña incorrecto',
   })
-  signIn(
+  async signIn(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
-    return this.authService.signIn(authCredentialsDto);
+    return await this.authService.signIn(authCredentialsDto);
   }
 }

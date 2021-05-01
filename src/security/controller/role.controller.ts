@@ -34,14 +34,14 @@ export class RoleController {
         status: 404,
         description: 'Roles no encontrados.',
     })
-    getAll(
+    async getAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<ReadRoleDto>> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port= this.configService.config[AppConfig.PORT];
-        return this.roleService.getAll({
+        return await this.roleService.getAll({
             page,
             limit,
             route: url+':'+port+'/roles',
