@@ -24,8 +24,7 @@ export class ProvinciaRepository {
         const json= await this.provinciaRepository.createQueryBuilder('p').
            select("json_build_object( 'id', id, 'nombre', nombre)", "properties").
            addSelect("ST_AsGeoJSON(p.geom)::json", "geometry")
-            .getRawMany(); ;
-
+            .getRawMany();
         return json ;
     }
 }
