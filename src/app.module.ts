@@ -1,3 +1,4 @@
+import { SharedModule } from './shared/shared.module';
 import { DpaModule } from './dpa/dpa.module';
 import { SecurityModule } from './security/security.module';
 import { Module } from '@nestjs/common';
@@ -7,6 +8,7 @@ import { AppConfig } from './app.keys';
 
 @Module({
   imports: [
+    SharedModule,
     DpaModule,
     SecurityModule,
     ConfigModule.forRoot({}),

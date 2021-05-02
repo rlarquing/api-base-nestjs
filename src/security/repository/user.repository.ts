@@ -7,6 +7,7 @@ import {Repository} from "typeorm";
 import * as bcrypt from 'bcrypt';
 import {RoleType} from '../enum/roletype.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {status} from "../../shared/enum";
 
 @Injectable()
 export class UserRepository {
@@ -28,7 +29,7 @@ export class UserRepository {
         user.salt = await bcrypt.genSalt();
         user.password = await this.hashPassword(password, user.salt);
         const rol: RoleEntity = await this.roleRepository.findOne({
-            where: {status: 'ACTIVE', nombre: RoleType.USUARIO}
+            where: {status: status.ACTIVE, nombre: RoleType.USUARIO}
         });
 
         if (!rol) {
@@ -52,10 +53,10 @@ export class UserRepository {
         // Ejemplo funcional de como trabajar con queryBuilder
         // const queryBuilder = this.userRepository.createQueryBuilder('u');
         // queryBuilder.leftJoinAndSelect('u.roles', 'roles')
-        // queryBuilder.where('u.status = :status', { status: 'ACTIVE' });
+        // queryBuilder.where('u.status = :status', { status: status.ACTIVE });
         // return await paginate<UserEntity>(queryBuilder, options);
         return await paginate<UserEntity>(this.userRepository, options, {
-            where: {status: 'ACTIVE'},
+            where: {status: status.ACTIVE},
             relations: ['roles']
         });
 
@@ -64,7 +65,7 @@ export class UserRepository {
 
     async get(id: number): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne(id,{
-            where: {status: 'ACTIVE'}
+            where: {status: status.ACTIVE}
         });
         return user;
     }
@@ -94,11 +95,11 @@ export class UserRepository {
     }
 
     async delete(id: number): Promise<void> {
-        const user = await this.userRepository.findOne(id, {where: {status: 'ACTIVE'}});
+        const user = await this.userRepository.findOne(id, {where: {status: status.ACTIVE}});
         if (!user) {
             throw new NotFoundException('No existe el usuario');
         }
-        user.status = 'INACTIVE';
+        user.status = status.INACTIVE;
         await this.roleRepository.save(user);
     }
 
@@ -121,7 +122,7 @@ export class UserRepository {
 
     async findByName(username: string): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne({
-            where: {status: 'ACTIVE', username: username}
+            where: {status: status.ACTIVE, username: username}
         });
         return user;
     }

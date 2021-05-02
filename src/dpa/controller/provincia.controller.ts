@@ -18,6 +18,7 @@ import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
 import {getManager} from "typeorm";
 import {ProvinciaEntity} from "../entity";
+import {GeoJsonDto} from "../../shared/dto";
 
 @ApiTags('Provincias')
 @Controller('provincias')
@@ -76,7 +77,13 @@ export class ProvinciaController {
     }
 
     @Get('obtener/json')
-    async obtenerJson(): Promise<any>{
+    @ApiOperation({summary: 'Obtener el geojson de las provincias'})
+    @ApiResponse({
+        status: 200,
+        description: 'Muestra el geojson de las provincias',
+        type: GeoJsonDto,
+    })
+    async obtenerJson(): Promise<GeoJsonDto>{
         return await this.provinciaService.obtenerJson();
     }
 }

@@ -6,11 +6,13 @@ import {MunicipioService, ProvinciaService} from "./service";
 import {MunicipioRepository, ProvinciaRepository} from "./repository";
 import {MunicipioMapper, ProvinciaMapper} from "./mapper";
 import {SecurityModule} from "../security/security.module";
+import {SharedModule} from "../shared/shared.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ProvinciaEntity, MunicipioEntity]),
-        SecurityModule
+        SecurityModule,
+        SharedModule
     ],
     controllers: [ProvinciaController, MunicipioController],
     providers: [ProvinciaService, MunicipioService, ProvinciaRepository, MunicipioRepository, ProvinciaMapper, MunicipioMapper],

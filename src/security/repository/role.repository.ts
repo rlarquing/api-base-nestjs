@@ -5,6 +5,7 @@ import {RoleEntity} from "../entity";
 import {RoleMapper} from "../mapper";
 import {CreateRoleDto, UpdateRoleDto} from "../dto";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {status} from "../../shared/enum";
 
 @Injectable()
 export class RoleRepository {
@@ -16,13 +17,13 @@ export class RoleRepository {
     }
 
     async getAll(options: IPaginationOptions): Promise<Pagination<RoleEntity>> {
-        return await paginate<RoleEntity>(this.roleRepository, options, {where: {status: 'ACTIVE'}});
+        return await paginate<RoleEntity>(this.roleRepository, options, {where: {status: status.ACTIVE}});
 
     }
 
     async get(id: number): Promise<RoleEntity> {
         const rol: RoleEntity = await this.roleRepository.findOne(id,{
-            where: {status: 'ACTIVE'}
+            where: {status: status.ACTIVE}
         });
         return rol;
     }
@@ -45,11 +46,11 @@ export class RoleRepository {
     }
 
     async delete(id: number): Promise<void> {
-        const role = await this.roleRepository.findOne(id, {where: {status: 'ACTIVE'}});
+        const role = await this.roleRepository.findOne(id, {where: {status: status.ACTIVE}});
         if (!role) {
             throw new NotFoundException('No existe el rol');
         }
-        role.status = 'INACTIVE';
+        role.status = status.INACTIVE;
         await this.roleRepository.save(role);
     }
 }
