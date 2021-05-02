@@ -83,7 +83,7 @@ export class ProvinciaController {
         description: 'Muestra el geojson de las provincias',
         type: GeoJsonDto,
     })
-    async obtenerJson(): Promise<GeoJsonDto>{
-        return await this.provinciaService.obtenerJson();
+    async geoJson(): Promise<GeoJsonDto>{
+        return await this.provinciaService.geoJson();
     }
 }

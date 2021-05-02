@@ -37,8 +37,8 @@ export class ProvinciaService {
         return this.provinciaMapper.entityToDto(provincia);
     }
 
-    async obtenerJson(): Promise<GeoJsonDto> {
-        const provincias = await this.provinciaRepository.obtenerJson();
+    async geoJson(): Promise<GeoJsonDto> {
+        const provincias = await this.provinciaRepository.geoJson();
         return this.geoJsonMapper.entitiesToDto(provincias);
     }
 }

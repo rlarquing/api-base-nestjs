@@ -20,7 +20,7 @@ export class ProvinciaRepository {
         return await this.provinciaRepository.findOne(id);
     }
 
-    async obtenerJson(): Promise<any> {
+    async geoJson(): Promise<any> {
         const json= await this.provinciaRepository.createQueryBuilder('p').
            select("json_build_object( 'id', id, 'nombre', nombre)", "properties").
            addSelect("ST_AsGeoJSON(p.geom)::json", "geometry")
