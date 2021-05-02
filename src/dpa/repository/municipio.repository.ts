@@ -23,4 +23,12 @@ export class MunicipioRepository {
     async getByProvincia(id: number): Promise<MunicipioEntity[]> {
         return await this.municipioRepository.find({where: {provincia: id}});
     }
+
+    async geoJson(): Promise<any> {
+        const json= await this.municipioRepository.createQueryBuilder('p').
+        select("json_build_object( 'id', id, 'nombre', nombre)", "properties").
+        addSelect("ST_AsGeoJSON(p.geom)::json", "geometry")
+            .getRawMany();
+        return json ;
+    }
 }

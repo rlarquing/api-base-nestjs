@@ -8,12 +8,15 @@ import {MunicipioMapper} from "../mapper";
 import {ReadMunicipioDto} from "../dto";
 import {MunicipioEntity} from "../entity";
 import {MunicipioRepository} from "../repository";
+import {GeoJsonDto} from "../../shared/dto";
+import {GeoJsonMapper} from "../../shared/mapper";
 
 @Injectable()
 export class MunicipioService {
   constructor(
     private municipioRepository: MunicipioRepository,
     private municipioMapper: MunicipioMapper,
+    private geoJsonMapper: GeoJsonMapper,
   ) {}
 
   async getAll(options: IPaginationOptions): Promise<Pagination<ReadMunicipioDto>> {
@@ -36,5 +39,10 @@ export class MunicipioService {
   async getByProvincia(id: number): Promise<ReadMunicipioDto[]> {
     const municipio: MunicipioEntity[] = await this.municipioRepository.getByProvincia(id);
     return municipio.map((municipio: MunicipioEntity)=> this.municipioMapper.entityToDto(municipio));
+  }
+
+  async geoJson(): Promise<GeoJsonDto> {
+    const provincias = await this.municipioRepository.geoJson();
+    return this.geoJsonMapper.entitiesToDto(provincias);
   }
 }

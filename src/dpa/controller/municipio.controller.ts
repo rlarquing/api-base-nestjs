@@ -17,6 +17,7 @@ import {ReadRoleDto} from "../../security/dto";
 import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
 import {Roles} from "../../security/decorator";
+import {GeoJsonDto} from "../../shared/dto";
 
 @ApiTags('Municipios')
 @Controller('municipios')
@@ -87,5 +88,16 @@ export class MunicipioController {
   async getByProvincia(@Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto[]> {
     return await this.municipioService.getByProvincia(id);
+  }
+
+  @Get('obtener/json')
+  @ApiOperation({summary: 'Obtener el geojson de los municipios'})
+  @ApiResponse({
+    status: 200,
+    description: 'Muestra el geojson de los municipios',
+    type: GeoJsonDto,
+  })
+  async geoJson(): Promise<GeoJsonDto>{
+    return await this.municipioService.geoJson();
   }
 }
