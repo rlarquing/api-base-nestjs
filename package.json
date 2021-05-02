@@ -1,8 +1,8 @@
 {
   "name": "api-base-nestjs",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Api base para realizar proyectos con nestjs",
+  "author": "Reynelbis Larquin Guerra",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
