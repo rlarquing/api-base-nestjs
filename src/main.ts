@@ -8,6 +8,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   const options = new DocumentBuilder()
+      .addBearerAuth()
     .setTitle('API-BASE')
     .setDescription('Api básica con Nestjs')
     .setVersion('1.0')
