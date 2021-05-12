@@ -11,12 +11,13 @@ import {DeleteResult} from "typeorm";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
-import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('Trazas')
 @Controller('trazas')
 @Roles(RoleType.ADMINISTRADOR)
 @UseGuards(AuthGuard(), RoleGuard)
+@ApiBearerAuth()
 export class TrazaController {
     constructor(
         private trazaService: TrazaService,
