@@ -1,10 +1,11 @@
-import {BadRequestException, Injectable, NotFoundException} from "@nestjs/common";
+import {Injectable, NotFoundException} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
-import {RoleEntity} from "../entity/role.entity";
-import {RoleMapper} from "../mapper/role.mapper";
-import {CreateRoleDto, ReadRoleDto, UpdateRoleDto} from "../dto";
-import {plainToClass} from "class-transformer";
+import {RoleEntity} from "../entity";
+import {RoleMapper} from "../mapper";
+import {CreateRoleDto, UpdateRoleDto} from "../dto";
+import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {status} from "../../shared/enum";
 
 @Injectable()
 export class RoleRepository {
@@ -15,16 +16,14 @@ export class RoleRepository {
     ) {
     }
 
-    async getAll(): Promise<RoleEntity[]> {
-        const roles: RoleEntity[] = await this.roleRepository.find({
-            where: {status: 'ACTIVE'},
-        });
-        return roles;
+    async getAll(options: IPaginationOptions): Promise<Pagination<RoleEntity>> {
+        return await paginate<RoleEntity>(this.roleRepository, options, {where: {status: status.ACTIVE}});
+
     }
 
     async get(id: number): Promise<RoleEntity> {
-        const rol: RoleEntity = await this.roleRepository.findOne(id, {
-            where: {status: 'ACTIVE'}, relations: ['users']
+        const rol: RoleEntity = await this.roleRepository.findOne(id,{
+            where: {status: status.ACTIVE}
         });
         return rol;
     }
@@ -35,7 +34,7 @@ export class RoleRepository {
     }
 
     async update(id: number, updateRoleDto: UpdateRoleDto): Promise<RoleEntity> {
-        const foundRole: RoleEntity = await this.get(id);
+        const foundRole: RoleEntity = await this.roleRepository.findOne(id);
         if (!foundRole) {
             throw new NotFoundException('No existe el rol');
         }
@@ -46,13 +45,12 @@ export class RoleRepository {
         return updatedRole;
     }
 
-    async delete(id: number): Promise<void>{
-        const role = await this.roleRepository.findOne(id,{where: {status: 'ACTIVE'}});
-        if(!role){
+    async delete(id: number): Promise<void> {
+        const role = await this.roleRepository.findOne(id, {where: {status: status.ACTIVE}});
+        if (!role) {
             throw new NotFoundException('No existe el rol');
         }
-        role.status='INACTIVE';
+        role.status = status.INACTIVE;
         await this.roleRepository.save(role);
-
     }
 }

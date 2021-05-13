@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import {CreateRoleDto, ReadRoleDto} from './../dto'
-import {RoleEntity} from "../entity/role.entity";
+import {CreateRoleDto, ReadRoleDto} from '../dto'
+import {RoleEntity} from "../entity";
 
 @Injectable()
 export class RoleMapper {

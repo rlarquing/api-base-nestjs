@@ -1,3 +1,5 @@
+import { SharedModule } from './shared/shared.module';
+import { DpaModule } from './dpa/dpa.module';
 import { SecurityModule } from './security/security.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@atlasjs/config';
@@ -6,7 +8,12 @@ import { AppConfig } from './app.keys';
 
 @Module({
   imports: [
-        SecurityModule, ConfigModule.forRoot({}), DatabaseModule],
+    SharedModule,
+    DpaModule,
+    SecurityModule,
+    ConfigModule.forRoot({}),
+    DatabaseModule,
+  ],
   controllers: [],
   providers: [],
 })

@@ -1,36 +1,43 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
-import { AuthService } from './../service/auth.service';
-import { AuthCredentialsDto } from './../dto';
+import {Body, Controller, Post, ValidationPipe} from '@nestjs/common';
+import { AuthService } from '../service';
+import { AuthCredentialsDto } from '../dto';
 import {
   ApiOperation,
   ApiResponse,
-  ApiTags,
-  ApiBearerAuth,
+  ApiTags, ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {UserEntity} from "../entity/user.entity";
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @Post('/signup')
   @ApiOperation({ summary: 'Registrar usuario' })
   @ApiResponse({
     status: 201,
     description: 'Registro de los usuarios',
-    type: UserEntity,
   })
-  @Post('/signup')
-  signUp(
+  async signUp(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<void> {
-    return this.authService.signUp(authCredentialsDto);
+    return await this.authService.signUp(authCredentialsDto);
   }
 
   @Post('/signin')
-  signIn(
+  @ApiOperation({ summary: 'Logeo de usuarios' })
+  @ApiResponse({
+    status: 201,
+    description: 'Login de los usuarios',
+    type: String,
+  })
+  @ApiUnauthorizedResponse({
+    status: 401,
+    description: 'Mensaje de usuario o contraseña incorrecto',
+  })
+  async signIn(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
-    return this.authService.signIn(authCredentialsDto);
+    return await this.authService.signIn(authCredentialsDto);
   }
 }

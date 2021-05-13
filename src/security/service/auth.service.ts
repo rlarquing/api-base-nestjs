@@ -1,14 +1,14 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './../interface/jwt-payload.interface';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AuthCredentialsDto } from './../dto/auth-credentials.dto';
-import { UserRepository } from './../repository/user.repository';
+import { JwtPayload } from '../interface/jwt-payload.interface';
+import { AuthCredentialsDto } from '../dto';
+import { UserRepository } from '../repository';
+import {RoleType} from "../enum/roletype.enum";
+import {RoleEntity, UserEntity} from "../entity";
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserRepository)
     private userRepository: UserRepository,
     private jwtService: JwtService,
   ) {}
@@ -19,7 +19,7 @@ export class AuthService {
 
   async signIn(
     authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string, roles: RoleType[] }> {
     const username = await this.userRepository.validateUserPassword(
       authCredentialsDto,
     );
@@ -30,7 +30,8 @@ export class AuthService {
 
     const payload: JwtPayload = { username };
     const accessToken = await this.jwtService.sign(payload);
-
-    return { accessToken };
+    const user: UserEntity = await this.userRepository.findByName(username);
+    const roles = user.roles.map((rol:RoleEntity) => rol.nombre as RoleType);
+    return { accessToken, roles };
   }
 }

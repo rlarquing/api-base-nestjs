@@ -1,18 +1,23 @@
 import{IsNumber, IsString, MaxLength} from "class-validator";
 import { Exclude, Expose } from "class-transformer";
+import {ApiProperty} from "@nestjs/swagger";
 @Exclude()
 export class ReadRoleDto{
-   @Expose({name: 'identificador'})
+
+    @Expose({name: 'identificador'})
     @IsNumber()
-    readonly id: number;
+    @ApiProperty({ description: 'id del rol.', example: 1 })
+    id: number;
+
     @Expose()
     @IsString()
-    @MaxLength(50, {message: 'this name is not valid'})
-    readonly nombre : string;
+    @ApiProperty({ description: 'Nombre del rol.', example: 'Administrador' })
+    nombre : string;
+
     @Expose()
     @IsString()
-    @MaxLength(100, {message: 'this decription is not valid'})
-    readonly description: string;
+    @ApiProperty({ description: 'Descripción del rol.', example: 'Tiene permiso total del api' })
+    description: string;
 
  constructor(id: number, nombre: string, description: string) {
   this.id = id;

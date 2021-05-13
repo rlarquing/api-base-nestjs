@@ -7,10 +7,13 @@ import {
   JoinColumn,
   CreateDateColumn,
 } from 'typeorm';
-import { UserEntity } from '../entity/user.entity';
+import { UserEntity } from './user.entity';
 
 @Entity('roles', { schema: 'mod_auth' })
 export class RoleEntity extends BaseEntity {
+
+  model: string = 'RoleEntity';
+
   @PrimaryGeneratedColumn('increment')
   id: number;
 

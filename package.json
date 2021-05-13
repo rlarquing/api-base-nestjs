@@ -1,8 +1,8 @@
 {
-  "name": "api-sitgdl",
+  "name": "api-base-nestjs",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Api base para realizar proyectos con nestjs",
+  "author": "Reynelbis Larquin Guerra",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -38,6 +38,7 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "nestjs-typeorm-paginate": "^2.3.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.5.1",

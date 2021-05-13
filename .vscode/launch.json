@@ -4,11 +4,10 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug nest framework",
-            "runtimeArgs": ["--no-lazy", "-r", "ts-node/register"],
+            "name":"Debug Nest Framework",
+            "runtimeArgs": ["--nolazy","-r","ts-node/register"],
             "args": ["${workspaceFolder}/src/main.ts"],
-            "autoAttachChildProcesses": true,
-            "envFile": "${workspaceFolder}/.env"
+            "autoAttachChildProcesses": true
         }
     ]
 }

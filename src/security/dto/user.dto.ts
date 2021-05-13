@@ -1,13 +1,18 @@
 import {IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength} from 'class-validator';
 
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 
-export class UserDto{
+export class UserDto {
 
     @IsString()
-    @MinLength(4)
-    @MaxLength(20)
-    @ApiProperty({ example: 'juan' })
+    @IsNotEmpty()
+    @MinLength(4, {
+        message: 'El nombre debe de tener al menos 4 carácteres.'
+    })
+    @MaxLength(20, {
+        message: 'El nombre debe de tener como máximo 20 carácteres.'
+    })
+    @ApiProperty({description: 'Nombre del usuario.', example: 'juan'})
     username: string;
 
     @IsString()
@@ -23,13 +28,15 @@ export class UserDto{
         message: 'La contraseña es muy débil.',
     })
 
-    @ApiProperty()
+    @ApiProperty({description: 'Contraseña del usuario.', example: 'Qwerty1234*'})
     password: string;
 
     @IsOptional()
+    @ApiPropertyOptional({description: 'Email del usuario.', example: 'juan@camaguey.geocuba.cu'})
     email?: string;
 
     @IsNotEmpty()
+    @ApiProperty({description: 'Roles del usuario.', example: [1, 2]})
     roles: number[];
 
     constructor(username: string, email: string, roles: number[]) {
