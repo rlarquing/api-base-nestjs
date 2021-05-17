@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from '../interface/jwt-payload.interface';
+import { IJwtPayload } from '../interface/ijwt-payload.interface';
 import { AuthCredentialsDto } from '../dto';
 import { UserRepository } from '../repository';
 import {RoleType} from "../enum/roletype.enum";
@@ -28,7 +28,7 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas.');
     }
 
-    const payload: JwtPayload = { username };
+    const payload: IJwtPayload = { username };
     const accessToken = await this.jwtService.sign(payload);
     const user: UserEntity = await this.userRepository.findByName(username);
     const roles = user.roles.map((rol:RoleEntity) => rol.nombre as RoleType);
