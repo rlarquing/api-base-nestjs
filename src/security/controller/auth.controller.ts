@@ -1,7 +1,8 @@
 import {Body, Controller, Post, ValidationPipe} from '@nestjs/common';
 import { AuthService } from '../service';
-import { AuthCredentialsDto } from '../dto';
+import {AuthCredentialsDto, UserDto} from '../dto';
 import {
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags, ApiUnauthorizedResponse,
@@ -18,6 +19,10 @@ export class AuthController {
     status: 201,
     description: 'Registro de los usuarios',
   })
+  @ApiBody({
+    description: 'Estructura para crear el usuario.',
+    type: AuthCredentialsDto,
+  })
   async signUp(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<void> {
@@ -30,6 +35,10 @@ export class AuthController {
     status: 201,
     description: 'Login de los usuarios',
     type: String,
+  })
+  @ApiBody({
+    description: 'Estructura para el logeo del usuario.',
+    type: AuthCredentialsDto,
   })
   @ApiUnauthorizedResponse({
     status: 401,

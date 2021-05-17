@@ -1,10 +1,7 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
-import {AuthCredentialsDto, UpdateUserDto, UserDto} from '../dto';
 import {UserEntity, RoleEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
-import {UserMapper} from "../mapper";
 import {Repository} from "typeorm";
-import * as bcrypt from 'bcrypt';
 import {RoleType} from '../enum/roletype.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {status} from "../../shared/enum";
@@ -15,19 +12,12 @@ export class UserRepository {
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
         @InjectRepository(RoleEntity)
-        private roleRepository: Repository<RoleEntity>,
-        private userMapper: UserMapper,
+        private roleRepository: Repository<RoleEntity>
     ) {
     }
 
 
-    async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-        const {username, password, email} = authCredentialsDto;
-
-        const user = new UserEntity(username, email);
-
-        user.salt = await bcrypt.genSalt();
-        user.password = await this.hashPassword(password, user.salt);
+    async signUp(userEntity: UserEntity): Promise<void> {
         const rol: RoleEntity = await this.roleRepository.findOne({
             where: {status: status.ACTIVE, nombre: RoleType.USUARIO}
         });
@@ -35,9 +25,9 @@ export class UserRepository {
         if (!rol) {
             throw new NotFoundException('No existe el rol');
         }
-        user.roles = [rol];
+        userEntity.roles = [rol];
         try {
-            await user.save();
+            await this.userRepository.save(userEntity);
         } catch (error) {
             if (error.code === '23505') {
                 throw new ConflictException(
@@ -49,7 +39,7 @@ export class UserRepository {
         }
     }
 
-    async getAll(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    async findAll(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
         // Ejemplo funcional de como trabajar con queryBuilder
         // const queryBuilder = this.userRepository.createQueryBuilder('u');
         // queryBuilder.leftJoinAndSelect('u.roles', 'roles')
@@ -63,35 +53,19 @@ export class UserRepository {
 
     }
 
-    async get(id: number): Promise<UserEntity> {
+    async findById(id: number): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne(id,{
             where: {status: status.ACTIVE}
         });
         return user;
     }
 
-    async create(userDto: UserDto): Promise<UserEntity> {
-        const newUser = this.userMapper.dtoToEntity(userDto);
-        const {password, roles} = userDto;
-        newUser.salt = await bcrypt.genSalt();
-        newUser.password = await this.hashPassword(password, newUser.salt);
-        const roleEntities = await this.roleRepository.findByIds(roles);
-        newUser.roles = roleEntities;
-        return await this.userRepository.save(newUser);
+    async create(userEntity: UserEntity): Promise<UserEntity> {
+        return await this.userRepository.save(userEntity);
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto): Promise<UserEntity> {
-        const foundUser: UserEntity = await this.userRepository.findOne(id);
-        if (!foundUser) {
-            throw new NotFoundException('No existe el user');
-        }
-        const {email, username, roles} = updateUserDto;
-        const roleEntities = await this.roleRepository.findByIds(roles);
-        foundUser.email = email;
-        foundUser.username = username;
-        foundUser.roles = roleEntities;
-        const updatedUser: UserEntity = await this.userRepository.save(foundUser);
-        return updatedUser;
+    async update(updatedUser: UserEntity): Promise<void> {
+       await this.userRepository.save(updatedUser);
     }
 
     async delete(id: number): Promise<void> {
@@ -104,20 +78,14 @@ export class UserRepository {
     }
 
     async validateUserPassword(
-        authCredentialsDto: AuthCredentialsDto,
+       username: string, password: string
     ): Promise<string> {
-        const {username, password} = authCredentialsDto;
         const user = await this.userRepository.findOne({username});
-
         if (user && (await user.validatePassword(password))) {
             return user.username;
         } else {
             return null;
         }
-    }
-
-    private async hashPassword(password: string, salt: string): Promise<string> {
-        return bcrypt.hash(password, salt);
     }
 
     async findByName(username: string): Promise<UserEntity> {
