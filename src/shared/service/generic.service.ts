@@ -12,7 +12,7 @@ export abstract class GenericService<ENTITY> implements IService<ENTITY> {
         protected genericRepository: GenericRepository<ENTITY>,
         protected mapper: any,
         protected trazaService: TrazaService,
-        protected traza: boolean
+        protected traza?: boolean
     ) { }
 
     async findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>> {
