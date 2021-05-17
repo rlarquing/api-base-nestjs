@@ -17,7 +17,6 @@ import {
 } from "@nestjs/swagger";
 import {GenericController} from "../../shared/controller/generic.controller";
 import {IController} from "../../shared/interface";
-import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
 import {UpdateMultipleRoleDto} from "../dto/update-multiple-role.dto";
 
 @ApiTags('Roles')
@@ -96,7 +95,6 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
         description: 'Estructura para crear el elemento del conjunto.',
         type: CreateRoleDto,
     })
-
     @ApiResponse({status: 201, description: 'Crea un elemento del conjunto.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})

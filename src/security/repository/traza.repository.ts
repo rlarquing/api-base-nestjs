@@ -15,11 +15,11 @@ export class TrazaRepository {
     ) {
     }
 
-    async getAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>> {
+    async findAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>> {
         return await paginate<TrazaEntity>(this.trazaRepository, options);
     }
 
-    async get(id: number): Promise<TrazaEntity> {
+    async findById(id: number): Promise<TrazaEntity> {
         if (!id) {
             throw new BadRequestException('id must be sent');
         }
@@ -42,7 +42,7 @@ export class TrazaRepository {
         return await this.trazaRepository.delete(id);
     }
 
-    async getFiltrados(user: UserEntity, filtro: any): Promise<any> {
+    async findByFiltrados(user: UserEntity, filtro: any): Promise<any> {
         const wheres = {}
         let datep
         Object.assign(wheres, user)

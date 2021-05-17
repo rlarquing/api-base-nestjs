@@ -10,7 +10,7 @@ import {RoleType} from "../enum/roletype.enum";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
-import {ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 
 @ApiTags('Users')
 @Controller('users')
@@ -35,14 +35,16 @@ export class UserController {
         status: 404,
         description: 'Usuarios no encontrados.',
     })
-    async getAll(
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<ReadUserDto>> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port= this.configService.config[AppConfig.PORT];
-        return await this.userService.getAll({
+        return await this.userService.findAll({
             page,
             limit,
             route: url+':'+port+'/users',
@@ -60,29 +62,43 @@ export class UserController {
         status: 404,
         description: 'Usuario no encontrado.',
     })
-    async get(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
-        return await this.userService.get(id);
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async findById(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
+        return await this.userService.findById(id);
 
     }
 
     @Post()
     @ApiOperation({ summary: 'Crear un usuario' })
+    @ApiBody({
+        description: 'Estructura para crear el usuario.',
+        type: UserDto,
+    })
     @ApiResponse({
         status: 201,
         description: 'Crea un usuario',
         type: ReadUserDto,
     })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async create(@GetUser() user: UserEntity, @Body() userDto: UserDto): Promise<ReadUserDto> {
         return await this.userService.create(user, userDto);
     }
 
     @Patch(':id')
     @ApiOperation({ summary: 'Actualizar un usuario' })
+    @ApiBody({
+        description: 'Estructura para modificar el usuario.',
+        type: UpdateUserDto,
+    })
     @ApiResponse({
         status: 200,
         description: 'Actualiza un usuario',
         type: ReadUserDto,
     })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<ReadUserDto> {
         return await this.userService.update(user, id, updateUserDto);
 
@@ -92,11 +108,12 @@ export class UserController {
     @ApiOperation({ summary: 'Eliminar un usuario' })
     @ApiResponse({
         status: 200,
-        description: 'Elimina de un usuario',
+        description: 'Elimina un usuario',
     })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<void> {
         return this.userService.delete(user, id);
-
     }
 
 }

@@ -1,5 +1,4 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
-import {AuthCredentialsDto, UpdateUserDto, UserDto} from '../dto';
 import {UserEntity, RoleEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";

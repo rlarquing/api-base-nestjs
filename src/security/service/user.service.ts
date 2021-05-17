@@ -22,7 +22,7 @@ export class UserService {
     ) {
     }
 
-    async getAll(options: IPaginationOptions): Promise<Pagination<ReadUserDto>> {
+    async findAll(options: IPaginationOptions): Promise<Pagination<ReadUserDto>> {
         const users: Pagination<UserEntity> = await this.userRepository.findAll(options);
         const readUserDto: ReadUserDto[] = users.items.map((user: UserEntity) =>
             this.userMapper.entityToDto(user,
@@ -31,7 +31,7 @@ export class UserService {
         return new Pagination(readUserDto, users.meta, users.links);
     }
 
-    async get(id: number): Promise<ReadUserDto> {
+    async findById(id: number): Promise<ReadUserDto> {
         if (!id) {
             throw new BadRequestException('El id no puede ser vacio');
         }
