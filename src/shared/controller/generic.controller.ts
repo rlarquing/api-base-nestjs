@@ -27,7 +27,7 @@ export abstract class GenericController<ENTITY> implements IController<ENTITY>{
         return await this.service.findAll({
             page,
             limit,
-            route: url + ':' + port + '/' + this.ruta,
+            route: url + ':' + port + '/api/' + this.ruta,
         });
     }
 
