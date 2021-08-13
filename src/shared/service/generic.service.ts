@@ -1,6 +1,5 @@
 import {IService} from "../interface";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
-import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
 import {DeleteResult} from "typeorm";
 import {GenericRepository} from "../repository/generic.repository";
 import {HISTORY_ACTION, UserEntity} from "../../security/entity";

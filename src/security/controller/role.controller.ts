@@ -22,7 +22,7 @@ import {UpdateMultipleRoleDto} from "../dto/update-multiple-role.dto";
 @ApiTags('Roles')
 @Controller('roles')
 @Roles(RoleType.ADMINISTRADOR)
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard('jwt'), RoleGuard)
 @ApiBearerAuth()
 export class RoleController extends GenericController<RoleEntity> implements IController<RoleEntity> {
     constructor(

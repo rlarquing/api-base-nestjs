@@ -15,7 +15,7 @@ import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, 
 @ApiTags('Users')
 @Controller('users')
 @Roles(RoleType.ADMINISTRADOR)
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard('jwt'), RoleGuard)
 @ApiBearerAuth()
 export class UserController {
     constructor(

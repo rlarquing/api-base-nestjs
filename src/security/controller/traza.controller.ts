@@ -17,7 +17,7 @@ import {FiltroDto} from "../dto/filtro.dto";
 @ApiTags('Trazas')
 @Controller('trazas')
 @Roles(RoleType.ADMINISTRADOR)
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard('jwt'), RoleGuard)
 @ApiBearerAuth()
 export class TrazaController {
     constructor(

@@ -1,10 +1,11 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
 import {UserEntity, RoleEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {MoreThanOrEqual, Repository} from "typeorm";
 import {RoleType} from '../enum/roletype.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {status} from "../../shared/enum";
+import * as moment from "moment";
 
 @Injectable()
 export class UserRepository {
@@ -17,7 +18,7 @@ export class UserRepository {
     }
 
 
-    async signUp(userEntity: UserEntity): Promise<void> {
+    async signUp(userEntity: UserEntity): Promise<UserEntity> {
         const rol: RoleEntity = await this.roleRepository.findOne({
             where: {status: status.ACTIVE, nombre: RoleType.USUARIO}
         });
@@ -27,7 +28,7 @@ export class UserRepository {
         }
         userEntity.roles = [rol];
         try {
-            await this.userRepository.save(userEntity);
+            return await this.userRepository.save(userEntity);
         } catch (error) {
             if (error.code === '23505') {
                 throw new ConflictException(
@@ -54,7 +55,7 @@ export class UserRepository {
     }
 
     async findById(id: number): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findOne(id,{
+        const user: UserEntity = await this.userRepository.findOne(id, {
             where: {status: status.ACTIVE}
         });
         return user;
@@ -65,7 +66,7 @@ export class UserRepository {
     }
 
     async update(updatedUser: UserEntity): Promise<void> {
-       await this.userRepository.save(updatedUser);
+        await this.userRepository.save(updatedUser);
     }
 
     async delete(id: number): Promise<void> {
@@ -78,7 +79,7 @@ export class UserRepository {
     }
 
     async validateUserPassword(
-       username: string, password: string
+        username: string, password: string
     ): Promise<string> {
         const user = await this.userRepository.findOne({username});
         if (user && (await user.validatePassword(password))) {
@@ -92,6 +93,22 @@ export class UserRepository {
         const user: UserEntity = await this.userRepository.findOne({
             where: {status: status.ACTIVE, username: username}
         });
+        return user;
+    }
+
+    public async validateRefreshToken(username: string, refreshToken: string): Promise<UserEntity> {
+        const currentDate = moment().format("YYYY/MM/DD");
+        const user = await this.userRepository.findOne({
+            where: {
+                status: status.ACTIVE,
+                username: username,
+                refreshToken: refreshToken,
+                refreshTokenExp: MoreThanOrEqual(currentDate)
+            }
+        });
+        if (!user) {
+            return null;
+        }
         return user;
     }
 }
