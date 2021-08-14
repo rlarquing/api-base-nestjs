@@ -1,5 +1,6 @@
 import {Pagination} from "nestjs-typeorm-paginate";
 import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
+import {ResponseDto} from "../dto";
 
 export interface IController<ENTITY> {
 
@@ -9,11 +10,11 @@ export interface IController<ENTITY> {
 
     findByIds(ids: any[]): Promise<any[]>;
 
-    create(user: any, object: ENTITY): Promise<void>;
+    create(user: any, object: ENTITY): Promise<ResponseDto>;
 
-    createMultiple(user: any, object: ENTITY[]): Promise<void>;
+    createMultiple(user: any, object: ENTITY[]): Promise<ResponseDto>;
 
-    update(user: any, id:number, object: ENTITY): Promise<void>;
+    update(user: any, id:number, object: ENTITY): Promise<ResponseDto>;
 
-    updateMultiple(user: any, object: ENTITY[]): Promise<void>;
+    updateMultiple(user: any, object: ENTITY[]): Promise<ResponseDto>;
 }

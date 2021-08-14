@@ -1,9 +1,17 @@
-import {Body, Controller, Post, ValidationPipe, Res, Get, UseGuards, Req} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Post,
+    ValidationPipe,
+    Res,
+    Get,
+    UseGuards,
+} from '@nestjs/common';
 import {AuthService} from '../service';
-import {AuthCredentialsDto, ReadUserDto, SecretDataDto, UserDto} from '../dto';
+import {AuthCredentialsDto, SecretDataDto, UserDto} from '../dto';
 import {
     ApiBearerAuth,
-    ApiBody, ApiNotFoundResponse,
+    ApiBody,
     ApiOperation,
     ApiResponse,
     ApiTags, ApiUnauthorizedResponse,
@@ -73,5 +81,18 @@ export class AuthController {
         @Res({passthrough: true}) res: Response,
     ): Promise<any> {
         return await this.authService.regenerateTokens(user, res);
+    }
+
+    @Post('logout')
+    @ApiOperation({ summary: 'Desloguear un usuario' })
+    @ApiResponse({
+        status: 200,
+        description: 'Deslogear un usuario',
+        type: ResponseDto,
+    })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async logout(@GetUser() user: UserEntity, @Res({passthrough: true}) res: Response): Promise<ResponseDto> {
+        return await this.authService.logout(user, res);
     }
 }

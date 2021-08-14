@@ -94,4 +94,21 @@ export class AuthService {
         res.cookie('auth-cookie', secretData, { httpOnly: true });
         return secretData;
     }
+
+    async logout(user: UserEntity, res: Response):Promise<ResponseDto>{
+        const accessToken = null;
+
+        const refreshToken = null;
+        const roles = null;
+        const secretData: SecretDataDto = {
+            accessToken,
+            refreshToken,
+            roles
+        };
+        let result = new ResponseDto();
+        result.successStatus = true;
+        result.message = 'success';
+        res.cookie('auth-cookie', secretData, { httpOnly: true });
+        return result;
+    }
 }

@@ -10,6 +10,7 @@ import {UserMapper, RoleMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import * as bcrypt from 'bcrypt';
+import {ResponseDto} from "../../shared/dto";
 
 @Injectable()
 export class UserService {
@@ -76,7 +77,7 @@ export class UserService {
             this.roleMapper.entityToDto(rol)));
     }
 
-    async delete(user: UserEntity, id: number): Promise<void> {
+    async delete(user: UserEntity, id: number): Promise<ResponseDto> {
         const userEntity: UserEntity = await this.userRepository.findById(id);
         delete userEntity.salt;
         delete userEntity.password;

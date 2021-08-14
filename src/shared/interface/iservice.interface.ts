@@ -1,5 +1,6 @@
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import {DeleteResult} from "typeorm";
+import {ResponseDto} from "../dto";
 
 export interface IService<ENTITY> {
 
@@ -9,11 +10,11 @@ export interface IService<ENTITY> {
 
     findByIds(ids: any[]): Promise<ENTITY[]>;
 
-    create(user: any, object: ENTITY): Promise<void>;
+    create(user: any, object: ENTITY): Promise<ResponseDto>;
 
-    update(user: any, id:number, object: ENTITY): Promise<void>;
+    update(user: any, id:number, object: ENTITY): Promise<ResponseDto>;
 
-    deleteMultiple(user: any, ids: number[]): Promise<void>;
+    deleteMultiple(user: any, ids: number[]): Promise<ResponseDto>;
 
     removeMultiple(user: any, ids: number[]): Promise<DeleteResult>;
 

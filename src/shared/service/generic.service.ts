@@ -5,6 +5,7 @@ import {GenericRepository} from "../repository/generic.repository";
 import {HISTORY_ACTION, UserEntity} from "../../security/entity";
 import {BadRequestException, NotFoundException} from "@nestjs/common";
 import {TrazaService} from "../../security/service";
+import {ResponseDto} from "../dto";
 
 export abstract class GenericService<ENTITY> implements IService<ENTITY> {
     constructor(
@@ -12,7 +13,8 @@ export abstract class GenericService<ENTITY> implements IService<ENTITY> {
         protected mapper: any,
         protected trazaService: TrazaService,
         protected traza?: boolean
-    ) { }
+    ) {
+    }
 
     async findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>> {
         const items: Pagination<ENTITY> = await this.genericRepository.findAll(options);
@@ -36,37 +38,67 @@ export abstract class GenericService<ENTITY> implements IService<ENTITY> {
         return items.map((item: any) => this.mapper.entityToDto(item));
     }
 
-    async create(user: UserEntity, createDto: any): Promise<void> {
+    async create(user: UserEntity, createDto: any): Promise<ResponseDto> {
+        let result = new ResponseDto();
         const newEntity = this.mapper.dtoToEntity(createDto);
-        const objEntity: ENTITY = await this.genericRepository.create(newEntity);
-        if (this.traza) {
-            await this.trazaService.create(user, objEntity, HISTORY_ACTION.ADD);
+        try {
+            const objEntity: ENTITY = await this.genericRepository.create(newEntity);
+            if (this.traza) {
+                await this.trazaService.create(user, objEntity, HISTORY_ACTION.ADD);
+            }
+            result.successStatus = true;
+            result.message = 'success';
+        } catch (error) {
+            result.message = error.response;
+            result.successStatus = false;
+            return result;
         }
+        return result;
     }
 
-    async update(user: UserEntity, id: number, updateDto: any): Promise<void> {
+    async update(user: UserEntity, id: number, updateDto: any): Promise<ResponseDto> {
+        let result = new ResponseDto();
         const foundObj: ENTITY = await this.genericRepository.findById(id);
         if (!foundObj) {
             throw new NotFoundException('No existe');
         }
-        const updateEntity = this.mapper.dtoToUpdateEntity(updateDto,foundObj);
-        await this.genericRepository.update(updateEntity);
-        if (this.traza) {
-            await this.trazaService.create(user, updateEntity, HISTORY_ACTION.MOD);
+        const updateEntity = this.mapper.dtoToUpdateEntity(updateDto, foundObj);
+        try {
+            await this.genericRepository.update(updateEntity);
+            if (this.traza) {
+                await this.trazaService.create(user, updateEntity, HISTORY_ACTION.MOD);
+            }
+            result.successStatus = true;
+            result.message = 'success';
+        } catch (error) {
+            result.message = error.response;
+            result.successStatus = false;
+            return result;
         }
+        return result;
     }
 
-    async deleteMultiple(user: UserEntity, ids: number[]): Promise<void> {
-        for (let id of ids) {
-            const objEntity: ENTITY = await this.genericRepository.findById(id);
-            if (!objEntity) {
-                throw new NotFoundException('No existe');
+    async deleteMultiple(user: UserEntity, ids: number[]): Promise<ResponseDto> {
+        let result = new ResponseDto();
+        try {
+            for (let id of ids) {
+                const objEntity: ENTITY = await this.genericRepository.findById(id);
+                if (!objEntity) {
+                    throw new NotFoundException('No existe');
+                }
+                if (this.traza) {
+                    await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
+                }
+                await this.genericRepository.delete(id);
             }
-            if (this.traza) {
-                await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
-            }
-            await this.genericRepository.delete(id);
+            result.successStatus = true;
+            result.message = 'success';
+        } catch (error) {
+            result.message = error.response;
+            result.successStatus = false;
+            return result;
         }
+        return result;
 
     }
 
@@ -80,7 +112,7 @@ export abstract class GenericService<ENTITY> implements IService<ENTITY> {
                 await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
             }
         }
-            return await this.genericRepository.remove(ids);
+        return await this.genericRepository.remove(ids);
     }
 
     async count(): Promise<number> {

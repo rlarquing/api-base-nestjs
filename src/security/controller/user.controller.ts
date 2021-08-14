@@ -11,6 +11,7 @@ import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
 import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ResponseDto} from "../../shared/dto";
 
 @ApiTags('Users')
 @Controller('users')
@@ -112,8 +113,8 @@ export class UserController {
     })
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.userService.delete(user, id);
+    async delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<ResponseDto> {
+        return await this.userService.delete(user, id);
     }
 
 }

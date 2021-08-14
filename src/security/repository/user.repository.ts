@@ -6,6 +6,7 @@ import {RoleType} from '../enum/roletype.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {status} from "../../shared/enum";
 import * as moment from "moment";
+import {ResponseDto} from "../../shared/dto";
 
 @Injectable()
 export class UserRepository {
@@ -65,17 +66,36 @@ export class UserRepository {
         return await this.userRepository.save(userEntity);
     }
 
-    async update(updatedUser: UserEntity): Promise<void> {
-        await this.userRepository.save(updatedUser);
+    async update(updatedUser: UserEntity): Promise<ResponseDto> {
+        let result = new ResponseDto();
+        try {
+            await this.userRepository.save(updatedUser);
+            result.successStatus = true;
+            result.message = 'success';
+        } catch (error) {
+            result.message = error.response;
+            result.successStatus = false;
+            return result;
+        }
+        return result;
+
     }
 
-    async delete(id: number): Promise<void> {
+    async delete(id: number): Promise<ResponseDto> {
+        let result = new ResponseDto();
         const user = await this.userRepository.findOne(id, {where: {status: status.ACTIVE}});
         if (!user) {
             throw new NotFoundException('No existe el usuario');
         }
         user.status = status.INACTIVE;
-        await this.roleRepository.save(user);
+        try {
+            await this.roleRepository.save(user);
+        } catch (error) {
+            result.message = error.response;
+            result.successStatus = false;
+            return result;
+        }
+        return result;
     }
 
     async validateUserPassword(

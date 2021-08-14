@@ -3,8 +3,6 @@ import {DeleteResult, Repository} from "typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {IRepository} from "../interface";
 import {status} from "../enum";
-import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
-import {classToClass, classToPlain, plainToClass} from "class-transformer";
 
 export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     constructor(
@@ -38,17 +36,17 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
         return await this.repository.save(newObj);
     }
 
-    async update(updateObj: ENTITY): Promise<void> {
-        await this.repository.save(updateObj);
+    async update(updateObj: ENTITY): Promise<ENTITY> {
+        return await this.repository.save(updateObj);
     }
 
-    async delete(id: number): Promise<void> {
+    async delete(id: number): Promise<ENTITY> {
         const obj: any = await this.repository.findOne(id, {where: {status: status.ACTIVE}});
         if (!obj) {
             throw new NotFoundException('No existe');
         }
         obj.status = status.INACTIVE;
-        await this.repository.save(obj);
+        return await this.repository.save(obj);
     }
 
     async remove(ids: number[]): Promise<DeleteResult> {

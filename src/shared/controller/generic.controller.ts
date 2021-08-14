@@ -9,6 +9,7 @@ import {DeleteResult} from "typeorm";
 import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
 import {GenericService} from "../service/generic.service";
 import {IController} from "../interface";
+import {ResponseDto} from "../dto";
 
 export abstract class GenericController<ENTITY> implements IController<ENTITY>{
 
@@ -42,27 +43,31 @@ export abstract class GenericController<ENTITY> implements IController<ENTITY>{
     }
 
     @Post()
-    async create(@GetUser() user: UserEntity, @Body() object: any): Promise<void> {
-        await this.service.create(user, object);
+    async create(@GetUser() user: UserEntity, @Body() object: any): Promise<ResponseDto> {
+       return await this.service.create(user, object);
     }
 
     @Post('/multiple')
-    async createMultiple(@GetUser() user: UserEntity, @Body() objects: any[]): Promise<void> {
+    async createMultiple(@GetUser() user: UserEntity, @Body() objects: any[]): Promise<ResponseDto> {
+       let result = new ResponseDto();
         for (const item of objects) {
-            await this.service.create(user, item);
+            result = await this.service.create(user, item);
         }
+        return result;
     }
 
     @Patch(':id')
-    async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() object: any): Promise<void> {
-        await this.service.update(user, id, object);
+    async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() object: any): Promise<ResponseDto> {
+        return await this.service.update(user, id, object);
     }
 
     @Patch('/elementos/multiples')
-    async updateMultiple(@GetUser() user: UserEntity, @Body() objects: any[]): Promise<void> {
+    async updateMultiple(@GetUser() user: UserEntity, @Body() objects: any[]): Promise<ResponseDto> {
+        let result = new ResponseDto();
         for (const item of objects) {
-            await this.service.update(user, item.id, item);
+            result = await this.service.update(user, item.id, item);
         }
+        return result;
     }
 
     @Delete(':id')
@@ -70,7 +75,7 @@ export abstract class GenericController<ENTITY> implements IController<ENTITY>{
     @ApiResponse({status: 201, description: 'El elemento se ha eliminado.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<void> {
+    async delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<ResponseDto> {
         return await this.service.deleteMultiple(user, [id]);
     }
 
@@ -83,7 +88,7 @@ export abstract class GenericController<ENTITY> implements IController<ENTITY>{
     @ApiResponse({status: 201, description: 'El elemento se ha eliminado.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async deleteMultiple(@GetUser() user: UserEntity, @Body() ids: number[]): Promise<void> {
+    async deleteMultiple(@GetUser() user: UserEntity, @Body() ids: number[]): Promise<ResponseDto> {
         return await this.service.deleteMultiple(user, ids);
     }
 

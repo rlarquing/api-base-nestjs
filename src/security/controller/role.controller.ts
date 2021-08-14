@@ -18,6 +18,7 @@ import {
 import {GenericController} from "../../shared/controller/generic.controller";
 import {IController} from "../../shared/interface";
 import {UpdateMultipleRoleDto} from "../dto/update-multiple-role.dto";
+import {ResponseDto} from "../../shared/dto";
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -98,7 +99,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 201, description: 'Crea un elemento del conjunto.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async create(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto): Promise<void> {
+    async create(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto): Promise<ResponseDto> {
         return await super.create(user, createRoleDto);
     }
 
@@ -111,8 +112,8 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 201, description: 'Crea un grupo de elementos del conjunto.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async createMultiple(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto[]): Promise<void> {
-        await super.createMultiple(user, createRoleDto);
+    async createMultiple(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto[]): Promise<ResponseDto> {
+        return await super.createMultiple(user, createRoleDto);
     }
 
     @Patch(':id')
@@ -124,8 +125,8 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 201, description: 'El elemento se ha actualizado.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateRoleDto: UpdateRoleDto): Promise<void> {
-        await super.update(user, id, updateRoleDto);
+    async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateRoleDto: UpdateRoleDto): Promise<ResponseDto> {
+       return await super.update(user, id, updateRoleDto);
     }
 
     @Patch('/elementos/multiples')
@@ -137,7 +138,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 201, description: 'El grupo de elementos se han actualizado.'})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async updateMultiple(@GetUser() user: UserEntity, @Body() updateMultipleRoleDto: UpdateMultipleRoleDto[]): Promise<void> {
-        await super.updateMultiple(user, updateMultipleRoleDto);
+    async updateMultiple(@GetUser() user: UserEntity, @Body() updateMultipleRoleDto: UpdateMultipleRoleDto[]): Promise<ResponseDto> {
+        return await super.updateMultiple(user, updateMultipleRoleDto);
 }
 }

@@ -11,9 +11,9 @@ export interface IRepository<ENTITY> {
 
     create(object: ENTITY): Promise<ENTITY>;
 
-    update(object: ENTITY): Promise<void>;
+    update(object: ENTITY): Promise<ENTITY>;
 
-    delete(id: number): Promise<void>;
+    delete(id: number): Promise<ENTITY>;
 
     remove(id: number[]): Promise<DeleteResult>;
 
