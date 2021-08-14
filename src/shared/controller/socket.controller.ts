@@ -1,7 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import {SocketService} from "../service";
+import {ApiTags} from "@nestjs/swagger";
 
-@Controller()
+@ApiTags('Socket')
+@Controller('socket')
 export class SocketController {
     constructor(private readonly socketService: SocketService) {}
 
