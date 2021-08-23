@@ -100,7 +100,7 @@ export class UserRepository {
             throw new NotFoundException('No existe el usuario');
         }
         user.status = status.INACTIVE;
-        await this.roleRepository.save(user);
+        await this.userRepository.save(user);
     }
 
     async validateUserPassword(
