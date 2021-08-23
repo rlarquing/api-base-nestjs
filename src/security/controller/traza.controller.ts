@@ -11,12 +11,13 @@ import {DeleteResult} from "typeorm";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
-import {ApiBearerAuth, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {FiltroDto} from "../dto/filtro.dto";
 
 @ApiTags('Trazas')
 @Controller('trazas')
 @Roles(RoleType.ADMINISTRADOR)
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard('jwt'), RoleGuard)
 @ApiBearerAuth()
 export class TrazaController {
     constructor(
@@ -36,14 +37,16 @@ export class TrazaController {
         status: 404,
         description: 'Trazas no encontradas.',
     })
-    async getAll(
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<TrazaDto>> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port= this.configService.config[AppConfig.PORT];
-        return await this.trazaService.getAll({
+        return await this.trazaService.findAll({
             page,
             limit,
             route: url+':'+port+'/trazas',
@@ -61,8 +64,10 @@ export class TrazaController {
         status: 404,
         description: 'Traza no encontrada.',
     })
-    async get(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
-        return await this.trazaService.get(id);
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async findById(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
+        return await this.trazaService.findById(id);
 
     }
     @ApiOperation({ summary: 'Eliminar una traza' })
@@ -70,6 +75,8 @@ export class TrazaController {
         status: 200,
         description: 'Elimina de una traza',
     })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     @Delete(':id')
     async delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
         return await this.trazaService.delete(id);
@@ -81,7 +88,13 @@ export class TrazaController {
         status: 201,
         description: 'Filtra por un usuario y parametros que se le puedan pasar',
     })
-    async getAllFiltrados(@GetUser() user: UserEntity, @Body() filtro: any): Promise<any> {
-        return await this.trazaService.getFiltrados(user, filtro);
+    @ApiBody({
+        description: 'Estructura para crear el filtrado de la traza.',
+        type: FiltroDto
+    })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async findByFiltrados(@GetUser() user: UserEntity, @Body() filtroDto: FiltroDto): Promise<any> {
+        return await this.trazaService.findByFiltrados(user, filtroDto);
     }
 }

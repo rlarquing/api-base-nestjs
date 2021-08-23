@@ -10,6 +10,7 @@ import {AuthController, RoleController, TrazaController, UserController} from ".
 import {AuthService, RoleService, TrazaService, UserService} from "./service";
 import {RoleMapper, TrazaMapper, UserMapper} from "./mapper";
 import {RoleRepository, TrazaRepository, UserRepository} from "./repository";
+import {RefreshStrategy} from "./strategy/refresh.strategy";
 
 @Module({
     imports: [
@@ -21,7 +22,7 @@ import {RoleRepository, TrazaRepository, UserRepository} from "./repository";
                 return {
                     secret: configService.config[AppConfig.SECRET],
                     signOptions: {
-                        expiresIn: 3600,
+                        expiresIn: 30,
                     },
                 };
             },
@@ -29,8 +30,8 @@ import {RoleRepository, TrazaRepository, UserRepository} from "./repository";
         TypeOrmModule.forFeature([UserEntity, RoleEntity, TrazaEntity])
     ],
     controllers: [UserController, RoleController, AuthController, TrazaController],
-    providers: [UserService, RoleService, AuthService, UserMapper, RoleMapper, UserRepository, RoleRepository, JwtStrategy, TrazaService, TrazaRepository, TrazaMapper],
-    exports: [JwtStrategy, PassportModule],
+    providers: [UserService, RoleService, AuthService, UserMapper, RoleMapper, UserRepository, RoleRepository, JwtStrategy, RefreshStrategy, TrazaService, TrazaRepository, TrazaMapper],
+    exports: [JwtStrategy, PassportModule, RefreshStrategy],
 })
 export class SecurityModule {
 }
