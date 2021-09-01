@@ -90,4 +90,18 @@ export class AuthService {
         };
         return secretData;
     }
+
+    async logout(user: UserEntity):Promise<ResponseDto>{
+
+        user.refreshToken = null;
+        user.refreshTokenExp = null;
+
+        await this.userRepository.update(user);
+
+        let result = new ResponseDto();
+        result.successStatus = true;
+        result.message = 'success';
+        return result;
+    }
+
 }

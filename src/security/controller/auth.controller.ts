@@ -20,6 +20,7 @@ import {ResponseDto} from "../../shared/dto";
 import {AuthGuard} from "@nestjs/passport";
 import {GetUser} from "../decorator";
 import {UserEntity} from "../entity";
+import {RoleGuard} from "../guards/role.guard";
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -84,4 +85,19 @@ export class AuthController {
     ): Promise<any> {
         return await this.authService.regenerateTokens(user);
     }
+
+    @Post('logout')
+    @ApiOperation({ summary: 'Desloguear un usuario' })
+    @ApiResponse({
+        status: 200,
+        description: 'Deslogear un usuario',
+        type: ResponseDto,
+    })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    @UseGuards(AuthGuard('jwt'))
+    async logout(@GetUser() user: UserEntity): Promise<ResponseDto> {
+        return await this.authService.logout(user);
+    }
+
 }
