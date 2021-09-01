@@ -6,7 +6,6 @@ import { UserEntity } from './../entity/user.entity';
 import { UserRepository } from './../repository/user.repository';
 import { ConfigService } from '@atlasjs/config';
 import { AppConfig } from '../../app.keys';
-import {Request} from "express";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -16,17 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   ) {
     super({
       ignoreExpiration: false,
-      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      jwtFromRequest: ExtractJwt.fromExtractors(
-          [(request: Request) => {
-
-            let data = request?.cookies["auth-cookie"];
-            if(!data){
-              return null;
-            }
-            return data.accessToken
-          }]
-      ),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.config[AppConfig.SECRET],
     });
   }

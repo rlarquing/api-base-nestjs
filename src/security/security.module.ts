@@ -22,7 +22,7 @@ import {RefreshStrategy} from "./strategy/refresh.strategy";
                 return {
                     secret: configService.config[AppConfig.SECRET],
                     signOptions: {
-                        expiresIn: 30,
+                        expiresIn: 100,
                     },
                 };
             },

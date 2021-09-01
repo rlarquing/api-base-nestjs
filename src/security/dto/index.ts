@@ -6,3 +6,4 @@ export {ReadRoleDto} from './read-role.dto';
 export {UpdateRoleDto} from './update-role.dto';
 export {AuthCredentialsDto} from './auth-credentials.dto';
 export {SecretDataDto} from './secret-data.dto';
+export {RefreshTokenDto} from './refresh-token.dto';

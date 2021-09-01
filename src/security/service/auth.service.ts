@@ -7,7 +7,6 @@ import {RoleType} from "../enum/roletype.enum";
 import {RoleEntity, UserEntity} from "../entity";
 import * as bcrypt from 'bcrypt';
 import {ResponseDto} from "../../shared/dto";
-import {Response} from "express";
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
 
@@ -39,7 +38,7 @@ export class AuthService {
     }
 
     async signIn(
-        authCredentialsDto: AuthCredentialsDto, res: Response
+        authCredentialsDto: AuthCredentialsDto
     ): Promise<SecretDataDto> {
         const {username, password} = authCredentialsDto;
         const credential = await this.userRepository.validateUserPassword(
@@ -60,7 +59,6 @@ export class AuthService {
             refreshToken,
             roles
         };
-        res.cookie('auth-cookie', secretData, {httpOnly: true,});
         return secretData;
     }
 
@@ -78,7 +76,7 @@ export class AuthService {
         return userEntity.refreshToken;
     }
 
-    async regenerateTokens(user: UserEntity, res: Response):Promise<SecretDataDto>{
+    async regenerateTokens(user: UserEntity):Promise<SecretDataDto>{
         const username= user.username;
         const payload: IJwtPayload = {username};
         const accessToken = await this.jwtService.sign(payload);
@@ -90,25 +88,6 @@ export class AuthService {
             refreshToken,
             roles
         };
-
-        res.cookie('auth-cookie', secretData, { httpOnly: true });
         return secretData;
-    }
-
-    async logout(user: UserEntity, res: Response):Promise<ResponseDto>{
-        const accessToken = null;
-
-        const refreshToken = null;
-        const roles = null;
-        const secretData: SecretDataDto = {
-            accessToken,
-            refreshToken,
-            roles
-        };
-        let result = new ResponseDto();
-        result.successStatus = true;
-        result.message = 'success';
-        res.cookie('auth-cookie', secretData, { httpOnly: true });
-        return result;
     }
 }
