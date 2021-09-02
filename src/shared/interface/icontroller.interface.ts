@@ -1,5 +1,4 @@
 import {Pagination} from "nestjs-typeorm-paginate";
-import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
 import {ResponseDto} from "../dto";
 
 export interface IController<ENTITY> {

@@ -18,7 +18,7 @@ import {
 import {GenericController} from "../../shared/controller/generic.controller";
 import {IController} from "../../shared/interface";
 import {UpdateMultipleRoleDto} from "../dto/update-multiple-role.dto";
-import {ResponseDto} from "../../shared/dto";
+import {ListadoDto, ResponseDto} from "../../shared/dto";
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -38,7 +38,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({
         status: 200,
         description: 'Listado de elementos del conjunto',
-        type: [ReadRoleDto],
+        type: ListadoDto,
     })
     @ApiNotFoundResponse({
         status: 404,
@@ -48,8 +48,11 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async findAll(
         @Query('page') page: number = 1,
-        @Query('limit') limit: number = 10): Promise<Pagination<ReadRoleDto>> {
-        return await super.findAll(page, limit);
+        @Query('limit') limit: number = 10): Promise<any> {
+        const data = await super.findAll(page, limit);
+        const header: Array<string> = ['id', 'Nombre', 'Descripción'];
+        const listado: ListadoDto = new ListadoDto(header, data);
+        return listado;
     }
 
     @Get(':id')
@@ -126,7 +129,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateRoleDto: UpdateRoleDto): Promise<ResponseDto> {
-       return await super.update(user, id, updateRoleDto);
+        return await super.update(user, id, updateRoleDto);
     }
 
     @Patch('/elementos/multiples')
@@ -140,5 +143,5 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async updateMultiple(@GetUser() user: UserEntity, @Body() updateMultipleRoleDto: UpdateMultipleRoleDto[]): Promise<ResponseDto> {
         return await super.updateMultiple(user, updateMultipleRoleDto);
-}
+    }
 }
