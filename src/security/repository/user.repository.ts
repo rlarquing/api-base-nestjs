@@ -4,7 +4,6 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {MoreThanOrEqual, Repository} from "typeorm";
 import {RoleType} from '../enum/roletype.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
-import {status} from "../../shared/enum";
 import * as moment from "moment";
 import {ResponseDto} from "../../shared/dto";
 

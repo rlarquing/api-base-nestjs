@@ -2,7 +2,6 @@ import {NotFoundException} from "@nestjs/common";
 import {DeleteResult, Repository} from "typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {IRepository} from "../interface";
-import {status} from "../enum";
 
 export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     constructor(
