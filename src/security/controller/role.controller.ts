@@ -1,12 +1,11 @@
 import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards} from '@nestjs/common';
-import {CreateRoleDto, ReadRoleDto, UpdateRoleDto} from '../dto';
+import {CreateRoleDto, ReadRoleDto, UpdateMultipleRoleDto, UpdateRoleDto} from '../dto';
 import {RoleService} from '../service';
 import {GetUser, Roles} from "../decorator";
 import {RoleType} from "../enum/roletype.enum";
 import {AuthGuard} from "@nestjs/passport";
 import {RoleGuard} from "../guards/role.guard";
 import {RoleEntity, UserEntity} from "../entity";
-import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {
     ApiBearerAuth, ApiBody,
@@ -15,9 +14,8 @@ import {
     ApiResponse,
     ApiTags
 } from "@nestjs/swagger";
-import {GenericController} from "../../shared/controller/generic.controller";
+import {GenericController} from "../../shared/controller";
 import {IController} from "../../shared/interface";
-import {UpdateMultipleRoleDto} from "../dto/update-multiple-role.dto";
 import {ListadoDto, ResponseDto} from "../../shared/dto";
 
 @ApiTags('Roles')
@@ -50,7 +48,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10): Promise<any> {
         const data = await super.findAll(page, limit);
-        const header: Array<string> = ['id', 'Nombre', 'Descripción'];
+        const header: string[] = ['id', 'Nombre', 'Descripción'];
         const listado: ListadoDto = new ListadoDto(header, data);
         return listado;
     }

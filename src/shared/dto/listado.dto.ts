@@ -6,7 +6,7 @@ export class ListadoDto{
     @IsArray()
     @ApiProperty({description: 'Header.', example: [
         "id","Nombre","Descripción" ]})
-    header: Array<string>;
+    header: string[];
 
     @IsNotEmpty()
     @ApiProperty({ description: 'Datos que se mostrarán.', example:{

@@ -21,7 +21,7 @@ export const databaseProviders = [
         password: configService.config[Configuration.DB_PASS],
         entities: [__dirname + '/../**/*.entity.{js,ts}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
-        synchronize: configService.config[Configuration.DB_SYNC],
+        synchronize: false,
       } as ConnectionOptions;
     },
   }),
