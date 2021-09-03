@@ -41,8 +41,8 @@ export class UserEntity extends BaseEntity {
     @JoinTable()
     roles: RoleEntity[];
 
-    @Column({type: 'varchar', default: 'ACTIVE', length: 8})
-    status: string;
+    @Column({ type: 'boolean', default: true})
+    activo: boolean;
 
     @CreateDateColumn({type: 'timestamp', name: 'created_at'})
     createdAt: Date;

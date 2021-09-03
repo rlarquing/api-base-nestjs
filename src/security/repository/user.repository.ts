@@ -21,7 +21,7 @@ export class UserRepository {
 
     async signUp(userEntity: UserEntity): Promise<UserEntity> {
         const rol: RoleEntity = await this.roleRepository.findOne({
-            where: {status: status.ACTIVE, nombre: RoleType.USUARIO}
+            where: {activo: true, nombre: RoleType.USUARIO}
         });
 
         if (!rol) {
@@ -45,10 +45,10 @@ export class UserRepository {
         // Ejemplo funcional de como trabajar con queryBuilder
         // const queryBuilder = this.userRepository.createQueryBuilder('u');
         // queryBuilder.leftJoinAndSelect('u.roles', 'roles')
-        // queryBuilder.where('u.status = :status', { status: status.ACTIVE });
+        // queryBuilder.where('u.status = :status', { activo: true });
         // return await paginate<UserEntity>(queryBuilder, options);
         return await paginate<UserEntity>(this.userRepository, options, {
-            where: {status: status.ACTIVE},
+            where: {activo: true},
             relations: ['roles']
         });
 
@@ -57,7 +57,7 @@ export class UserRepository {
 
     async findById(id: number): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne(id, {
-            where: {status: status.ACTIVE}
+            where: {activo: true}
         });
         return user;
     }
@@ -83,11 +83,11 @@ export class UserRepository {
 
     async delete(id: number): Promise<ResponseDto> {
         let result = new ResponseDto();
-        const user = await this.userRepository.findOne(id, {where: {status: status.ACTIVE}});
+        const user = await this.userRepository.findOne(id, {where: {activo: true}});
         if (!user) {
             throw new NotFoundException('No existe el usuario');
         }
-        user.status = status.INACTIVE;
+        user.activo = false;
         try {
             await this.roleRepository.save(user);
         } catch (error) {
@@ -111,7 +111,7 @@ export class UserRepository {
 
     async findByName(username: string): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne({
-            where: {status: status.ACTIVE, username: username}
+            where: {activo: true, username: username}
         });
         return user;
     }
@@ -120,7 +120,7 @@ export class UserRepository {
         const currentDate = moment().format("YYYY/MM/DD");
         const user = await this.userRepository.findOne({
             where: {
-                status: status.ACTIVE,
+                activo: true,
                 username: username,
                 refreshToken: refreshToken,
                 refreshTokenExp: MoreThanOrEqual(currentDate)

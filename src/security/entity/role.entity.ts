@@ -27,8 +27,8 @@ export class RoleEntity extends BaseEntity {
   @JoinColumn()
   users: UserEntity[];
 
-  @Column({ type: 'varchar', default: 'ACTIVE', length: 8 })
-  status: string;
+  @Column({ type: 'boolean', default: true})
+  activo: boolean;
 
   @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: true })
   createdAt: Date;

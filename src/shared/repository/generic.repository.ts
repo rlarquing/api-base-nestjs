@@ -11,13 +11,13 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     }
 
     async findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>> {
-        return await paginate<ENTITY>(this.repository, options, {where: {status: status.ACTIVE}});
+        return await paginate<ENTITY>(this.repository, options, {where: {activo: true}});
 
     }
 
     async findById(id: number): Promise<ENTITY> {
         const obj: ENTITY = await this.repository.findOne(id, {
-            where: {status: status.ACTIVE}
+            where: {activo: true}
         });
         return obj;
     }
@@ -28,7 +28,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
 
     async findByIds(ids: any[]): Promise<ENTITY[]> {
         return await this.repository.findByIds(ids, {
-            where: {status: status.ACTIVE}
+            where: {activo: true}
         });
     }
 
@@ -41,11 +41,11 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     }
 
     async delete(id: number): Promise<ENTITY> {
-        const obj: any = await this.repository.findOne(id, {where: {status: status.ACTIVE}});
+        const obj: any = await this.repository.findOne(id, {where: {activo: true}});
         if (!obj) {
             throw new NotFoundException('No existe');
         }
-        obj.status = status.INACTIVE;
+        obj.activo = false;
         return await this.repository.save(obj);
     }
 
