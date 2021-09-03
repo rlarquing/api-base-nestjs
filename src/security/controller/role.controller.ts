@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards} from '@nestjs/common';
 import {CreateRoleDto, ReadRoleDto, UpdateMultipleRoleDto, UpdateRoleDto} from '../dto';
 import {RoleService} from '../service';
 import {GetUser, Roles} from "../decorator";
@@ -97,7 +97,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
         description: 'Estructura para crear el elemento del conjunto.',
         type: CreateRoleDto,
     })
-    @ApiResponse({status: 201, description: 'Crea un elemento del conjunto.'})
+    @ApiResponse({status: 201, description: 'Crea un elemento del conjunto.', type: ResponseDto})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async create(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto): Promise<ResponseDto> {
@@ -110,7 +110,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
         description: 'Estructura para crear el grupo de elementos del conjunto.',
         type: [CreateRoleDto],
     })
-    @ApiResponse({status: 201, description: 'Crea un grupo de elementos del conjunto.'})
+    @ApiResponse({status: 201, description: 'Crea un grupo de elementos del conjunto.', type: ResponseDto})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async createMultiple(@GetUser() user: UserEntity, @Body() createRoleDto: CreateRoleDto[]): Promise<ResponseDto> {
@@ -123,7 +123,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
         description: 'Estructura para modificar el elemento del conjunto.',
         type: UpdateRoleDto,
     })
-    @ApiResponse({status: 201, description: 'El elemento se ha actualizado.'})
+    @ApiResponse({status: 201, description: 'El elemento se ha actualizado.', type: ResponseDto})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateRoleDto: UpdateRoleDto): Promise<ResponseDto> {
@@ -136,7 +136,7 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
         description: 'Estructura para modificar el grupo de elementos del conjunto.',
         type: [UpdateMultipleRoleDto],
     })
-    @ApiResponse({status: 201, description: 'El grupo de elementos se han actualizado.'})
+    @ApiResponse({status: 201, description: 'El grupo de elementos se han actualizado.', type: ResponseDto})
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async updateMultiple(@GetUser() user: UserEntity, @Body() updateMultipleRoleDto: UpdateMultipleRoleDto[]): Promise<ResponseDto> {

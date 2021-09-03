@@ -110,6 +110,7 @@ export class UserController {
     @ApiResponse({
         status: 200,
         description: 'Elimina un usuario',
+        type: ResponseDto
     })
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
