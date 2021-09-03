@@ -20,7 +20,7 @@ import {ResponseDto} from "../../shared/dto";
 import {AuthGuard} from "@nestjs/passport";
 import {GetUser} from "../decorator";
 import {UserEntity} from "../entity";
-import {RoleGuard} from "../guards/role.guard";
+import {RoleGuard} from "../guard/role.guard";
 
 @ApiTags('Auth')
 @Controller('auth')

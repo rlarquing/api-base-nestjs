@@ -8,12 +8,11 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {RoleType} from "../../security/enum/roletype.enum";
-import {RoleGuard} from "../../security/guards/role.guard";
+import {RoleGuard} from "../../security/guard/role.guard";
 import {MunicipioService} from "../service";
 import {ReadMunicipioDto} from "../dto";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {ReadRoleDto} from "../../security/dto";
 import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
 import {Roles} from "../../security/decorator";

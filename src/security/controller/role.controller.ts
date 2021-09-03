@@ -4,7 +4,7 @@ import {RoleService} from '../service';
 import {GetUser, Roles} from "../decorator";
 import {RoleType} from "../enum/roletype.enum";
 import {AuthGuard} from "@nestjs/passport";
-import {RoleGuard} from "../guards/role.guard";
+import {RoleGuard} from "../guard/role.guard";
 import {RoleEntity, UserEntity} from "../entity";
 import {ConfigService} from "@atlasjs/config";
 import {

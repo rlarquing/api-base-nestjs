@@ -9,15 +9,12 @@ import {AuthGuard} from '@nestjs/passport';
 import {ProvinciaService} from '../service';
 import {Roles} from "../../security/decorator";
 import {RoleType} from "../../security/enum/roletype.enum";
-import {RoleGuard} from "../../security/guards/role.guard";
+import {RoleGuard} from "../../security/guard/role.guard";
 import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {ReadRoleDto} from "../../security/dto";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {AppConfig} from "../../app.keys";
 import {ConfigService} from "@atlasjs/config";
-import {getManager} from "typeorm";
-import {ProvinciaEntity} from "../entity";
 import {GeoJsonDto} from "../../shared/dto";
 
 @ApiTags('Provincias')
