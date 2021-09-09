@@ -5,7 +5,7 @@ import {GenericRepository} from "../repository/generic.repository";
 import {HISTORY_ACTION, UserEntity} from "../../security/entity";
 import {BadRequestException, NotFoundException} from "@nestjs/common";
 import {TrazaService} from "../../security/service";
-import {ResponseDto} from "../dto";
+import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
 
 export abstract class GenericService<ENTITY> implements IService<ENTITY> {
     constructor(
@@ -117,5 +117,17 @@ export abstract class GenericService<ENTITY> implements IService<ENTITY> {
 
     async count(): Promise<number> {
         return await this.genericRepository.count();
+    }
+
+    async filter(options: IPaginationOptions, filtroGenericoDto: FiltroGenericoDto): Promise<Pagination<ENTITY>>{
+        const items: Pagination<ENTITY> = await this.genericRepository.filter(options, filtroGenericoDto.clave, filtroGenericoDto.valor);
+        const readRDto: any[] = items.items.map((item: any) => this.mapper.entityToDto(item));
+        return new Pagination(readRDto, items.meta, items.links);
+    }
+
+    async search(options: IPaginationOptions, buscarDto: BuscarDto): Promise<Pagination<ENTITY>>{
+        const items: Pagination<ENTITY> = await this.genericRepository.search(options, buscarDto.search);
+        const readRDto: any[] = items.items.map((item: any) => this.mapper.entityToDto(item));
+        return new Pagination(readRDto, items.meta, items.links);
     }
 }

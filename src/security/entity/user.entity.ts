@@ -9,12 +9,11 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import {RoleEntity} from './role.entity';
+import {GenericEntity} from "../../shared/entity/generic.entity";
 
 @Entity('user', {schema: 'mod_auth'})
 @Unique(['username'])
-export class UserEntity extends BaseEntity {
-
-    model: string = 'UserEntity';
+export class UserEntity extends GenericEntity {
 
     @PrimaryGeneratedColumn('increment')
     id: number;
@@ -40,15 +39,6 @@ export class UserEntity extends BaseEntity {
     @ManyToMany((type) => RoleEntity, (role) => role.users, {eager: true})
     @JoinTable()
     roles: RoleEntity[];
-
-    @Column({ type: 'boolean', default: true})
-    activo: boolean;
-
-    @CreateDateColumn({type: 'timestamp', name: 'created_at'})
-    createdAt: Date;
-
-    @CreateDateColumn({type: 'timestamp', name: 'updated_at'})
-    updatedAt: Date;
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt);

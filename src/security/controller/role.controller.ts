@@ -16,7 +16,9 @@ import {
 } from "@nestjs/swagger";
 import {GenericController} from "../../shared/controller";
 import {IController} from "../../shared/interface";
-import {ListadoDto, ResponseDto} from "../../shared/dto";
+import {BuscarDto, FiltroGenericoDto, ListadoDto, ResponseDto} from "../../shared/dto";
+import {Pagination} from "nestjs-typeorm-paginate";
+import {AppConfig} from "../../app.keys";
 
 @ApiTags('Roles')
 @Controller('roles')
@@ -141,5 +143,48 @@ export class RoleController extends GenericController<RoleEntity> implements ICo
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
     async updateMultiple(@GetUser() user: UserEntity, @Body() updateMultipleRoleDto: UpdateMultipleRoleDto[]): Promise<ResponseDto> {
         return await super.updateMultiple(user, updateMultipleRoleDto);
+    }
+
+    @Post('filtrar')
+    @ApiOperation({summary: 'Filtrar el conjunto por los parametros establecidos'})
+    @ApiResponse({
+        status: 201,
+        description: 'Filtra el conjunto por los parametros que se le puedan pasar',
+        type: ListadoDto,
+    })
+    @ApiBody({
+        description: 'Estructura para crear el filtrado.',
+        type: FiltroGenericoDto
+    })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async filter(@Query('page') page: number = 1,
+                 @Query('limit') limit: number = 10,
+                 @Body() filtroGenericoDto: FiltroGenericoDto): Promise<any> {
+        const data = await super.filter(page, limit, filtroGenericoDto);
+        const header: string[] = ['id', 'Nombre', 'Descripción'];
+        const listado: ListadoDto = new ListadoDto(header, data);
+        return listado;
+    }
+    @Post('buscar')
+    @ApiOperation({summary: 'Buscar en el conjunto por el parametro establecido'})
+    @ApiResponse({
+        status: 201,
+        description: 'Busca en el conjunto en el parametros establecido',
+        type: ListadoDto,
+    })
+    @ApiBody({
+        description: 'Estructura para crear la busqueda.',
+        type: String
+    })
+    @ApiResponse({status: 401, description: 'Sin autorizacion.'})
+    @ApiResponse({status: 500, description: 'Error interno del servicor.'})
+    async search(@Query('page') page: number = 1,
+                 @Query('limit') limit: number = 10,
+                 @Body() buscarDto: BuscarDto): Promise<any> {
+        const data = await super.search(page, limit, buscarDto);
+        const header: string[] = ['id', 'Nombre', 'Descripción'];
+        const listado: ListadoDto = new ListadoDto(header, data);
+        return listado;
     }
 }

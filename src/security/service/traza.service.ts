@@ -28,8 +28,7 @@ export class TrazaService {
     async create(user: UserEntity, entity: any, action: HISTORY_ACTION): Promise<void> {
         const traza: TrazaEntity = new TrazaEntity();
         traza.user = user;
-        traza.model = entity.model;
-        delete entity.model;
+        traza.model = entity.constructor.name;
         traza.data = entity;
         traza.action = action;
         traza.record = entity.id;
