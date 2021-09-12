@@ -1,5 +1,5 @@
 import {IsNumber, IsEmail, IsString, IsOptional, IsNotEmpty} from 'class-validator';
-import {ReadRoleDto} from "./read-role.dto";
+import {ReadRolDto} from "./read-rol.dto";
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 
 export class ReadUserDto {
@@ -19,10 +19,10 @@ export class ReadUserDto {
   email: string;
 
   @IsNotEmpty()
-  @ApiProperty({description: 'Roles del usuario.', type: [ReadRoleDto]})
-  roles: ReadRoleDto[]
+  @ApiProperty({description: 'Roles del usuario.', type: [ReadRolDto]})
+  roles: ReadRolDto[]
 
-  constructor(id: number, username: string, email: string, roles: ReadRoleDto[]) {
+  constructor(id: number, username: string, email: string, roles: ReadRolDto[]) {
     this.id = id;
     this.username = username;
     this.email = email;

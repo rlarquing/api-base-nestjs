@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {UserEntity} from "../entity";
-import {ReadRoleDto, ReadUserDto, UpdateUserDto, UserDto} from "../dto";
+import {ReadRolDto, ReadUserDto, UpdateUserDto, UserDto} from "../dto";
 
 @Injectable()
 export class UserMapper {
@@ -17,12 +17,12 @@ export class UserMapper {
     return updateUserEntity;
   }
 
-  entityToDto(userEntity: UserEntity, readRoleDto: ReadRoleDto[]): ReadUserDto{
+  entityToDto(userEntity: UserEntity, readRolDto: ReadRolDto[]): ReadUserDto{
     return new ReadUserDto(
         userEntity.id,
         userEntity.username,
         userEntity.email,
-        readRoleDto,
+        readRolDto,
     );
   }
 }

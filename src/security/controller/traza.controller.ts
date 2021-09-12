@@ -2,8 +2,8 @@ import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, 
 import {AuthGuard} from '@nestjs/passport';
 import {GetUser} from '../decorator';
 import {Roles} from '../decorator';
-import {RoleGuard} from '../guard/role.guard';
-import {RoleType} from '../enum/roletype.enum';
+import {RolGuard} from '../guard/rol.guard';
+import {RolType} from '../enum/roltype.enum';
 import {UserEntity} from '../entity';
 import {TrazaService} from '../service';
 import {TrazaDto} from "../dto/traza.dto";
@@ -16,8 +16,8 @@ import {FiltroDto} from "../dto/filtro.dto";
 
 @ApiTags('Trazas')
 @Controller('trazas')
-@Roles(RoleType.ADMINISTRADOR)
-@UseGuards(AuthGuard('jwt'), RoleGuard)
+@Roles(RolType.ADMINISTRADOR)
+@UseGuards(AuthGuard('jwt'), RolGuard)
 @ApiBearerAuth()
 export class TrazaController {
     constructor(

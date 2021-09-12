@@ -3,8 +3,8 @@ import {JwtService} from '@nestjs/jwt';
 import {IJwtPayload} from '../interface/ijwt-payload.interface';
 import {AuthCredentialsDto, SecretDataDto, UserDto} from '../dto';
 import {UserRepository} from '../repository';
-import {RoleType} from "../enum/roletype.enum";
-import {RoleEntity, UserEntity} from "../entity";
+import {RolType} from "../enum/roltype.enum";
+import {RolEntity, UserEntity} from "../entity";
 import * as bcrypt from 'bcrypt';
 import {ResponseDto} from "../../shared/dto";
 import * as randomToken from 'rand-token';
@@ -52,7 +52,7 @@ export class AuthService {
         const payload: IJwtPayload = {username};
         const accessToken = await this.jwtService.sign(payload);
         const user: UserEntity = await this.userRepository.findByName(username);
-        const roles = user.roles.map((rol: RoleEntity) => rol.nombre as RoleType);
+        const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
         const refreshToken = await this.getRefreshToken(user.id);
         const secretData: SecretDataDto = {
             accessToken,
@@ -82,7 +82,7 @@ export class AuthService {
         const accessToken = await this.jwtService.sign(payload);
 
         const refreshToken = await this.getRefreshToken(user.id);
-        const roles = user.roles.map((rol: RoleEntity) => rol.nombre as RoleType);
+        const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
         const secretData: SecretDataDto = {
             accessToken,
             refreshToken,

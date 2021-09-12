@@ -2,11 +2,11 @@ import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, 
 import {AuthGuard} from '@nestjs/passport';
 import {GetUser} from '../decorator';
 import {Roles} from '../decorator';
-import {RoleGuard} from '../guard/role.guard';
+import {RolGuard} from '../guard/rol.guard';
 import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {UserEntity} from '../entity';
 import {UserService} from '../service';
-import {RoleType} from "../enum/roletype.enum";
+import {RolType} from "../enum/roltype.enum";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
@@ -15,8 +15,8 @@ import {ResponseDto} from "../../shared/dto";
 
 @ApiTags('Users')
 @Controller('users')
-@Roles(RoleType.ADMINISTRADOR)
-@UseGuards(AuthGuard('jwt'), RoleGuard)
+@Roles(RolType.ADMINISTRADOR)
+@UseGuards(AuthGuard('jwt'), RolGuard)
 @ApiBearerAuth()
 export class UserController {
     constructor(

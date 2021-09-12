@@ -8,8 +8,8 @@ import {
 import {AuthGuard} from '@nestjs/passport';
 import {ProvinciaService} from '../service';
 import {Roles} from "../../security/decorator";
-import {RoleType} from "../../security/enum/roletype.enum";
-import {RoleGuard} from "../../security/guard/role.guard";
+import {RolType} from "../../security/enum/roltype.enum";
+import {RolGuard} from "../../security/guard/rol.guard";
 import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Pagination} from "nestjs-typeorm-paginate";
@@ -20,10 +20,10 @@ import {GeoJsonDto} from "../../shared/dto";
 @ApiTags('Provincias')
 @Controller('provincias')
 @Roles(
-    RoleType.ADMINISTRADOR,
-    RoleType.USUARIO,
+    RolType.ADMINISTRADOR,
+    RolType.USUARIO,
 )
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard(), RolGuard)
 export class ProvinciaController {
     constructor(
         private provinciaService: ProvinciaService,

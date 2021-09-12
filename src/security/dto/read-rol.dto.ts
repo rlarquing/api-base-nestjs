@@ -2,7 +2,7 @@ import{IsNumber, IsString, MaxLength} from "class-validator";
 import { Exclude, Expose } from "class-transformer";
 import {ApiProperty} from "@nestjs/swagger";
 @Exclude()
-export class ReadRoleDto{
+export class ReadRolDto {
 
     @Expose({name: 'identificador'})
     @IsNumber()

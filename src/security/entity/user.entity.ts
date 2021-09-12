@@ -8,7 +8,7 @@ import {
     CreateDateColumn, Unique,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import {RoleEntity} from './role.entity';
+import {RolEntity} from './rol.entity';
 import {GenericEntity} from "../../shared/entity/generic.entity";
 
 @Entity('user', {schema: 'mod_auth'})
@@ -36,9 +36,9 @@ export class UserEntity extends GenericEntity {
     @Column({type: 'varchar', nullable: true})
     salt: string;
 
-    @ManyToMany((type) => RoleEntity, (role) => role.users, {eager: true})
+    @ManyToMany((type) => RolEntity, (role) => role.users, {eager: true})
     @JoinTable()
-    roles: RoleEntity[];
+    roles: RolEntity[];
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt);

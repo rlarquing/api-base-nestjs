@@ -6,19 +6,13 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-import {GenericEntity} from "../../shared/entity/generic.entity";
+import {GenericNomencaldorEntity} from "../../shared/entity";
 
 @Entity('roles', { schema: 'mod_auth' })
-export class RoleEntity extends GenericEntity {
+export class RolEntity extends GenericNomencaldorEntity {
 
   @PrimaryGeneratedColumn('increment')
   id: number;
-
-  @Column({ type: 'varchar', length: 20, nullable: false })
-  nombre: string;
-
-  @Column({ type: 'text', nullable: false })
-  descripcion: string;
 
   @ManyToMany((type) => UserEntity, (user) => user.roles)
   @JoinColumn()

@@ -3,10 +3,10 @@ import {
     Injectable,
     NotFoundException,
 } from '@nestjs/common';
-import {UserEntity, RoleEntity, HISTORY_ACTION} from '../entity';
-import {UserRepository, RoleRepository} from '../repository';
+import {UserEntity, RolEntity, HISTORY_ACTION} from '../entity';
+import {UserRepository, RolRepository} from '../repository';
 import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
-import {UserMapper, RoleMapper} from "../mapper";
+import {UserMapper, RolMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import * as bcrypt from 'bcrypt';
@@ -16,10 +16,10 @@ import {ResponseDto} from "../../shared/dto";
 export class UserService {
     constructor(
         private userRepository: UserRepository,
-        private roleRepository: RoleRepository,
+        private rolRepository: RolRepository,
         private trazaService: TrazaService,
         private userMapper: UserMapper,
-        private roleMapper: RoleMapper,
+        private roleMapper: RolMapper,
     ) {
     }
 
@@ -27,7 +27,7 @@ export class UserService {
         const users: Pagination<UserEntity> = await this.userRepository.findAll(options);
         const readUserDto: ReadUserDto[] = users.items.map((user: UserEntity) =>
             this.userMapper.entityToDto(user,
-                user.roles.map((rol: RoleEntity) =>
+                user.roles.map((rol: RolEntity) =>
                     this.roleMapper.entityToDto(rol))));
         return new Pagination(readUserDto, users.meta, users.links);
     }
@@ -40,7 +40,7 @@ export class UserService {
         if (!user) {
             throw new NotFoundException('El usuario no se encuentra.');
         }
-        return this.userMapper.entityToDto(user, user.roles.map((rol: RoleEntity) =>
+        return this.userMapper.entityToDto(user, user.roles.map((rol: RolEntity) =>
             this.roleMapper.entityToDto(rol)));
     }
 
@@ -49,14 +49,14 @@ export class UserService {
         const {password, roles} = userDto;
         newUser.salt = await bcrypt.genSalt();
         newUser.password = await this.hashPassword(password, newUser.salt);
-        const roleEntities = await this.roleRepository.findByIds(roles);
-        newUser.roles = roleEntities;
+        const rolEntities = await this.rolRepository.findByIds(roles);
+        newUser.roles = rolEntities;
 
         const userEntity: UserEntity = await this.userRepository.create(newUser);
         delete userEntity.salt;
         delete userEntity.password;
         await this.trazaService.create(user, userEntity, HISTORY_ACTION.ADD);
-        return this.userMapper.entityToDto(userEntity, userEntity.roles.map((rol: RoleEntity) =>
+        return this.userMapper.entityToDto(userEntity, userEntity.roles.map((rol: RolEntity) =>
             this.roleMapper.entityToDto(rol)));
     }
 
@@ -67,13 +67,13 @@ export class UserService {
         }
         foundUser = this.userMapper.dtoToUpdateEntity(updateUserDto, foundUser);
         const {roles} = updateUserDto;
-        const roleEntities = await this.roleRepository.findByIds(roles);
-        foundUser.roles = roleEntities;
+        const rolEntities = await this.rolRepository.findByIds(roles);
+        foundUser.roles = rolEntities;
         await this.userRepository.update(foundUser);
         delete foundUser.salt;
         delete foundUser.password;
         await this.trazaService.create(user, foundUser, HISTORY_ACTION.MOD);
-        return this.userMapper.entityToDto(foundUser, foundUser.roles.map((rol: RoleEntity) =>
+        return this.userMapper.entityToDto(foundUser, foundUser.roles.map((rol: RolEntity) =>
             this.roleMapper.entityToDto(rol)));
     }
 

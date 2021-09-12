@@ -1,10 +1,6 @@
 import {IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator"
 import {ApiProperty} from "@nestjs/swagger";
-export class UpdateMultipleRoleDto{
-
-    @IsNotEmpty()
-    @ApiProperty({ description: 'id del rol.', example: 1 })
-    id: number
+export class CreateRolDto {
 
     @IsNotEmpty()
     @IsString()
@@ -21,4 +17,10 @@ export class UpdateMultipleRoleDto{
     @IsString()
     @ApiProperty({description: 'Descripción del rol.', example: 'Tiene permiso total del api.'})
     descripcion: string;
+
+
+    constructor(nombre: string, descripcion: string) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+    }
 }

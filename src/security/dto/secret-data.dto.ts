@@ -1,4 +1,4 @@
-import {RoleType} from "../enum/roletype.enum";
+import {RolType} from "../enum/roltype.enum";
 import {IsNotEmpty, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 
@@ -15,5 +15,5 @@ export class SecretDataDto {
 
     @IsNotEmpty()
     @ApiProperty({description: 'Roles del usuario.', type: [], example:["ADMINISTRADOR", "USUARIO"]})
-    roles: RoleType[];
+    roles: RolType[];
 }

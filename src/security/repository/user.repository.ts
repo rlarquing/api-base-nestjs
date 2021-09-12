@@ -1,8 +1,8 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
-import {UserEntity, RoleEntity} from '../entity';
+import {UserEntity, RolEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
 import {MoreThanOrEqual, Repository} from "typeorm";
-import {RoleType} from '../enum/roletype.enum'
+import {RolType} from '../enum/roltype.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import * as moment from "moment";
 import {ResponseDto} from "../../shared/dto";
@@ -12,15 +12,15 @@ export class UserRepository {
     constructor(
         @InjectRepository(UserEntity)
         private userRepository: Repository<UserEntity>,
-        @InjectRepository(RoleEntity)
-        private roleRepository: Repository<RoleEntity>
+        @InjectRepository(RolEntity)
+        private rolRepository: Repository<RolEntity>
     ) {
     }
 
 
     async signUp(userEntity: UserEntity): Promise<UserEntity> {
-        const rol: RoleEntity = await this.roleRepository.findOne({
-            where: {activo: true, nombre: RoleType.USUARIO}
+        const rol: RolEntity = await this.rolRepository.findOne({
+            where: {activo: true, nombre: RolType.USUARIO}
         });
 
         if (!rol) {
@@ -88,7 +88,7 @@ export class UserRepository {
         }
         user.activo = false;
         try {
-            await this.roleRepository.save(user);
+            await this.rolRepository.save(user);
         } catch (error) {
             result.message = error.response;
             result.successStatus = false;

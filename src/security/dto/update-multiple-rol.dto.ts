@@ -1,6 +1,10 @@
 import {IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator"
 import {ApiProperty} from "@nestjs/swagger";
-export class UpdateRoleDto{
+export class UpdateMultipleRolDto {
+
+    @IsNotEmpty()
+    @ApiProperty({ description: 'id del rol.', example: 1 })
+    id: number
 
     @IsNotEmpty()
     @IsString()
