@@ -4,10 +4,9 @@ import {RolRepository} from "../repository";
 import {RolMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {GenericService} from "../../shared/service/generic.service";
-import {IService} from "../../shared/interface";
 
 @Injectable()
-export class RolService extends GenericService<RolEntity> implements IService<RolEntity>{
+export class RolService extends GenericService<RolEntity>{
    constructor(
        protected rolRepository: RolRepository,
        protected rolMapper: RolMapper,

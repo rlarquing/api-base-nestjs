@@ -6,13 +6,11 @@ import {AppConfig} from "../../app.keys";
 import {GetUser} from "../../security/decorator";
 import {UserEntity} from "../../security/entity";
 import {DeleteResult} from "typeorm";
-import {UpdateResult} from "typeorm/query-builder/result/UpdateResult";
 import {GenericService} from "../service/generic.service";
 import {IController} from "../interface";
-import {BuscarDto, FiltroGenericoDto, ListadoDto, ResponseDto} from "../dto";
-import {FiltroDto} from "../../security/dto/filtro.dto";
+import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
 
-export abstract class GenericController<ENTITY> implements IController<ENTITY> {
+export abstract class GenericController<ENTITY> implements IController {
 
     constructor(
         protected readonly service: GenericService<ENTITY>,

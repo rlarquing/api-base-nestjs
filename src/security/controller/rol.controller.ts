@@ -7,22 +7,15 @@ import {AuthGuard} from "@nestjs/passport";
 import {RolGuard} from "../guard/rol.guard";
 import {RolEntity, UserEntity} from "../entity";
 import {ConfigService} from "@atlasjs/config";
-import {
-    ApiBearerAuth, ApiBody,
-    ApiNotFoundResponse,
-    ApiOperation,
-    ApiResponse,
-    ApiTags
-} from "@nestjs/swagger";
+import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {GenericController} from "../../shared/controller";
-import {IController} from "../../shared/interface";
 import {BuscarDto, FiltroGenericoDto, ListadoDto, ResponseDto} from "../../shared/dto";
 
 @ApiTags('Roles')
 @Controller('rol')
 @UseGuards(AuthGuard('jwt'), RolGuard)
 @ApiBearerAuth()
-export class RolController extends GenericController<RolEntity> implements IController<RolEntity> {
+export class RolController extends GenericController<RolEntity> {
     constructor(
         protected rolService: RolService,
         protected configService: ConfigService
@@ -49,8 +42,7 @@ export class RolController extends GenericController<RolEntity> implements ICont
         @Query('limit') limit: number = 10): Promise<any> {
         const data = await super.findAll(page, limit);
         const header: string[] = ['id', 'Nombre', 'Descripción'];
-        const listado: ListadoDto = new ListadoDto(header, data);
-        return listado;
+        return new ListadoDto(header, data);
     }
 
     @Get(':id')
@@ -161,8 +153,7 @@ export class RolController extends GenericController<RolEntity> implements ICont
                  @Body() filtroGenericoDto: FiltroGenericoDto): Promise<any> {
         const data = await super.filter(page, limit, filtroGenericoDto);
         const header: string[] = ['id', 'Nombre', 'Descripción'];
-        const listado: ListadoDto = new ListadoDto(header, data);
-        return listado;
+        return new ListadoDto(header, data);
     }
     @Post('buscar')
     @ApiOperation({summary: 'Buscar en el conjunto por el parametro establecido'})
@@ -182,7 +173,6 @@ export class RolController extends GenericController<RolEntity> implements ICont
                  @Body() buscarDto: BuscarDto): Promise<any> {
         const data = await super.search(page, limit, buscarDto);
         const header: string[] = ['id', 'Nombre', 'Descripción'];
-        const listado: ListadoDto = new ListadoDto(header, data);
-        return listado;
+        return new ListadoDto(header, data);
     }
 }

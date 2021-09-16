@@ -7,7 +7,7 @@ import {BadRequestException, NotFoundException} from "@nestjs/common";
 import {TrazaService} from "../../security/service";
 import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
 
-export abstract class GenericService<ENTITY> implements IService<ENTITY> {
+export abstract class GenericService<ENTITY> implements IService {
     constructor(
         protected genericRepository: GenericRepository<ENTITY>,
         protected mapper: any,
