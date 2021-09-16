@@ -15,7 +15,7 @@ import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, 
 import {FiltroDto} from "../dto/filtro.dto";
 
 @ApiTags('Trazas')
-@Controller('trazas')
+@Controller('traza')
 @Roles(RolType.ADMINISTRADOR)
 @UseGuards(AuthGuard('jwt'), RolGuard)
 @ApiBearerAuth()

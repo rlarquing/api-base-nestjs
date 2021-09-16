@@ -14,7 +14,7 @@ import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, 
 import {ResponseDto} from "../../shared/dto";
 
 @ApiTags('Users')
-@Controller('users')
+@Controller('user')
 @Roles(RolType.ADMINISTRADOR)
 @UseGuards(AuthGuard('jwt'), RolGuard)
 @ApiBearerAuth()

@@ -18,7 +18,7 @@ import {ConfigService} from "@atlasjs/config";
 import {GeoJsonDto} from "../../shared/dto";
 
 @ApiTags('Provincias')
-@Controller('provincias')
+@Controller('provincia')
 @Roles(
     RolType.ADMINISTRADOR,
     RolType.USUARIO,

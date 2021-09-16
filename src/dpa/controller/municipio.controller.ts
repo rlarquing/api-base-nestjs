@@ -19,7 +19,7 @@ import {Roles} from "../../security/decorator";
 import {GeoJsonDto} from "../../shared/dto";
 
 @ApiTags('Municipios')
-@Controller('municipios')
+@Controller('municipio')
 @Roles(
     RolType.ADMINISTRADOR,
     RolType.USUARIO,
