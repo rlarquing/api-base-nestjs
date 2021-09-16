@@ -7,11 +7,10 @@ import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {UserEntity} from '../entity';
 import {UserService} from '../service';
 import {RolType} from "../enum/roltype.enum";
-import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
 import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {ResponseDto} from "../../shared/dto";
+import {ListadoDto, ResponseDto} from "../../shared/dto";
 
 @ApiTags('Users')
 @Controller('user')
@@ -30,7 +29,7 @@ export class UserController {
     @ApiResponse({
         status: 200,
         description: 'Listado de los usuarios',
-        type: ReadUserDto,
+        type: ListadoDto,
     })
     @ApiNotFoundResponse({
         status: 404,
@@ -41,15 +40,17 @@ export class UserController {
     async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
-    ): Promise<Pagination<ReadUserDto>> {
+    ): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port= this.configService.config[AppConfig.PORT];
-        return await this.userService.findAll({
+        const data = await this.userService.findAll({
             page,
             limit,
-            route: url+':'+port+'/users',
+            route: url+':'+port+'/user',
         });
+        const header: string[] = ['id', 'Nombre', 'Email','Roles'];
+        return new ListadoDto(header, data);
     }
 
     @Get(':id')
@@ -79,11 +80,11 @@ export class UserController {
     @ApiResponse({
         status: 201,
         description: 'Crea un usuario',
-        type: ReadUserDto,
+        type: ResponseDto,
     })
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async create(@GetUser() user: UserEntity, @Body() userDto: UserDto): Promise<ReadUserDto> {
+    async create(@GetUser() user: UserEntity, @Body() userDto: UserDto): Promise<ResponseDto> {
         return await this.userService.create(user, userDto);
     }
 
@@ -96,11 +97,11 @@ export class UserController {
     @ApiResponse({
         status: 200,
         description: 'Actualiza un usuario',
-        type: ReadUserDto,
+        type: ResponseDto,
     })
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<ReadUserDto> {
+    async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<ResponseDto> {
         return await this.userService.update(user, id, updateUserDto);
 
     }
