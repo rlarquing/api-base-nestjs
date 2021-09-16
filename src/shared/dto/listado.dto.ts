@@ -4,17 +4,13 @@ import {ApiProperty} from "@nestjs/swagger";
 export class ListadoDto{
 
     @IsArray()
-    @ApiProperty({description: 'Header.', example: [
-        "id","Nombre","Descripción" ]})
+    @ApiProperty({description: 'Header.', example: []})
     header: string[];
 
     @IsNotEmpty()
     @ApiProperty({ description: 'Datos que se mostrarán.', example:{
                 "items": [
                     {
-                        "id": 1,
-                        "nombre": "ADMINISTRADOR",
-                        "description": "Tiene permiso total del api"
                     },
                 ],
                 "meta": {
@@ -25,10 +21,10 @@ export class ListadoDto{
                     "currentPage": 1
                 },
                 "links": {
-                    "first": "http://localhost:3000/api/roles?limit=10",
+                    "first": "",
                     "previous": "",
                     "next": "",
-                    "last": "http://localhost:3000/api/roles?page=1&limit=10"
+                    "last": ""
                 }
             }})
     data: object;
