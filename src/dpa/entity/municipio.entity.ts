@@ -35,4 +35,8 @@ export class MunicipioEntity {
 
   @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
   updatedAt: Date;
+
+  public toString():string{
+    return this.nombre;
+  }
 }

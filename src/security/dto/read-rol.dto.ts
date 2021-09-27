@@ -2,6 +2,9 @@ import{IsNumber, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 export class ReadRolDto {
 
+    @IsString({message: 'El dtoToString debe de ser un string'})
+    dtoToString: string;
+
     @IsNumber()
     @ApiProperty({ description: 'id del rol.', example: 1 })
     id: number;
@@ -14,9 +17,10 @@ export class ReadRolDto {
     @ApiProperty({ description: 'Descripción del rol.', example: 'Tiene permiso total del api' })
     description: string;
 
- constructor(id: number, nombre: string, description: string) {
+ constructor(id: number, nombre: string, description: string, dtoToString: string) {
   this.id = id;
   this.nombre = nombre;
   this.description = description;
+  this.dtoToString = dtoToString;
  }
 }

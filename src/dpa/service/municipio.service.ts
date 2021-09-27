@@ -19,25 +19,25 @@ export class MunicipioService {
     private geoJsonMapper: GeoJsonMapper,
   ) {}
 
-  async getAll(options: IPaginationOptions): Promise<Pagination<ReadMunicipioDto>> {
-    const municipios: Pagination<MunicipioEntity> = await this.municipioRepository.getAll(options);
+  async findAll(options: IPaginationOptions): Promise<Pagination<ReadMunicipioDto>> {
+    const municipios: Pagination<MunicipioEntity> = await this.municipioRepository.findAll(options);
     const readMunicipioDto: ReadMunicipioDto[] = municipios.items.map((municipio: MunicipioEntity) => this.municipioMapper.entityToDto(municipio));
     return new Pagination(readMunicipioDto, municipios.meta, municipios.links);
   }
 
-  async get(id: number): Promise<ReadMunicipioDto> {
+  async findById(id: number): Promise<ReadMunicipioDto> {
     if (!id) {
       throw new BadRequestException("El id no puede ser vacio");
     }
-    const municipio: MunicipioEntity = await this.municipioRepository.get(id);
+    const municipio: MunicipioEntity = await this.municipioRepository.findById(id);
     if (!municipio) {
       throw new NotFoundException('El municipio no se encuentra.');
     }
     return this.municipioMapper.entityToDto(municipio);
   }
 
-  async getByProvincia(id: number): Promise<ReadMunicipioDto[]> {
-    const municipio: MunicipioEntity[] = await this.municipioRepository.getByProvincia(id);
+  async findByProvincia(id: number): Promise<ReadMunicipioDto[]> {
+    const municipio: MunicipioEntity[] = await this.municipioRepository.findByProvincia(id);
     return municipio.map((municipio: MunicipioEntity)=> this.municipioMapper.entityToDto(municipio));
   }
 

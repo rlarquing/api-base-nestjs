@@ -18,11 +18,13 @@ export class UserMapper {
   }
 
   entityToDto(userEntity: UserEntity, readRolDto: ReadRolDto[]): ReadUserDto{
+    const dtoToString: string = userEntity.toString();
     return new ReadUserDto(
         userEntity.id,
         userEntity.username,
         userEntity.email,
         readRolDto,
+        dtoToString
     );
   }
 }

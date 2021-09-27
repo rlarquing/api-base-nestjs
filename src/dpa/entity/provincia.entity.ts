@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import {MunicipioEntity} from "./municipio.entity";
 
+
 @Entity('provincia', { schema: 'mod_dpa' })
 export class ProvinciaEntity {
   @PrimaryGeneratedColumn('increment')
@@ -32,4 +33,8 @@ export class ProvinciaEntity {
 
   @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
   updatedAt: Date;
+
+  public toString():string{
+    return this.nombre;
+  }
 }

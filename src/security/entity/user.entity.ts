@@ -27,10 +27,10 @@ export class UserEntity extends GenericEntity {
     @Column({type: 'varchar', nullable: false})
     password: string;
 
-    @Column({ nullable: true, name:'refreshtoken' })
+    @Column({nullable: true, name: 'refreshtoken'})
     refreshToken: string;
 
-    @Column({ type: 'date', nullable: true, name:'refreshtokenexp' })
+    @Column({type: 'date', nullable: true, name: 'refreshtokenexp'})
     refreshTokenExp: string;
 
     @Column({type: 'varchar', nullable: true})
@@ -45,11 +45,13 @@ export class UserEntity extends GenericEntity {
         return hash === this.password;
     }
 
-
     constructor(username: string, email: string) {
         super();
         this.username = username;
         this.email = email;
     }
 
+    public toString(): string {
+        return this.username;
+    }
 }

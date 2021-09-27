@@ -6,9 +6,11 @@ import {MunicipioEntity} from "../entity";
 export class MunicipioMapper {
 
     entityToDto(municipioEntity: MunicipioEntity): ReadMunicipioDto {
+        const dtoToString: string = municipioEntity.toString();
         return new ReadMunicipioDto(
             municipioEntity.id,
-            municipioEntity.nombre
+            municipioEntity.nombre,
+            dtoToString
         );
     }
 }

@@ -12,6 +12,10 @@ export class SocketService {
     return 'Hello World!';
   }
 
+    saludar(user: string): string {
+        return 'Hello '+user;
+    }
+
   async gpsTren(id: string): Promise<any>{
     const result = await this.axios.get('https://am.transnet.cu/trenes/1.0/getPositionByDevice', {
       headers: {

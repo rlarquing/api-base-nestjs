@@ -1,10 +1,4 @@
-import {
-    Controller,
-    Get,
-    Param,
-    ParseIntPipe, Query,
-    UseGuards,
-} from '@nestjs/common';
+import {Controller, Get, Param, ParseIntPipe, Query, UseGuards,} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {ProvinciaService} from '../service';
 import {Roles} from "../../security/decorator";
@@ -42,17 +36,17 @@ export class ProvinciaController {
         status: 404,
         description: 'Provincias no encontradas.',
     })
-    async getAll(
+    async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<ReadProvinciaDto>> {
         limit = limit > 100 ? 100 : limit;
         const url = this.configService.config[AppConfig.URL];
         const port = this.configService.config[AppConfig.PORT];
-        return await this.provinciaService.getAll({
+        return await this.provinciaService.findAll({
             page,
             limit,
-            route: url + ':' + port + '/provincias',
+            route: url + ':' + port + '/provincia',
         });
     }
 
@@ -67,10 +61,10 @@ export class ProvinciaController {
         status: 404,
         description: 'provincia no encontrada.',
     })
-    async get(
+    async findById(
         @Param('id', ParseIntPipe) id: number,
     ): Promise<ReadProvinciaDto> {
-        return await this.provinciaService.get(id);
+        return await this.provinciaService.findById(id);
     }
 
     @Get('obtener/json')
@@ -80,7 +74,7 @@ export class ProvinciaController {
         description: 'Muestra el geojson de las provincias',
         type: GeoJsonDto,
     })
-    async geoJson(): Promise<GeoJsonDto>{
+    async geoJson(): Promise<GeoJsonDto> {
         return await this.provinciaService.geoJson();
     }
 }

@@ -3,6 +3,7 @@ import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {Repository} from "typeorm";
+import {IRepository} from "../../shared/interface";
 
 
 @Injectable()
@@ -12,11 +13,11 @@ export class ProvinciaRepository {
         private provinciaRepository: Repository<ProvinciaEntity>,
     ) {}
 
-    async getAll(options: IPaginationOptions): Promise<Pagination<ProvinciaEntity>> {
+    async findAll(options: IPaginationOptions): Promise<Pagination<ProvinciaEntity>> {
         return await paginate<ProvinciaEntity>(this.provinciaRepository, options);
     }
 
-    async get(id: number): Promise<ProvinciaEntity> {
+    async findById(id: number): Promise<ProvinciaEntity> {
         return await this.provinciaRepository.findOne(id);
     }
 

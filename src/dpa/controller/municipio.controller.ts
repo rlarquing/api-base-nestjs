@@ -42,14 +42,14 @@ export class MunicipioController {
     status: 404,
     description: 'Municipios no encontrados.',
   })
-  async getAll(
+  async findAll(
       @Query('page') page: number = 1,
       @Query('limit') limit: number = 10,
   ): Promise<Pagination<ReadMunicipioDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.config[AppConfig.URL];
     const port= this.configService.config[AppConfig.PORT];
-    return await this.municipioService.getAll({
+    return await this.municipioService.findAll({
       page,
       limit,
       route: url+':'+port+'/municipios',
@@ -67,10 +67,10 @@ export class MunicipioController {
     status: 404,
     description: 'Municipio no encontrado.',
   })
-  async get(
+  async findById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto> {
-    return await this.municipioService.get(id);
+    return await this.municipioService.findById(id);
   }
 
   @ApiOperation({ summary: 'Listado de los municipios de una provincia' })
@@ -84,9 +84,9 @@ export class MunicipioController {
     description: 'Municipios no encontrados.',
   })
   @Get('/provincia/:id')
-  async getByProvincia(@Param('id', ParseIntPipe) id: number,
+  async findByProvincia(@Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto[]> {
-    return await this.municipioService.getByProvincia(id);
+    return await this.municipioService.findByProvincia(id);
   }
 
   @Get('obtener/json')

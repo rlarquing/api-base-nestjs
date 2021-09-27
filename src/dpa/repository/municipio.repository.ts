@@ -12,15 +12,15 @@ export class MunicipioRepository {
     ) {
     }
 
-    async getAll(options: IPaginationOptions): Promise<Pagination<MunicipioEntity>> {
+    async findAll(options: IPaginationOptions): Promise<Pagination<MunicipioEntity>> {
         return await paginate<MunicipioEntity>(this.municipioRepository, options);
     }
 
-    async get(id: number): Promise<MunicipioEntity> {
+    async findById(id: number): Promise<MunicipioEntity> {
         return await this.municipioRepository.findOne(id);
     }
 
-    async getByProvincia(id: number): Promise<MunicipioEntity[]> {
+    async findByProvincia(id: number): Promise<MunicipioEntity[]> {
         return await this.municipioRepository.find({where: {provincia: id}});
     }
 

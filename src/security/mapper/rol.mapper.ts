@@ -17,11 +17,13 @@ export class RolMapper {
         return updateRolEntity;
     }
 
-    entityToDto(roleEntity: RolEntity): ReadRolDto {
+    entityToDto(rolEntity: RolEntity): ReadRolDto {
+        const dtoToString: string = rolEntity.toString();
         return new ReadRolDto(
-            roleEntity.id,
-            roleEntity.nombre,
-            roleEntity.descripcion
+            rolEntity.id,
+            rolEntity.nombre,
+            rolEntity.descripcion,
+            dtoToString
         );
     }
 }

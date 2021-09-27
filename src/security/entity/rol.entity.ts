@@ -1,5 +1,4 @@
 import {
-  Column,
   Entity,
   ManyToMany,
   PrimaryGeneratedColumn,
@@ -22,5 +21,9 @@ export class RolEntity extends GenericNomencaldorEntity {
     super();
     this.nombre = nombre;
     this.descripcion = descripcion;
+  }
+
+  public toString(): string {
+    return this.nombre;
   }
 }
