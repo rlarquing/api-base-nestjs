@@ -1,6 +1,6 @@
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import {DeleteResult} from "typeorm";
-import {ResponseDto} from "../dto";
+import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
 
 export interface IService {
 
@@ -19,4 +19,8 @@ export interface IService {
     removeMultiple(user: any, ids: number[]): Promise<DeleteResult>;
 
     count(): Promise<number>;
+
+    filter(options: IPaginationOptions, filtroGenericoDto: FiltroGenericoDto): Promise<Pagination<any>>;
+
+    search(options: IPaginationOptions, buscarDto: BuscarDto): Promise<Pagination<any>>;
 }

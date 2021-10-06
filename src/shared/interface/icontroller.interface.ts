@@ -1,5 +1,5 @@
 import {Pagination} from "nestjs-typeorm-paginate";
-import {ResponseDto} from "../dto";
+import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
 
 export interface IController {
 
@@ -16,4 +16,8 @@ export interface IController {
     update(user: any, id:number, object: any): Promise<ResponseDto>;
 
     updateMultiple(user: any, object: any[]): Promise<ResponseDto>;
+
+    filter(page?: number, limit?: number, filtroGenericoDto?: FiltroGenericoDto): Promise<Pagination<any>>;
+
+    search(page?: number, limit?: number, buscarDto?: BuscarDto): Promise<Pagination<any>>;
 }

@@ -18,4 +18,8 @@ export interface IRepository<ENTITY> {
     remove(id: number[]): Promise<DeleteResult>;
 
     count(): Promise<number>;
+
+    filter(options: IPaginationOptions, claves: string[], valores: any[]): Promise<Pagination<ENTITY>>;
+
+    search(options: IPaginationOptions, search: any): Promise<Pagination<ENTITY>>;
 }
