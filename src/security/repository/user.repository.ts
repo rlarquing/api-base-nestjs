@@ -88,11 +88,12 @@ export class UserRepository {
         }
         user.activo = false;
         try {
-            await this.rolRepository.save(user);
+            await this.userRepository.save(user);
+            result.successStatus = true;
+            result.message = 'success';
         } catch (error) {
             result.message = error.response;
             result.successStatus = false;
-            return result;
         }
         return result;
     }

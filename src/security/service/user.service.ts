@@ -92,6 +92,12 @@ export class UserService {
     }
 
     async delete(user: UserEntity, id: number): Promise<ResponseDto> {
+        let result = new ResponseDto();
+        if (user.id === id) {
+            result.message = 'Usuario autenticado no se puede eliminar.';
+            result.successStatus = false;
+            return result;
+        }
         const userEntity: UserEntity = await this.userRepository.findById(id);
         delete userEntity.salt;
         delete userEntity.password;
