@@ -23,7 +23,13 @@ import {GenericNomencladorService} from '../service';
 import {AuthGuard} from "@nestjs/passport";
 import {RolGuard} from "../../security/guard/rol.guard";
 import {BuscarDto, FiltroGenericoDto, ListadoDto, ResponseDto} from "../../shared/dto";
-import {CreateNomencladorDto, ReadNomencladorDto, UpdateMultipleNomencladorDto, UpdateNomencladorDto} from "../dto";
+import {
+    CreateNomencladorDto,
+    ReadNomencladorDto,
+    SelectDto,
+    UpdateMultipleNomencladorDto,
+    UpdateNomencladorDto
+} from "../dto";
 import {AppConfig} from "../../app.keys";
 import {DeleteResult} from "typeorm";
 import {NomencladorTypeEnum} from "../enum/nomenclador-type.enum";
@@ -46,7 +52,7 @@ export class GenericNomencladorController {
     @ApiResponse({
         status: 200,
         description: 'Listado de elementos del conjunto para el select',
-        type: ReadNomencladorDto,
+        type: SelectDto,
     })
     @ApiNotFoundResponse({
         status: 404,
@@ -54,7 +60,7 @@ export class GenericNomencladorController {
     })
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 500, description: 'Error interno del servicor.'})
-    async getAllNomenclator(@Param('name') name: string): Promise<any> {
+    async getAllNomenclator(@Param('name') name: string): Promise<SelectDto[]> {
         return await this.nomencladorService.findAllNomenclator(name);
     }
 
