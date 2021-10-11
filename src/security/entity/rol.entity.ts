@@ -4,10 +4,10 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-import {GenericNomencaldorEntity} from "../../nomenclator/entity";
+import {GenericNomencladorEntity} from "../../nomenclator/entity";
 
 @Entity('rol', { schema: 'mod_auth' })
-export class RolEntity extends GenericNomencaldorEntity {
+export class RolEntity extends GenericNomencladorEntity {
 
   @ManyToMany((type) => UserEntity, (user) => user.roles)
   @JoinColumn()

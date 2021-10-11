@@ -1,7 +1,7 @@
 import {Column} from "typeorm";
 import {GenericEntity} from "../../shared/entity";
 
-export class GenericNomencaldorEntity extends GenericEntity{
+export class GenericNomencladorEntity extends GenericEntity{
 
     @Column({ type: 'varchar', length: 255, nullable: false })
     nombre: string;
