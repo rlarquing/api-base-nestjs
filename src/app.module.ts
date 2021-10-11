@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@atlasjs/config';
 import { DatabaseModule } from './database/database.module';
 import { AppConfig } from './app.keys';
+import {NomenclatorModule} from "./nomenclator/nomenclator.module";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AppConfig } from './app.keys';
     SecurityModule,
     ConfigModule.forRoot({}),
     DatabaseModule,
+    NomenclatorModule
   ],
   controllers: [],
   providers: [],

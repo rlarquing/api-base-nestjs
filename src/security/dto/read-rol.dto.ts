@@ -15,12 +15,12 @@ export class ReadRolDto {
 
     @IsString()
     @ApiProperty({ description: 'Descripción del rol.', example: 'Tiene permiso total del api' })
-    description: string;
+    descripcion: string;
 
- constructor(id: number, nombre: string, description: string, dtoToString: string) {
+ constructor(id: number, nombre: string, descripcion: string, dtoToString: string) {
   this.id = id;
   this.nombre = nombre;
-  this.description = description;
+  this.descripcion = descripcion;
   this.dtoToString = dtoToString;
  }
 }

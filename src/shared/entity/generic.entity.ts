@@ -1,6 +1,10 @@
-import {BaseEntity, Column, CreateDateColumn} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, PrimaryGeneratedColumn} from "typeorm";
 
 export abstract class GenericEntity extends BaseEntity {
+
+    @PrimaryGeneratedColumn()
+    id: number;
+
     @Column({type: 'boolean', default: true})
     activo: boolean;
 
