@@ -31,7 +31,7 @@ import {RefreshStrategy} from "./strategy/refresh.strategy";
     ],
     controllers: [UserController, RolController, AuthController, TrazaController],
     providers: [UserService, RolService, AuthService, UserMapper, RolMapper, UserRepository, RolRepository, JwtStrategy, RefreshStrategy, TrazaService, TrazaRepository, TrazaMapper],
-    exports: [JwtStrategy, PassportModule, RefreshStrategy, TrazaService, RolRepository, RolMapper],
+    exports: [JwtStrategy, PassportModule, RefreshStrategy, TrazaService, RolRepository, RolMapper, UserService, UserMapper],
 })
 export class SecurityModule {
 }
