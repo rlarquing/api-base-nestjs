@@ -85,7 +85,7 @@ export class GenericNomencladorController {
         return await this.nomencladorService.findById(name, id);
     }
 
-    @Get('/listado/:name')
+    @Get('/:name/listado/elementos')
     @ApiParam({name: "name", example: 'clasificacionTransporte'})
     @ApiOperation({summary: 'Obtener el listado de elementos del conjunto'})
     @ApiResponse({
@@ -116,7 +116,7 @@ export class GenericNomencladorController {
         return new ListadoDto(header, data);
     }
 
-    @Get('/:name/elementos/multiples')
+    @Post('/:name/elementos/multiples')
     @ApiParam({name: "name", example: 'clasificacionTransporte'})
     @ApiOperation({summary: 'Obtener multiples elementos del conjunto'})
     @ApiBody({

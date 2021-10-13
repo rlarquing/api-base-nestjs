@@ -62,7 +62,7 @@ export class RolController extends GenericController<RolEntity> {
         return await super.findById(id);
     }
 
-    @Get('/elementos/multiples')
+    @Post('/elementos/multiples')
     @ApiOperation({summary: 'Obtener multiples elementos del conjunto'})
     @ApiBody({
         description: 'Estructura para mostrar los multiples elementos del conjunto.',

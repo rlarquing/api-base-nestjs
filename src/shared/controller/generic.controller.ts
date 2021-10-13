@@ -37,7 +37,7 @@ export abstract class GenericController<ENTITY> implements IController {
         return await this.service.findById(id);
     }
 
-    @Get('/elementos/multiples')
+    @Post('/elementos/multiples')
     async findByIds(@Body() ids: number[]): Promise<any[]> {
         return await this.service.findByIds(ids);
     }
