@@ -36,7 +36,7 @@ export class UserEntity extends GenericEntity {
     @Column({type: 'varchar', nullable: true})
     salt: string;
 
-    @ManyToMany((type) => RolEntity, (role) => role.users, {eager: true})
+    @ManyToMany((type) => RolEntity, (role) => role.users, {eager: false})
     @JoinTable()
     roles: RolEntity[];
 

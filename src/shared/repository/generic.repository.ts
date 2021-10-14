@@ -6,20 +6,20 @@ import {isBoolean, isDate, isEmpty, isNumber, isString} from "class-validator";
 
 export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     constructor(
-        private repository: Repository<ENTITY>
+        private repository: Repository<ENTITY>,
+        private relations?: string[]
     ) {
     }
 
     async findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>> {
-        return await paginate<ENTITY>(this.repository, options, {where: {activo: true}});
+        return await paginate<ENTITY>(this.repository, options, {where: {activo: true}, relations: this.relations});
 
     }
 
     async findById(id: number): Promise<ENTITY> {
-        const obj: ENTITY = await this.repository.findOne(id, {
-            where: {activo: true}
+        return await this.repository.findOne(id, {
+            where: {activo: true}, relations: this.relations
         });
-        return obj;
     }
 
     async findOne(id: number): Promise<ENTITY> {
@@ -28,7 +28,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
 
     async findByIds(ids: any[]): Promise<ENTITY[]> {
         return await this.repository.findByIds(ids, {
-            where: {activo: true}
+            where: {activo: true}, relations: this.relations
         });
     }
 
@@ -75,7 +75,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
             }
 
         }
-        return await paginate<ENTITY>(this.repository, options, {where: wheres});
+        return await paginate<ENTITY>(this.repository, options, {where: wheres, relations: this.relations});
     }
 
     async search(options: IPaginationOptions, search: any): Promise<Pagination<ENTITY>> {
@@ -104,11 +104,11 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
             objs.forEach((item) => {
                 wheres[item.key] = item.valor;
             });
-            if(Object.keys(wheres).length==1){
-                wheres.activo=null;
+            if (Object.keys(wheres).length == 1) {
+                wheres.activo = null;
             }
         }
-        return await paginate<ENTITY>(this.repository, options, {where: wheres});
+        return await paginate<ENTITY>(this.repository, options, {where: wheres, relations: this.relations});
 
     }
 }

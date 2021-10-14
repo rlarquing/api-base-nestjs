@@ -16,4 +16,14 @@ export class GeoJsonMapper {
         );
         return new GeoJsonDto(geom);
     }
+
+    entityToDto(entity: any): GeoJsonDto {
+        const geom: any = [];
+        geom.push({
+            type: "Feature",
+            properties: entity.properties,
+            geometry: entity.geometry
+        });
+        return new GeoJsonDto(geom);
+    }
 }

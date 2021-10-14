@@ -21,10 +21,11 @@ export class UserService {
 
     async findAll(options: IPaginationOptions): Promise<Pagination<ReadUserDto>> {
         const users: Pagination<UserEntity> = await this.userRepository.findAll(options);
-        const readUserDto: ReadUserDto[] = users.items.map((user: UserEntity) =>
-            this.userMapper.entityToDto(user,
-                user.roles.map((rol: RolEntity) =>
-                    this.roleMapper.entityToDto(rol))));
+        let readUserDto: ReadUserDto[]=[];
+        for (const user of users.items) {
+            readUserDto.push(await this.userMapper.entityToDto(user));
+        }
+
         return new Pagination(readUserDto, users.meta, users.links);
     }
 
@@ -36,8 +37,18 @@ export class UserService {
         if (!user) {
             throw new NotFoundException('El usuario no se encuentra.');
         }
-        return this.userMapper.entityToDto(user, user.roles.map((rol: RolEntity) =>
-            this.roleMapper.entityToDto(rol)));
+        return await this.userMapper.entityToDto(user);
+    }
+
+    async findByName(username: string): Promise<ReadUserDto> {
+        if (!username) {
+            throw new BadRequestException('El username no puede ser vacio');
+        }
+        const user: UserEntity = await this.userRepository.findByName(username);
+        if (!user) {
+            throw new NotFoundException('El usuario no se encuentra.');
+        }
+        return await this.userMapper.entityToDto(user);
     }
 
     async create(user: UserEntity, userDto: UserDto): Promise<ResponseDto> {

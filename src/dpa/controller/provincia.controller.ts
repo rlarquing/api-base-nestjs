@@ -77,4 +77,15 @@ export class ProvinciaController {
     async geoJson(): Promise<GeoJsonDto> {
         return await this.provinciaService.geoJson();
     }
+
+    @Get(':id/obtener/json')
+    @ApiOperation({summary: 'Obtener el geojson de una provincia'})
+    @ApiResponse({
+        status: 200,
+        description: 'Muestra el geojson de una provincia',
+        type: GeoJsonDto,
+    })
+    async geoJsonById(@Param('id', ParseIntPipe) id: number,): Promise<GeoJsonDto> {
+        return await this.provinciaService.geoJsonById(id);
+    }
 }

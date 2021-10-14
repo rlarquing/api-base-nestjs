@@ -42,7 +42,12 @@ export class MunicipioService {
   }
 
   async geoJson(): Promise<GeoJsonDto> {
-    const provincias = await this.municipioRepository.geoJson();
-    return this.geoJsonMapper.entitiesToDto(provincias);
+    const municipios = await this.municipioRepository.geoJson();
+    return this.geoJsonMapper.entitiesToDto(municipios);
+  }
+
+  async geoJsonById(id: number): Promise<GeoJsonDto> {
+    const municipio = await this.municipioRepository.geoJsonById(id);
+    return this.geoJsonMapper.entityToDto(municipio);
   }
 }

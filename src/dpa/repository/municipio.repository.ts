@@ -25,10 +25,19 @@ export class MunicipioRepository {
     }
 
     async geoJson(): Promise<any> {
-        const json= await this.municipioRepository.createQueryBuilder('p').
-        select("json_build_object( 'id', id, 'nombre', nombre)", "properties").
-        addSelect("ST_AsGeoJSON(p.geom)::json", "geometry")
+        return await this.municipioRepository
+            .createQueryBuilder('m')
+            .select("json_build_object( 'id', id, 'nombre', nombre)", 'properties')
+            .addSelect('ST_AsGeoJSON(m.geom)::json', 'geometry')
             .getRawMany();
-        return json ;
+    }
+
+    async geoJsonById(id: number): Promise<any> {
+        return await this.municipioRepository
+            .createQueryBuilder('m')
+            .select("json_build_object( 'id', id, 'nombre', nombre)", 'properties')
+            .addSelect('ST_AsGeoJSON(m.geom)::json', 'geometry')
+            .andWhere('m.id=:id',{id:id})
+            .getRawOne();
     }
 }

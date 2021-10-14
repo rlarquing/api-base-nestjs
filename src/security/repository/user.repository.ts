@@ -56,7 +56,8 @@ export class UserRepository {
 
     async findById(id: number): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne(id, {
-            where: {activo: true}
+            where: {activo: true},
+            relations: ['roles']
         });
         return user;
     }
@@ -111,7 +112,8 @@ export class UserRepository {
 
     async findByName(username: string): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne({
-            where: {activo: true, username: username}
+            where: {activo: true, username: username},
+            relations: ['roles']
         });
         return user;
     }

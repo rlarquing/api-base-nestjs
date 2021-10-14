@@ -123,7 +123,7 @@ export abstract class GenericController<ENTITY> implements IController {
         return await this.service.count();
     }
 
-    @Post('filtro/por')
+    @Post('filtrar/por')
     async filter(@Query('page') page: number = 1,
                  @Query('limit') limit: number = 10,
                  @Body() filtroGenericoDto: FiltroGenericoDto): Promise<Pagination<any>> {
@@ -137,7 +137,7 @@ export abstract class GenericController<ENTITY> implements IController {
         }, filtroGenericoDto);
     }
 
-    @Post('search')
+    @Post('buscar')
     async search(@Query('page') page: number = 1,
                  @Query('limit') limit: number = 10,
                  @Body() buscarDto: BuscarDto): Promise<Pagination<any>> {

@@ -99,4 +99,15 @@ export class MunicipioController {
   async geoJson(): Promise<GeoJsonDto>{
     return await this.municipioService.geoJson();
   }
+
+  @Get(':id/obtener/json')
+  @ApiOperation({summary: 'Obtener el geojson de un municipio'})
+  @ApiResponse({
+    status: 200,
+    description: 'Muestra el geojson de un municipio',
+    type: GeoJsonDto,
+  })
+  async geoJsonById(@Param('id', ParseIntPipe) id: number,): Promise<GeoJsonDto>{
+    return await this.municipioService.geoJsonById(id);
+  }
 }
