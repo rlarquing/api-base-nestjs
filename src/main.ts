@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {BadRequestException, ValidationPipe} from "@nestjs/common";
+import {ValidationError} from "class-validator";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule,{
@@ -23,6 +25,14 @@ async function bootstrap() {
       showRequestDuration: true,
     },
   });
+
+  app.useGlobalPipes(
+      new ValidationPipe({
+        exceptionFactory: (validationErrors: ValidationError[] = []) => {
+          return new BadRequestException(validationErrors);
+        },
+      })
+  );
   await app.listen(AppModule.port);
 }
 bootstrap();

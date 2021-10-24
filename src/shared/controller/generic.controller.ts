@@ -1,5 +1,5 @@
 import {Body, Delete, Get, Param, ParseIntPipe, Patch, Post, Query} from '@nestjs/common';
-import {ApiBody, ApiOperation, ApiResponse} from '@nestjs/swagger';
+import {ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse} from '@nestjs/swagger';
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
@@ -9,6 +9,7 @@ import {DeleteResult} from "typeorm";
 import {GenericService} from "../service/generic.service";
 import {IController} from "../interface";
 import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
+import {SelectDto} from "../../nomenclator/dto";
 
 export abstract class GenericController<ENTITY> implements IController {
 
@@ -40,6 +41,23 @@ export abstract class GenericController<ENTITY> implements IController {
     @Post('/elementos/multiples')
     async findByIds(@Body() ids: number[]): Promise<any[]> {
         return await this.service.findByIds(ids);
+    }
+
+    @Get('/crear/select')
+    @ApiOperation({ summary: 'Obtener los elementos del conjunto para crear un select' })
+    @ApiResponse({
+        status: 200,
+        description: 'Muestra la información de los elementos del conjunto para crear un select',
+        type: [SelectDto]
+    })
+    @ApiNotFoundResponse({
+        status: 404,
+        description: 'Elemento del conjunto no encontrado.'
+    })
+    @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+    @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+    async createSelect(): Promise<SelectDto[]> {
+        return await this.service.createSelect();
     }
 
     @Post()

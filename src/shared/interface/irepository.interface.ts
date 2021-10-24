@@ -9,6 +9,8 @@ export interface IRepository<ENTITY> {
     
     findByIds(ids: any[]): Promise<ENTITY[]>;
 
+    createSelect(): Promise<any[]>;
+
     create(object: ENTITY): Promise<ENTITY>;
 
     update(object: ENTITY): Promise<ENTITY>;

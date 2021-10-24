@@ -32,6 +32,12 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
         });
     }
 
+    async createSelect(): Promise<any[]> {
+        return await this.repository.find({
+            where: { activo: true }, relations: this.relations
+        });
+    }
+
     async create(newObj: ENTITY): Promise<ENTITY> {
         return await this.repository.save(newObj);
     }

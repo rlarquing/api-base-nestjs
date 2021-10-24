@@ -1,5 +1,6 @@
 import {Pagination} from "nestjs-typeorm-paginate";
 import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
+import {SelectDto} from "../../nomenclator/dto";
 
 export interface IController {
 
@@ -8,6 +9,8 @@ export interface IController {
     findById(id: any): Promise<any>;
 
     findByIds(ids: any[]): Promise<any[]>;
+
+    createSelect(): Promise<SelectDto[]>;
 
     create(user: any, object: any): Promise<ResponseDto>;
 

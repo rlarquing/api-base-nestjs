@@ -6,6 +6,7 @@ import {HISTORY_ACTION, UserEntity} from "../../security/entity";
 import {BadRequestException, NotFoundException} from "@nestjs/common";
 import {TrazaService} from "../../security/service";
 import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../dto";
+import {SelectDto} from "../../nomenclator/dto";
 
 export abstract class GenericService<ENTITY> implements IService {
     constructor(
@@ -36,6 +37,15 @@ export abstract class GenericService<ENTITY> implements IService {
     async findByIds(ids: any[]): Promise<ENTITY[]> {
         const items = await this.genericRepository.findByIds(ids);
         return items.map((item: any) => this.mapper.entityToDto(item));
+    }
+
+    async createSelect(): Promise<SelectDto[]> {
+        const items: any[] = await this.genericRepository.createSelect();
+        const selectDto: SelectDto[] = [];
+        for (const item of items) {
+            selectDto.push(new SelectDto(item.id, item.toString()));
+        }
+        return selectDto;
     }
 
     async create(user: UserEntity, createDto: any): Promise<ResponseDto> {
