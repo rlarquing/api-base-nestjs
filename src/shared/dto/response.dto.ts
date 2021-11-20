@@ -2,6 +2,9 @@ import {ApiProperty} from "@nestjs/swagger";
 
 export class ResponseDto {
 
+    @ApiProperty({description: 'Id de la entidad.', example: 1})
+    id?:number
+
     @ApiProperty({description: 'Estado de la respuesta.', example: 'true'})
     successStatus: boolean;
 

@@ -11,6 +11,7 @@ export class ListadoDto{
     @ApiProperty({ description: 'Datos que se mostrarán.', example:{
                 "items": [
                     {
+
                     },
                 ],
                 "meta": {
@@ -30,7 +31,7 @@ export class ListadoDto{
     data: object;
 
 
-    constructor(header: Array<string>, data: object) {
+    constructor(header: string[], data: object) {
         this.header = header;
         this.data = data;
     }

@@ -2,7 +2,7 @@ import {ConflictException, Injectable, InternalServerErrorException, NotFoundExc
 import {UserEntity, RolEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
 import {MoreThanOrEqual, Repository} from "typeorm";
-import {RolType} from '../enum/roltype.enum'
+import {RolType} from '../enum/rol-type.enum'
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import * as moment from "moment";
 import {ResponseDto} from "../../shared/dto";

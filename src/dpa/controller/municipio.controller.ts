@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {RolType} from "../../security/enum/roltype.enum";
+import {RolType} from "../../security/enum/rol-type.enum";
 import {RolGuard} from "../../security/guard/rol.guard";
 import {MunicipioService} from "../service";
 import {ReadMunicipioDto} from "../dto";

@@ -3,7 +3,7 @@ import {AuthGuard} from '@nestjs/passport';
 import {GetUser} from '../decorator';
 import {Roles} from '../decorator';
 import {RolGuard} from '../guard/rol.guard';
-import {RolType} from '../enum/roltype.enum';
+import {RolType} from '../enum/rol-type.enum';
 import {UserEntity} from '../entity';
 import {TrazaService} from '../service';
 import {TrazaDto} from "../dto/traza.dto";

@@ -1,2 +1,3 @@
-export {GenericController} from './generic.controller';
-export {SocketController} from './socket.controller';
+export { GenericController } from './generic.controller';
+export { GeometricController } from './geometric.controller';
+export { SocketController } from './socket.controller';

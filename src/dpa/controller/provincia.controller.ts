@@ -2,7 +2,7 @@ import {Controller, Get, Param, ParseIntPipe, Query, UseGuards,} from '@nestjs/c
 import {AuthGuard} from '@nestjs/passport';
 import {ProvinciaService} from '../service';
 import {Roles} from "../../security/decorator";
-import {RolType} from "../../security/enum/roltype.enum";
+import {RolType} from "../../security/enum/rol-type.enum";
 import {RolGuard} from "../../security/guard/rol.guard";
 import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";

@@ -3,7 +3,7 @@ import {JwtService} from '@nestjs/jwt';
 import {IJwtPayload} from '../interface/ijwt-payload.interface';
 import {AuthCredentialsDto, SecretDataDto, UserDto} from '../dto';
 import {UserRepository} from '../repository';
-import {RolType} from "../enum/roltype.enum";
+import {RolType} from "../enum/rol-type.enum";
 import {RolEntity, UserEntity} from "../entity";
 import * as bcrypt from 'bcrypt';
 import {ResponseDto} from "../../shared/dto";

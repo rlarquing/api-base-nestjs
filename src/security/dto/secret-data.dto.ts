@@ -1,4 +1,4 @@
-import {RolType} from "../enum/roltype.enum";
+import {RolType} from "../enum/rol-type.enum";
 import {IsNotEmpty, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 

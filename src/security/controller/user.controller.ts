@@ -6,7 +6,7 @@ import {RolGuard} from '../guard/rol.guard';
 import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {UserEntity} from '../entity';
 import {UserService} from '../service';
-import {RolType} from "../enum/roltype.enum";
+import {RolType} from "../enum/rol-type.enum";
 import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
 import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
