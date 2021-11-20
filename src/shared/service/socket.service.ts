@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/Axios'
+import { HttpService } from '@nestjs/axios'
 import * as https from 'https'
 import { firstValueFrom  } from 'rxjs';
 
