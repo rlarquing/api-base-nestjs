@@ -23,8 +23,11 @@ export class UserMapper {
   }
 
   async entityToDto(userEntity: UserEntity): Promise<ReadUserDto>{
-    const readRolDto: ReadRolDto[] = userEntity.roles.map((rol: RolEntity) =>
-        this.rolMapper.entityToDto(rol));
+    const readRolDto: ReadRolDto[] = [];
+    for (const rol of userEntity.roles) {
+      readRolDto.push(await this.rolMapper.entityToDto(rol));
+    }
+
     const dtoToString: string = userEntity.toString();
     return new ReadUserDto(
         userEntity.id,
