@@ -3,7 +3,7 @@ import { RolEntity} from '../entity';
 import {RolRepository} from "../repository";
 import {RolMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
-import {GenericService} from "../../shared/service/generic.service";
+import {GenericService} from "../../shared/service";
 
 @Injectable()
 export class RolService extends GenericService<RolEntity>{
