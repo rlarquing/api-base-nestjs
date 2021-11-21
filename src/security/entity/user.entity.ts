@@ -10,13 +10,11 @@ import {
 import * as bcrypt from 'bcrypt';
 import {RolEntity} from './rol.entity';
 import {GenericEntity} from "../../shared/entity/generic.entity";
+import {PermisoEntity} from "./permiso.entity";
 
 @Entity('user', {schema: 'mod_auth'})
 @Unique(['username'])
 export class UserEntity extends GenericEntity {
-
-    @PrimaryGeneratedColumn('increment')
-    id: number;
 
     @Column({type: 'varchar', unique: true, length: 25, nullable: false})
     username: string;
@@ -36,19 +34,40 @@ export class UserEntity extends GenericEntity {
     @Column({type: 'varchar', nullable: true})
     salt: string;
 
-    @ManyToMany((type) => RolEntity, (role) => role.users, {eager: false})
-    @JoinTable()
+    @ManyToMany(() => RolEntity, (rol) => rol.users, {eager: false})
+    @JoinTable({name: 'user_rol',
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "rol_id",
+            referencedColumnName: "id"
+        }})
     roles: RolEntity[];
+
+    @ManyToMany(() => PermisoEntity, (permiso) => permiso.users,{eager: false})
+    @JoinTable({name: 'user_permiso',
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "permiso_id",
+            referencedColumnName: "id"
+        }})
+    permisos: PermisoEntity[];
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt);
         return hash === this.password;
     }
 
-    constructor(username: string, email: string) {
+    constructor(username: string, email: string, permisos?: PermisoEntity[]) {
         super();
         this.username = username;
         this.email = email;
+        this.permisos = permisos;
     }
 
     public toString(): string {

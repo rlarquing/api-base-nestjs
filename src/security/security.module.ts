@@ -5,7 +5,7 @@ import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule, ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../app.keys";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {RolEntity, TrazaEntity, UserEntity} from "./entity";
+import {EntidadEntity, GrupoEntity, PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
 import {AuthController, RolController, TrazaController, UserController} from "./controller";
 import {AuthService, RolService, TrazaService, UserService} from "./service";
 import {RolMapper, TrazaMapper, UserMapper} from "./mapper";
@@ -27,7 +27,7 @@ import {RefreshStrategy} from "./strategy/refresh.strategy";
                 };
             },
         }),
-        TypeOrmModule.forFeature([UserEntity, RolEntity, TrazaEntity])
+        TypeOrmModule.forFeature([UserEntity, RolEntity, TrazaEntity, EntidadEntity,PermisoEntity, GrupoEntity])
     ],
     controllers: [UserController, RolController, AuthController, TrazaController],
     providers: [UserService, RolService, AuthService, UserMapper, RolMapper, UserRepository, RolRepository, JwtStrategy, RefreshStrategy, TrazaService, TrazaRepository, TrazaMapper],

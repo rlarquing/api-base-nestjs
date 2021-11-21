@@ -1,9 +1,10 @@
-import {Column} from "typeorm";
+import {Column, Unique} from "typeorm";
 import {GenericEntity} from "../../shared/entity";
 
+@Unique(['nombre'])
 export class GenericNomencladorEntity extends GenericEntity{
 
-    @Column({ type: 'varchar', length: 255, nullable: false })
+    @Column({ type: 'varchar', unique:true,length: 255, nullable: false })
     nombre: string;
 
     @Column({ type: 'text', nullable: false })

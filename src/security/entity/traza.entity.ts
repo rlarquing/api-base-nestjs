@@ -15,16 +15,15 @@ export enum HISTORY_ACTION {
   DEL = 'Eliminar',
 }
 
-@Entity({
-  schema: 'mod_auth',
-  name: 'traza',
+@Entity('traza',{
+  schema: 'mod_auth'
 })
 export class TrazaEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => UserEntity,{eager: true})
-  @JoinColumn({ name: 'user' })
+  @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
   @CreateDateColumn({ type: 'timestamp', name: 'date', nullable: true })
