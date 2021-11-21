@@ -1,5 +1,7 @@
 import{IsNumber, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
+import {ReadPermisoDto} from "./read-permiso.dto";
+import {ReadRolDto} from "./read-rol.dto";
 export class ReadGrupoDto {
 
     @IsString({message: 'El dtoToString debe de ser un string'})
@@ -17,10 +19,18 @@ export class ReadGrupoDto {
     @ApiProperty({ description: 'Descripción del rol.', example: 'Tiene permiso total del api' })
     descripcion: string;
 
- constructor(id: number, nombre: string, descripcion: string, dtoToString: string) {
-  this.id = id;
-  this.nombre = nombre;
-  this.descripcion = descripcion;
-  this.dtoToString = dtoToString;
- }
+    @ApiProperty({ description: 'Roles que tiene este grupo.', type: [ReadRolDto] })
+    roles: ReadRolDto[];
+
+    @ApiProperty({ description: 'Permisos del grupo.', type: [ReadPermisoDto] })
+    permisos: ReadPermisoDto[];
+
+    constructor(dtoToString: string, id: number, nombre: string, descripcion: string, roles: ReadRolDto[], permisos: ReadPermisoDto[]) {
+        this.dtoToString = dtoToString;
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.roles = roles;
+        this.permisos = permisos;
+    }
 }

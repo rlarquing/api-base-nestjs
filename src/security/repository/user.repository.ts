@@ -1,8 +1,8 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
-import {UserEntity, RolEntity} from '../entity';
+import {RolEntity, UserEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
 import {MoreThanOrEqual, Repository} from "typeorm";
-import {RolType} from '../enum/rol-type.enum'
+import {RolType} from '../enum/rol-type.enum';
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import * as moment from "moment";
 import {ResponseDto} from "../../shared/dto";
@@ -55,11 +55,17 @@ export class UserRepository {
     }
 
     async findById(id: number): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findOne(id, {
+        return await this.userRepository.findOne(id, {
             where: {activo: true},
             relations: ['roles']
         });
-        return user;
+    }
+
+    async findByIds(ids: number[]): Promise<UserEntity[]> {
+        return await this.userRepository.findByIds(ids, {
+            where: {activo: true},
+            relations: ['roles']
+        });
     }
 
     async create(userEntity: UserEntity): Promise<UserEntity> {

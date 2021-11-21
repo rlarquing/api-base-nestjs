@@ -12,3 +12,5 @@ export {CreateGrupoDto} from './create-grupo.dto';
 export {ReadGrupoDto} from './read-grupo.dto';
 export {UpdateGrupoDto} from './update-grupo.dto';
 export {UpdateMultipleGrupoDto} from './update-multiple-grupo.dto';
+export {ReadPermisoDto} from './read-permiso.dto';
+export {ReadModeloDto} from './read-modelo.dto';

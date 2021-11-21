@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator"
+import {IsArray, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 export class CreateGrupoDto {
 
@@ -18,9 +18,13 @@ export class CreateGrupoDto {
     @ApiProperty({description: 'Descripción del rol.', example: 'Tiene permiso total del api.'})
     descripcion: string;
 
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Roles que tiene este grupo.', example: [1, 2] })
+    roles?: number[];
 
-    constructor(nombre: string, descripcion: string) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-    }
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Permisos del grupo.', example: [1, 2] })
+    permisos?: number[];
 }

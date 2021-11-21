@@ -5,7 +5,7 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import {EntidadEntity} from "./entidad.entity";
+import {ModeloEntity} from "./modelo.entity";
 import {UserEntity} from "./user.entity";
 import {RolEntity} from "./rol.entity";
 import {GrupoEntity} from "./grupo.entity";
@@ -19,16 +19,16 @@ export class PermisoEntity {
     id: number;
 
     @Column({type: 'varchar', nullable: false})
-    name: string;
+    nombre: string;
 
     @Column({type: 'varchar', nullable: false})
     servicio: string;
 
-    @ManyToOne(() => EntidadEntity, (entidad) => entidad.permisos, {
+    @ManyToOne(() => ModeloEntity, (modelo) => modelo.permisos, {
         onDelete: 'CASCADE',
     })
-    @JoinColumn({name: 'tipo_alerta_id'})
-    entidad: EntidadEntity;
+    @JoinColumn({name: 'modelo_id'})
+    modelo: ModeloEntity;
 
     @ManyToMany(() => UserEntity, (user) => user.permisos)
     @JoinColumn()
@@ -41,9 +41,14 @@ export class PermisoEntity {
     @ManyToMany(() => GrupoEntity, (grupo) => grupo.permisos)
     @JoinColumn()
     grupos: GrupoEntity[];
-    constructor(name: string, servicio: string, entidad: EntidadEntity) {
-        this.name = name;
+
+    constructor(nombre: string, servicio: string, modelo: ModeloEntity) {
+        this.nombre = nombre;
         this.servicio = servicio;
-        this.entidad = entidad;
+        this.modelo = modelo;
+    }
+
+    public toString(): string {
+        return this.nombre;
     }
 }

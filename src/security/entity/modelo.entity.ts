@@ -3,24 +3,28 @@ import {PermisoEntity} from "./permiso.entity";
 
 @Entity({
     schema: 'mod_auth',
-    name: 'entidad',
+    name: 'modelo',
 })
-export class EntidadEntity {
+export class ModeloEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({type: 'varchar', nullable: false})
-    name: string;
+    nombre: string;
 
     @Column({type: 'varchar', nullable: false})
     schema: string;
 
-    @OneToMany(() => PermisoEntity, (permiso) => permiso.entidad)
+    @OneToMany(() => PermisoEntity, (permiso) => permiso.modelo)
     permisos: PermisoEntity[];
 
-    constructor(name: string, schema: string) {
-        this.name = name;
+    constructor(nombre: string, schema: string) {
+        this.nombre = nombre;
         this.schema = schema;
+    }
+
+    public toString(): string {
+        return this.nombre;
     }
 }

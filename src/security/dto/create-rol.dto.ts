@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator"
+import {IsArray, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 export class CreateRolDto {
 
@@ -18,9 +18,26 @@ export class CreateRolDto {
     @ApiProperty({description: 'Descripción del rol.', example: 'Tiene permiso total del api.'})
     descripcion: string;
 
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Usuarios que tienen este rol.', example: [1, 2] })
+    users?: number[];
 
-    constructor(nombre: string, descripcion: string) {
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Permisos del rol.', example: [1, 2] })
+    permisos?: number[];
+
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Grupos que pertenece este rol.', example: [1, 2] })
+    grupos?: number[];
+
+    constructor(nombre: string, descripcion: string, users?: number[], permisos?: number[], grupos?: number[]) {
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.users = users;
+        this.permisos = permisos;
+        this.grupos = grupos;
     }
 }

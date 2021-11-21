@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsString, MaxLength, MinLength} from "class-validator"
+import {IsArray, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 export class UpdateMultipleGrupoDto {
 
@@ -21,4 +21,14 @@ export class UpdateMultipleGrupoDto {
     @IsString()
     @ApiProperty({description: 'Descripción del rol.', example: 'Tiene permiso total del api.'})
     descripcion: string;
+
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Roles que tiene este grupo.', example: [1, 2] })
+    roles?: number[];
+
+    @IsArray()
+    @IsOptional()
+    @ApiProperty({ description: 'Permisos del grupo.', example: [1, 2] })
+    permisos?: number[];
 }
