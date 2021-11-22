@@ -19,23 +19,11 @@ export class ReadPermisoDto {
     @ApiProperty({ description: 'Entidad al que tiene permiso', example: ReadModeloDto })
     modelo: ReadModeloDto;
 
-    @ApiProperty({ description: 'Usuarios que tiene este permiso.', type: [ReadUserDto] })
-    users: ReadUserDto[];
-
-    @ApiProperty({ description: 'Roles que tiene este permiso.', type: [ReadRolDto] })
-    roles: ReadRolDto[];
-
-    @ApiProperty({ description: 'Grupos que tiene este permiso.', type: [ReadGrupoDto] })
-    grupos: ReadGrupoDto[];
-
-    constructor(dtoToString: string, id: number, nombre: string, servicio: string, modelo: ReadModeloDto, users: ReadUserDto[], roles: ReadRolDto[], grupos: ReadGrupoDto[]) {
+    constructor(dtoToString: string, id: number, nombre: string, servicio: string, modelo: ReadModeloDto) {
         this.dtoToString = dtoToString;
         this.id = id;
         this.nombre = nombre;
         this.servicio = servicio;
         this.modelo = modelo;
-        this.users = users;
-        this.roles = roles;
-        this.grupos = grupos;
     }
 }

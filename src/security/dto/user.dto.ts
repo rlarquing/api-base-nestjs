@@ -47,9 +47,8 @@ export class UserDto {
     @ApiProperty({description: 'Roles del usuario.', example: [1, 2]})
     roles: number[];
 
-    constructor(username: string, email: string, roles: number[]) {
-        this.username = username;
-        this.email = email;
-        this.roles = roles;
-    }
+    @IsNotEmpty()
+    @ApiProperty({description: 'Permiso del usuario.', example: [1, 2]})
+    permisos: number[];
+
 }

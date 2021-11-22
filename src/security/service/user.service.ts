@@ -1,21 +1,22 @@
 import {BadRequestException, Injectable, NotFoundException,} from '@nestjs/common';
 import {HISTORY_ACTION, RolEntity, UserEntity} from '../entity';
-import {RolRepository, UserRepository} from '../repository';
+import {PermisoRepository, RolRepository, UserRepository} from '../repository';
 import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {RolMapper, UserMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import * as bcrypt from 'bcrypt';
 import {ResponseDto} from "../../shared/dto";
+import {PermisoMapper} from "../mapper/permiso.mapper";
 
 @Injectable()
 export class UserService {
     constructor(
         private userRepository: UserRepository,
         private rolRepository: RolRepository,
+        private permisoRepository: PermisoRepository,
         private trazaService: TrazaService,
         private userMapper: UserMapper,
-        private roleMapper: RolMapper,
     ) {
     }
 
@@ -55,10 +56,11 @@ export class UserService {
         let result = new ResponseDto();
         try {
             const newUser = this.userMapper.dtoToEntity(userDto);
-            const {password, roles} = userDto;
+            const {password, roles,permisos} = userDto;
             newUser.salt = await bcrypt.genSalt();
             newUser.password = await UserService.hashPassword(password, newUser.salt);
             newUser.roles = await this.rolRepository.findByIds(roles);
+            newUser.permisos = await this.permisoRepository.findByIds(permisos);
 
             const userEntity: UserEntity = await this.userRepository.create(newUser);
             delete userEntity.salt;
@@ -84,8 +86,9 @@ export class UserService {
         }
         try {
             foundUser = this.userMapper.dtoToUpdateEntity(updateUserDto, foundUser);
-            const {roles} = updateUserDto;
+            const {roles,permisos} = updateUserDto;
             foundUser.roles = await this.rolRepository.findByIds(roles);
+            foundUser.permisos = await this.permisoRepository.findByIds(permisos);
 
             await this.userRepository.update(foundUser);
             delete foundUser.salt;

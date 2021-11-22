@@ -13,19 +13,19 @@ export class PermisoRepository {
 
     async findAll(): Promise<PermisoEntity[]> {
         return await this.permisoRepository.find({
-            relations: ['modelo','users','roles','grupos']
+            relations: ['modelo']
         });
     }
 
     async findById(id: number): Promise<PermisoEntity> {
         return await this.permisoRepository.findOne(id, {
-            relations: ['modelo','users','roles','grupos']
+            relations: ['modelo']
         });
     }
 
     async findByIds(ids: number[]): Promise<PermisoEntity[]> {
         return await this.permisoRepository.findByIds(ids, {
-            relations: ['modelo','users','roles','grupos']
+            relations: ['modelo']
         });
     }
 }

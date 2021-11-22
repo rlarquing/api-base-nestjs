@@ -10,10 +10,7 @@ import {UserEntity} from "./user.entity";
 import {RolEntity} from "./rol.entity";
 import {GrupoEntity} from "./grupo.entity";
 
-@Entity({
-    schema: 'mod_auth',
-    name: 'permiso'
-})
+@Entity('permiso',{schema: 'mod_auth'})
 export class PermisoEntity {
     @PrimaryGeneratedColumn()
     id: number;

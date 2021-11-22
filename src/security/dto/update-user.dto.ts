@@ -19,9 +19,12 @@ export class UpdateUserDto {
     @ApiProperty({description: 'Nombre del usuario.',example: 'juan'})
     username: string;
 
-
     @IsNotEmpty()
     @ApiProperty({description: 'Roles del usuario.', example: [1,2] })
     roles: number[];
+
+    @IsNotEmpty()
+    @ApiProperty({description: 'Permisos del usuario.', example: [1,2] })
+    permisos: number[];
 
 }

@@ -48,7 +48,7 @@ export class UserRepository {
         // return await paginate<UserEntity>(queryBuilder, options);
         return await paginate<UserEntity>(this.userRepository, options, {
             where: {activo: true},
-            relations: ['roles']
+            relations: ['roles','permisos']
         });
 
 
@@ -57,14 +57,14 @@ export class UserRepository {
     async findById(id: number): Promise<UserEntity> {
         return await this.userRepository.findOne(id, {
             where: {activo: true},
-            relations: ['roles']
+            relations: ['roles','permisos']
         });
     }
 
     async findByIds(ids: number[]): Promise<UserEntity[]> {
         return await this.userRepository.findByIds(ids, {
             where: {activo: true},
-            relations: ['roles']
+            relations: ['roles','permisos']
         });
     }
 
@@ -119,7 +119,7 @@ export class UserRepository {
     async findByName(username: string): Promise<UserEntity> {
         const user: UserEntity = await this.userRepository.findOne({
             where: {activo: true, username: username},
-            relations: ['roles']
+            relations: ['roles','permisos']
         });
         return user;
     }

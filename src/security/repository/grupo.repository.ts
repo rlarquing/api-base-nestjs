@@ -9,6 +9,6 @@ import {GrupoEntity} from "../entity";
 export class GrupoRepository extends GenericRepository<GrupoEntity> implements IRepository<GrupoEntity>{
     constructor( @InjectRepository(GrupoEntity)
                  private grupoRepository: Repository<GrupoEntity>){
-        super(grupoRepository);
+        super(grupoRepository,['roles', 'permisos']);
     }
 }
