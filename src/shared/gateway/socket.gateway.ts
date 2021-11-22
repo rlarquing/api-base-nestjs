@@ -13,6 +13,7 @@ import {Server} from 'socket.io';
 import {from, Observable} from "rxjs";
 import {map} from 'rxjs/operators';
 import {SocketService} from "../service";
+import {removeItemFromArr} from "../lib/util";
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {
@@ -40,8 +41,8 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect, 
                 break;
             }
         }
-        this.canales = this.removeItemFromArr(this.canales, client, 'id');
-        this.clientes = this.removeItemFromArr(this.clientes, this.clientes[pos], 'username');
+        this.canales = removeItemFromArr(this.canales, client, 'id');
+        this.clientes = removeItemFromArr(this.clientes, this.clientes[pos], 'username');
     }
 
     afterInit(server: any) {
@@ -93,8 +94,4 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect, 
         }
 
     }
-
-    removeItemFromArr(arr, item, field) {
-        return arr.filter(e => e[field] !== item[field]);
-    };
 }

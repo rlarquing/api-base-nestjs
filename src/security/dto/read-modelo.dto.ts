@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {ReadPermisoDto} from "./read-permiso.dto";
 
 export class ReadModeloDto {
     @ApiProperty({ description: 'Nombre del objeto', example: 'Objeto 1' })

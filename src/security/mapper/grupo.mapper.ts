@@ -4,6 +4,7 @@ import {GrupoEntity, PermisoEntity, RolEntity} from "../entity";
 import {GrupoRepository, PermisoRepository, RolRepository} from "../repository";
 import {RolMapper} from "./rol.mapper";
 import {PermisoMapper} from "./permiso.mapper";
+import {eliminarDuplicado} from "../../shared/lib/util";
 
 @Injectable()
 export class GrupoMapper {
@@ -17,7 +18,12 @@ export class GrupoMapper {
     }
     async dtoToEntity(createGrupoDto: CreateGrupoDto): Promise<GrupoEntity> {
         const roles: RolEntity[] = await this.rolRepository.findByIds(createGrupoDto.roles);
-        const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(createGrupoDto.permisos);
+        let permisos: PermisoEntity[] = await this.permisoRepository.findByIds(createGrupoDto.permisos);
+        roles.forEach((rol: RolEntity) => {
+                permisos.concat(rol.permisos);
+            }
+        );
+        permisos = eliminarDuplicado(permisos);
         return new GrupoEntity(
             createGrupoDto.nombre,
             createGrupoDto.descripcion,
@@ -25,23 +31,24 @@ export class GrupoMapper {
             permisos
         );
     }
-
     async dtoToUpdateEntity(updateGrupoDto: UpdateGrupoDto, updateGrupoEntity: GrupoEntity): Promise<GrupoEntity> {
         const roles: RolEntity[] = await this.rolRepository.findByIds(updateGrupoDto.roles);
-        const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(updateGrupoDto.permisos);
-
+        let permisos: PermisoEntity[] = await this.permisoRepository.findByIds(updateGrupoDto.permisos);
         updateGrupoEntity.nombre = updateGrupoDto.nombre;
         updateGrupoEntity.descripcion = updateGrupoDto.descripcion;
-
         if (roles) {
             updateGrupoEntity.roles = roles;
         }
         if (permisos) {
+            roles.forEach((rol: RolEntity) => {
+                    permisos.concat(rol.permisos);
+                }
+            );
+            permisos = eliminarDuplicado(permisos);
             updateGrupoEntity.permisos = permisos;
         }
         return updateGrupoEntity;
     }
-
     async entityToDto(grupoEntity: GrupoEntity): Promise<ReadGrupoDto> {
         const grupo: GrupoEntity = await this.grupoRepository.findById(grupoEntity.id);
         const readRolDto: ReadRolDto[] = [];
@@ -60,7 +67,6 @@ export class GrupoMapper {
             grupoEntity.descripcion,
             readRolDto,
             readPermisoDto
-
         );
     }
 }

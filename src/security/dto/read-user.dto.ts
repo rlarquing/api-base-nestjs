@@ -29,6 +29,7 @@ export class ReadUserDto {
   @IsNotEmpty()
   @ApiProperty({description: 'Permisos del usuario.', type: [ReadRolDto]})
   permisos: ReadPermisoDto[]
+
   constructor(dtoToString: string, id: number, username: string, email: string, roles: ReadRolDto[], permisos: ReadPermisoDto[]) {
     this.dtoToString = dtoToString;
     this.id = id;
