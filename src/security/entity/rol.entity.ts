@@ -31,8 +31,10 @@ export class RolEntity extends GenericNomencladorEntity {
   @JoinColumn()
   grupos: GrupoEntity[];
 
-  constructor(nombre: string, descripcion: string, permisos?: PermisoEntity[]) {
+  constructor(nombre: string, descripcion: string, users?: UserEntity[], permisos?: PermisoEntity[], grupos?: GrupoEntity[]) {
     super(nombre, descripcion);
+    this.users = users;
     this.permisos = permisos;
+    this.grupos = grupos;
   }
 }

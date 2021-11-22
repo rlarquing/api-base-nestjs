@@ -15,17 +15,21 @@ export class RolMapper {
     ) {
     }
     async dtoToEntity(createRolDto: CreateRolDto): Promise<RolEntity> {
+        const users: UserEntity[] = await this.userRepository.findByIds(createRolDto.users);
         const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(createRolDto.permisos);
+        const grupos: GrupoEntity[] = await this.grupoRepository.findByIds(createRolDto.grupos);
         return new RolEntity(
             createRolDto.nombre,
             createRolDto.descripcion,
-            permisos
+            users,
+            permisos,
+            grupos
         );
     }
     async dtoToUpdateEntity(updateRolDto: UpdateRolDto, updateRolEntity: RolEntity): Promise<RolEntity> {
         const users: UserEntity[] = await this.userRepository.findByIds(updateRolDto.users);
-        const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(updateRolDto.users);
-        const grupos: GrupoEntity[] = await this.grupoRepository.findByIds(updateRolDto.users);
+        const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(updateRolDto.permisos);
+        const grupos: GrupoEntity[] = await this.grupoRepository.findByIds(updateRolDto.grupos);
         updateRolEntity.nombre = updateRolDto.nombre;
         updateRolEntity.descripcion = updateRolDto.descripcion;
         if (users) {

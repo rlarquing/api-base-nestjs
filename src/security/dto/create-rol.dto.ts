@@ -20,6 +20,11 @@ export class CreateRolDto {
 
     @IsArray()
     @IsOptional()
+    @ApiProperty({ description: 'Usuarios que tienen este rol.', example: [1, 2] })
+    users?: number[];
+
+    @IsArray()
+    @IsOptional()
     @ApiProperty({ description: 'Permisos del rol.', example: [1, 2] })
     permisos?: number[];
 
