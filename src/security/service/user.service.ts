@@ -1,5 +1,5 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {GrupoEntity, HISTORY_ACTION, PermisoEntity, RolEntity, UserEntity} from '../entity';
+import {HISTORY_ACTION, PermisoEntity, RolEntity, UserEntity} from '../entity';
 import {PermisoRepository, RolRepository, UserRepository} from '../repository';
 import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {UserMapper} from "../mapper";
@@ -59,7 +59,6 @@ export class UserService {
                 let permisosGrupo: PermisoEntity[]=[];
                 newUser.roles.forEach((rol: RolEntity) => {
                         permisosGrupo.concat(rol.permisos);
-                        rol.grupos.forEach((grupo: GrupoEntity) => permisosGrupo.concat(grupo.permisos));
                     }
                 );
                 permisosGrupo=eliminarDuplicado(permisosGrupo);
@@ -95,7 +94,6 @@ export class UserService {
                 let permisosGrupo: PermisoEntity[]=[];
                 foundUser.roles.forEach((rol: RolEntity) => {
                         permisosGrupo.concat(rol.permisos);
-                        rol.grupos.forEach((grupo: GrupoEntity) => permisosGrupo.concat(grupo.permisos));
                     }
                 );
                 permisosGrupo=eliminarDuplicado(permisosGrupo);

@@ -6,7 +6,6 @@ import {
 import { UserEntity } from './user.entity';
 import {GenericNomencladorEntity} from "../../nomenclator/entity";
 import {PermisoEntity} from "./permiso.entity";
-import {GrupoEntity} from "./grupo.entity";
 
 @Entity('rol', { schema: 'mod_auth' })
 export class RolEntity extends GenericNomencladorEntity {
@@ -27,14 +26,10 @@ export class RolEntity extends GenericNomencladorEntity {
     }})
   permisos: PermisoEntity[];
 
-  @ManyToMany(() => GrupoEntity, (grupo) => grupo.roles)
-  @JoinColumn()
-  grupos: GrupoEntity[];
-
-  constructor(nombre: string, descripcion: string, users?: UserEntity[], permisos?: PermisoEntity[], grupos?: GrupoEntity[]) {
+  constructor(nombre: string, descripcion: string, users?: UserEntity[], permisos?: PermisoEntity[]) {
     super(nombre, descripcion);
     this.users = users;
     this.permisos = permisos;
-    this.grupos = grupos;
+
   }
 }

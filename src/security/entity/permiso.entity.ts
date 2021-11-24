@@ -8,7 +8,6 @@ import {
 import {ModeloEntity} from "./modelo.entity";
 import {UserEntity} from "./user.entity";
 import {RolEntity} from "./rol.entity";
-import {GrupoEntity} from "./grupo.entity";
 
 @Entity('permiso',{schema: 'mod_auth'})
 export class PermisoEntity {
@@ -34,10 +33,6 @@ export class PermisoEntity {
     @ManyToMany(() => RolEntity, (rol) => rol.permisos)
     @JoinColumn()
     roles: RolEntity[];
-
-    @ManyToMany(() => GrupoEntity, (grupo) => grupo.permisos)
-    @JoinColumn()
-    grupos: GrupoEntity[];
 
     constructor(nombre: string, servicio: string, modelo: ModeloEntity) {
         this.nombre = nombre;

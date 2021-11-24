@@ -5,12 +5,11 @@ import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule, ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../app.keys";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {ModeloEntity, GrupoEntity, PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
-import {AuthController, GrupoController, RolController, TrazaController, UserController} from "./controller";
-import {AuthService, GrupoService, RolService, TrazaService, UserService} from "./service";
-import {GrupoMapper, ModeloMapper, PermisoMapper, RolMapper, TrazaMapper, UserMapper} from "./mapper";
+import {ModeloEntity, PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
+import {AuthController, RolController, TrazaController, UserController} from "./controller";
+import {AuthService, RolService, TrazaService, UserService} from "./service";
+import {ModeloMapper, PermisoMapper, RolMapper, TrazaMapper, UserMapper} from "./mapper";
 import {
-    GrupoRepository,
     ModeloRepository,
     PermisoRepository,
     RolRepository,
@@ -35,30 +34,27 @@ import {SharedModule} from "../shared/shared.module";
                 };
             }
         }),
-        TypeOrmModule.forFeature([UserEntity, RolEntity, TrazaEntity, ModeloEntity, PermisoEntity, GrupoEntity ]),
+        TypeOrmModule.forFeature([UserEntity, RolEntity, TrazaEntity, ModeloEntity, PermisoEntity]),
         forwardRef(() => SharedModule)
     ],
-    controllers: [UserController, RolController, AuthController, TrazaController, GrupoController],
+    controllers: [UserController, RolController, AuthController, TrazaController],
     providers: [
         UserRepository,
         RolRepository,
         TrazaRepository,
         ModeloRepository,
         PermisoRepository,
-        GrupoRepository,
         UserService,
         RolService,
         AuthService,
         UserMapper,
         RolMapper,
-        GrupoService,
         JwtStrategy,
         RefreshStrategy,
         TrazaService,
         TrazaMapper,
         ModeloMapper,
-        PermisoMapper,
-        GrupoMapper
+        PermisoMapper
     ],
     exports: [
         JwtStrategy,

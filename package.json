@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand --detectOpenHandles --coverage",
     "merge:cov": "ts-node ./merge-coverage.ts --report coverage/unit/coverage-final.json --report coverage/e2e/coverage-final.json",
     "verify": "npm run lint && npm run test:cov && npm run test:e2e && npm run merge:cov",
-    "typeorm": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -f ./src/database/orm.config.ts",
+    "typeorm": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -f orm.config.ts",
     "migration:generate": "npm run typeorm migration:generate -- -n",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert",

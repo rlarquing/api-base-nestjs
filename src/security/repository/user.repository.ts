@@ -117,11 +117,10 @@ export class UserRepository {
     }
 
     async findByName(username: string): Promise<UserEntity> {
-        const user: UserEntity = await this.userRepository.findOne({
+        return await this.userRepository.findOne({
             where: {activo: true, username: username},
-            relations: ['roles','permisos']
+            relations: ['roles', 'permisos']
         });
-        return user;
     }
 
     public async validateRefreshToken(username: string, refreshToken: string): Promise<UserEntity> {
