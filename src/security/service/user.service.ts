@@ -7,7 +7,7 @@ import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import * as bcrypt from 'bcrypt';
 import {ResponseDto} from "../../shared/dto";
-import {eliminarDuplicado, removeFromArr} from "../../shared/lib/util";
+import {eliminarDuplicado, removeFromArr} from "../../../lib/util";
 
 @Injectable()
 export class UserService {

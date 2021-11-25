@@ -1,7 +1,5 @@
-import{IsNumber, IsString} from "class-validator";
+import{IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
-import {ReadUserDto} from "./read-user.dto";
-import {ReadGrupoDto} from "./read-grupo.dto";
 import {ReadPermisoDto} from "./read-permiso.dto";
 export class ReadRolDto {
 

@@ -27,9 +27,4 @@ export class CreateRolDto {
     @IsOptional()
     @ApiProperty({ description: 'Permisos del rol.', example: [1, 2] })
     permisos?: number[];
-
-    @IsArray()
-    @IsOptional()
-    @ApiProperty({ description: 'Grupos que pertenece este rol.', example: [1, 2] })
-    grupos?: number[];
 }

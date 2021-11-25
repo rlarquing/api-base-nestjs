@@ -5,12 +5,11 @@ import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule, ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../app.keys";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {ModeloEntity, PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
+import { PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
 import {AuthController, RolController, TrazaController, UserController} from "./controller";
-import {AuthService, RolService, TrazaService, UserService} from "./service";
-import {ModeloMapper, PermisoMapper, RolMapper, TrazaMapper, UserMapper} from "./mapper";
+import {AuthService, PermisoService, RolService, TrazaService, UserService} from "./service";
+import { PermisoMapper, RolMapper, TrazaMapper, UserMapper} from "./mapper";
 import {
-    ModeloRepository,
     PermisoRepository,
     RolRepository,
     TrazaRepository,
@@ -18,6 +17,7 @@ import {
 } from "./repository";
 import {RefreshStrategy} from "./strategy/refresh.strategy";
 import {SharedModule} from "../shared/shared.module";
+import {NestFactory} from "@nestjs/core";
 
 @Module({
     imports: [
@@ -34,7 +34,7 @@ import {SharedModule} from "../shared/shared.module";
                 };
             }
         }),
-        TypeOrmModule.forFeature([UserEntity, RolEntity, TrazaEntity, ModeloEntity, PermisoEntity]),
+        TypeOrmModule.forFeature([UserEntity, RolEntity, TrazaEntity, PermisoEntity]),
         forwardRef(() => SharedModule)
     ],
     controllers: [UserController, RolController, AuthController, TrazaController],
@@ -42,18 +42,17 @@ import {SharedModule} from "../shared/shared.module";
         UserRepository,
         RolRepository,
         TrazaRepository,
-        ModeloRepository,
         PermisoRepository,
         UserService,
         RolService,
         AuthService,
+        PermisoService,
         UserMapper,
         RolMapper,
         JwtStrategy,
         RefreshStrategy,
         TrazaService,
         TrazaMapper,
-        ModeloMapper,
         PermisoMapper
     ],
     exports: [
@@ -68,3 +67,4 @@ import {SharedModule} from "../shared/shared.module";
 })
 export class SecurityModule {
 }
+

@@ -16,3 +16,11 @@ export const eliminarDuplicado = (array: any): any[] => {
         return arreglado.indexOf(item) === index;
     });
 };
+export const findElemento = (lista, elemento) => {
+    for (const item of lista) {
+        if (item.indexOf(elemento) !== -1) {
+            return item;
+        }
+    }
+    return -1;
+}

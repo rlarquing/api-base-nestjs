@@ -13,7 +13,7 @@ import {Server} from 'socket.io';
 import {from, Observable} from "rxjs";
 import {map} from 'rxjs/operators';
 import {SocketService} from "../service";
-import {removeItemFromArr} from "../lib/util";
+import {removeItemFromArr} from "../../../lib/util";
 
 @WebSocketGateway()
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit {

@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
-import {PermisoEntity, UserEntity} from "../entity";
+import {PermisoEntity} from "../entity";
 
 @Injectable()
 export class PermisoRepository {
@@ -27,5 +27,9 @@ export class PermisoRepository {
         return await this.permisoRepository.findByIds(ids, {
             relations: ['modelo']
         });
+    }
+
+    async create(permisoEntity:PermisoEntity): Promise<void>{
+        await this.permisoRepository.save(permisoEntity);
     }
 }

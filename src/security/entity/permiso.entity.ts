@@ -5,7 +5,6 @@ import {
     ManyToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import {ModeloEntity} from "./modelo.entity";
 import {UserEntity} from "./user.entity";
 import {RolEntity} from "./rol.entity";
 
@@ -20,12 +19,6 @@ export class PermisoEntity {
     @Column({type: 'varchar', nullable: false})
     servicio: string;
 
-    @ManyToOne(() => ModeloEntity, (modelo) => modelo.permisos, {
-        onDelete: 'CASCADE',
-    })
-    @JoinColumn({name: 'modelo_id'})
-    modelo: ModeloEntity;
-
     @ManyToMany(() => UserEntity, (user) => user.permisos)
     @JoinColumn()
     users: UserEntity[];
@@ -34,10 +27,9 @@ export class PermisoEntity {
     @JoinColumn()
     roles: RolEntity[];
 
-    constructor(nombre: string, servicio: string, modelo: ModeloEntity) {
+    constructor(nombre: string, servicio: string) {
         this.nombre = nombre;
         this.servicio = servicio;
-        this.modelo = modelo;
     }
 
     public toString(): string {

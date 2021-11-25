@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {CreateRolDto, ReadPermisoDto, ReadRolDto, UpdateRolDto} from '../dto';
-import {GrupoEntity, PermisoEntity, RolEntity, UserEntity} from "../entity";
-import {GrupoRepository, PermisoRepository, RolRepository, UserRepository} from "../repository";
+import {PermisoEntity, RolEntity, UserEntity} from "../entity";
+import { PermisoRepository, RolRepository, UserRepository} from "../repository";
 import {PermisoMapper} from "./permiso.mapper";
 
 @Injectable()
@@ -10,26 +10,22 @@ export class RolMapper {
         protected rolRepository: RolRepository,
         protected userRepository: UserRepository,
         protected permisoRepository: PermisoRepository,
-        protected grupoRepository: GrupoRepository,
         protected permisoMapper: PermisoMapper
     ) {
     }
     async dtoToEntity(createRolDto: CreateRolDto): Promise<RolEntity> {
         const users: UserEntity[] = await this.userRepository.findByIds(createRolDto.users);
         const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(createRolDto.permisos);
-        const grupos: GrupoEntity[] = await this.grupoRepository.findByIds(createRolDto.grupos);
         return new RolEntity(
             createRolDto.nombre,
             createRolDto.descripcion,
             users,
-            permisos,
-            grupos
+            permisos
         );
     }
     async dtoToUpdateEntity(updateRolDto: UpdateRolDto, updateRolEntity: RolEntity): Promise<RolEntity> {
         const users: UserEntity[] = await this.userRepository.findByIds(updateRolDto.users);
         const permisos: PermisoEntity[] = await this.permisoRepository.findByIds(updateRolDto.permisos);
-        const grupos: GrupoEntity[] = await this.grupoRepository.findByIds(updateRolDto.grupos);
         updateRolEntity.nombre = updateRolDto.nombre;
         updateRolEntity.descripcion = updateRolDto.descripcion;
         if (users) {
@@ -37,9 +33,6 @@ export class RolMapper {
         }
         if (permisos) {
             updateRolEntity.permisos = permisos;
-        }
-        if (grupos) {
-            updateRolEntity.grupos = grupos;
         }
         return updateRolEntity;
     }

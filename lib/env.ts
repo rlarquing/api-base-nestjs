@@ -1,13 +1,12 @@
 import * as fs from 'fs';
 import {parse} from 'dotenv';
-import {TypescriptParser} from "typescript-parser";
 
 const defined = (v) => typeof v != 'undefined' && v != '';
 let envConfig: { [key: string]: string };
 export const env = (name: string, default_value?) => {
     const isDevelopmentEnv = process.env.NODE_ENV !== "production";
     if (isDevelopmentEnv) {
-        const envFilePath = __dirname + '/../../../config/.env';
+        const envFilePath = process.cwd() + '\\config\\.env';
         const existsPath = fs.existsSync(envFilePath);
         if (!existsPath) {
             console.log('.env file does not exist');
@@ -26,9 +25,6 @@ export const env = (name: string, default_value?) => {
     if (v.toLowerCase() === "false") {
         v = false;
     }
-    //const parser = new TypescriptParser();
-
-    //const parsed =  parser.parseFile("./src/security/controller/grupo.controller.ts", __dirname).then((res)=>console.log(res.declarations[0]));
 
     return v ?? default_value;
 };

@@ -1,8 +1,7 @@
-import { Body, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Body, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { ConfigService } from '@atlasjs/config';
 import { GeometricService } from '../service';
-import { GeoJsonDto, ReproyectarDto, TypeDto } from '../dto';
+import { GeoJsonDto, TypeDto } from '../dto';
 import { GenericController } from './generic.controller';
 
 export abstract class GeometricController<

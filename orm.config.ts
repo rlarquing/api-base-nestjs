@@ -1,5 +1,5 @@
 import { ConnectionOptions } from 'typeorm';
-import { env } from './src/shared/lib/env';
+import { env } from './lib/env';
 import {Configuration} from './src/database/database.keys';
 import {AppConfig} from './src/app.keys';
 
