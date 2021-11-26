@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { IJwtPayload } from './../interface/ijwt-payload.interface';
-import { UserEntity } from './../entity/user.entity';
-import { UserRepository } from './../repository/user.repository';
+import { IJwtPayload } from '../interface/ijwt-payload.interface';
+import { UserEntity } from '../entity';
+import { UserRepository } from '../repository';
 import { ConfigService } from '@atlasjs/config';
 import { AppConfig } from '../../app.keys';
 

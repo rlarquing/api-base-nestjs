@@ -14,7 +14,7 @@ export class RolEntity extends GenericNomencladorEntity {
   @JoinColumn()
   users: UserEntity[];
 
-  @ManyToMany(() => PermisoEntity, (permiso) => permiso.users,{eager: false})
+  @ManyToMany(() => PermisoEntity, (permiso) => permiso.users,{eager: false, onDelete: 'CASCADE'})
   @JoinTable({name: 'rol_permiso',
     joinColumn: {
       name: "rol_id",

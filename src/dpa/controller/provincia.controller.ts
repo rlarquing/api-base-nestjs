@@ -3,7 +3,7 @@ import {AuthGuard} from '@nestjs/passport';
 import {ProvinciaService} from '../service';
 import {Roles} from "../../security/decorator";
 import {RolType} from "../../security/enum/rol-type.enum";
-import {RolGuard} from "../../security/guard/rol.guard";
+import {RolGuard} from "../../security/guard";
 import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Pagination} from "nestjs-typeorm-paginate";

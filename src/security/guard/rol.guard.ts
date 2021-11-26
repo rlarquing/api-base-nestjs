@@ -11,7 +11,6 @@ export class RolGuard implements CanActivate {
     let roles: string[] = this.reflector.get<string[]>(
       'roles',
        context.getHandler());
-
        if(!roles){
         return true;
        }

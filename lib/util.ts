@@ -1,7 +1,7 @@
-export const removeItemFromArr = (arr, item, field): any[] => {
+export const removeItemFromArr = (arr: any[], item: any, field: string): any[] => {
     return arr.filter(e => e[field] !== item[field]);
 };
-export const removeFromArr = (arr, item): any[] => {
+export const removeFromArr = (arr: any[], item: any): any[] => {
     return arr.filter(e => e !== item);
 };
 export const encuentra = (array: any[], elem: any, field: any): boolean => {
@@ -12,15 +12,15 @@ export const eliminarDuplicado = (array: any): any[] => {
     array.forEach((element) => {
         arreglado.push(element.trim());
     });
-    return arreglado.filter((item, index) => {
+    return arreglado.filter((item: any, index: number) => {
         return arreglado.indexOf(item) === index;
     });
 };
-export const findElemento = (lista, elemento) => {
+export const findElemento = (lista: any[], elemento: any): any => {
     for (const item of lista) {
         if (item.indexOf(elemento) !== -1) {
             return item;
         }
     }
     return -1;
-}
+};

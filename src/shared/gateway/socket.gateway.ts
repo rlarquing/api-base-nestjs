@@ -46,7 +46,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect, 
     }
 
     afterInit(server: any) {
-        console.log('Socket is live')
+        console.log('Socket is alive')
     }
 
     @SubscribeMessage('message')

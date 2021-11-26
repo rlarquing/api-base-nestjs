@@ -6,7 +6,7 @@ import {UserMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
 import * as bcrypt from 'bcrypt';
-import {ResponseDto} from "../../shared/dto";
+import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../../shared/dto";
 import {eliminarDuplicado, removeFromArr} from "../../../lib/util";
 
 @Injectable()
@@ -130,5 +130,35 @@ export class UserService {
     }
     private static async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);
+    }
+
+    async filter(
+        options: IPaginationOptions,
+        filtroGenericoDto: FiltroGenericoDto,
+    ): Promise<Pagination<ReadUserDto>> {
+        const items: Pagination<UserEntity> = await this.userRepository.filter(
+            options,
+            filtroGenericoDto.clave,
+            filtroGenericoDto.valor,
+        );
+        const readDto: any[] = [];
+        for (const item of items.items) {
+            readDto.push(await this.userMapper.entityToDto(item));
+        }
+        return new Pagination(readDto, items.meta, items.links);
+    }
+    async search(
+        options: IPaginationOptions,
+        buscarDto: BuscarDto,
+    ): Promise<Pagination<ReadUserDto>> {
+        const items: Pagination<UserEntity> = await this.userRepository.search(
+            options,
+            buscarDto.search,
+        );
+        const readDto: any[] = [];
+        for (const item of items.items) {
+            readDto.push(await this.userMapper.entityToDto(item));
+        }
+        return new Pagination(readDto, items.meta, items.links);
     }
 }

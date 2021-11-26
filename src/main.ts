@@ -6,9 +6,10 @@ import {ValidationError} from "class-validator";
 import {PermisoService} from "./security/service";
 import {parseController} from "../lib/parse-controller";
 
+
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
-        cors: true, logger: false,
+        cors: true
     });
     app.setGlobalPrefix('api');
     const options = new DocumentBuilder().addBearerAuth().setTitle('API-BASE').setDescription('Api básica con Nestjs').setVersion('1.0').build();

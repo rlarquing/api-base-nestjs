@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {RolType} from "../../security/enum/rol-type.enum";
-import {RolGuard} from "../../security/guard/rol.guard";
+import {RolGuard} from "../../security/guard";
 import {MunicipioService} from "../service";
 import {ReadMunicipioDto} from "../dto";
 import {Pagination} from "nestjs-typeorm-paginate";

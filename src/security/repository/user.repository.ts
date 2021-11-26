@@ -1,11 +1,12 @@
 import {ConflictException, Injectable, InternalServerErrorException, NotFoundException} from "@nestjs/common";
 import {RolEntity, UserEntity} from '../entity';
 import {InjectRepository} from "@nestjs/typeorm";
-import {MoreThanOrEqual, Repository} from "typeorm";
+import {Between, ILike, MoreThanOrEqual, Repository} from "typeorm";
 import {RolType} from '../enum/rol-type.enum';
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import * as moment from "moment";
 import {ResponseDto} from "../../shared/dto";
+import {isBoolean, isDate, isEmpty, isNumber, isString} from "class-validator";
 
 @Injectable()
 export class UserRepository {
@@ -137,5 +138,105 @@ export class UserRepository {
             return null;
         }
         return user;
+    }
+
+    async filter(
+        options: IPaginationOptions,
+        claves: string[],
+        valores: any[],
+    ): Promise<Pagination<UserEntity>> {
+        const wheres = { activo: true };
+        for (let i = 0; i < claves.length; i++) {
+            if (isNumber(valores[i])) {
+                wheres[claves[i]] = valores[i];
+            } else if (isDate(valores[i])) {
+                let datep = valores[i];
+                const start = new Date(datep.setHours(0, 0, 0, 0));
+                const end = new Date(datep.setHours(23, 59, 59, 999));
+                const date = { date: Between(start.toISOString(), end.toISOString()) };
+                wheres[claves[i]] = date;
+            } else if (isBoolean(valores[i])) {
+                wheres[claves[i]] = valores[i];
+            } else {
+                wheres[claves[i]] = ILike(`%${valores[i]}%`);
+            }
+        }
+        return await paginate<UserEntity>(this.userRepository, options, {
+            where: wheres,
+            relations: ['roles', 'persona'],
+        });
+    }
+
+    async search(
+        options: IPaginationOptions,
+        search: any,
+    ): Promise<Pagination<UserEntity>> {
+        if (!isEmpty(search)) {
+            const result = await this.userRepository.find({
+                where: { activo: true },
+            });
+            let objs = new Map<string, string>();
+            let keys: string[];
+            if (result.length > 0) {
+                keys = Object.keys(result[0]);
+            }
+            for (const key of keys) {
+                for (const item of result) {
+                    if (
+                        isString(item[key]) &&
+                        isString(search) &&
+                        item[key].toLowerCase().indexOf(search.toLowerCase()) !== -1
+                    ) {
+                        if (!objs.has(key)) {
+                            objs.set(key, `${key} ILIKE '%${search}%'`);
+                        }
+                    } else if (
+                        isNumber(item[key]) &&
+                        isNumber(search) &&
+                        item[key] === search
+                    ) {
+                        if (!objs.has(key)) {
+                            objs.set(key, `${key} = :search`);
+                        }
+                    } else if (
+                        isDate(item[key]) &&
+                        isDate(search) &&
+                        item[key] === search
+                    ) {
+                        let datep = item[key];
+                        const start = new Date(datep.setHours(0, 0, 0, 0));
+                        const end = new Date(datep.setHours(23, 59, 59, 999));
+                        const date = {
+                            date: Between(start.toISOString(), end.toISOString()),
+                        };
+                        if (!objs.has(key)) {
+                            objs.set(key, `${key}=${date}`);
+                        }
+                    } else if (
+                        isBoolean(item[key]) &&
+                        isBoolean(search) &&
+                        item[key] === search
+                    ) {
+                        if (!objs.has(key)) {
+                            objs.set(key, `${key}= :search`);
+                        }
+                    }
+                }
+            }
+            const queryBuilder = this.userRepository.createQueryBuilder('u');
+            queryBuilder.leftJoinAndSelect('u.roles', 'roles');
+            if (objs.size === 0) {
+                queryBuilder.where(`u.activo = true AND u.id=0`);
+            } else {
+                let where: string[] = [];
+                objs.forEach((item) => {
+                    where.push(`u.${item}`);
+                });
+                queryBuilder.where(`u.activo = true AND ${where.join(' OR ')}`, {
+                    search: search,
+                });
+            }
+            return await paginate<UserEntity>(queryBuilder, options);
+        }
     }
 }
