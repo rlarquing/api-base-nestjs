@@ -1,10 +1,11 @@
 import * as fs from 'fs';
 import {parse} from 'dotenv';
+import {normalize} from "path";
 
 const defined = (v) => typeof v != 'undefined' && v != '';
 let envConfig: { [key: string]: string };
 export const env = (name: string, default_value?) => {
-        const envFilePath = process.cwd() + '\\config\\.env';
+        const envFilePath = normalize(`${process.cwd()}/config/.env`);
         const existsPath = fs.existsSync(envFilePath);
         if (!existsPath) {
             console.log('.env file does not exist');
