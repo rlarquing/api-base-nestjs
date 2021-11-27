@@ -5,9 +5,11 @@ import {BadRequestException, ValidationPipe} from "@nestjs/common";
 import {ValidationError} from "class-validator";
 import {PermisoService} from "./security/service";
 import {parseController} from "../lib/parse-controller";
-
+import {env} from "../lib/env";
+import {AppConfig} from "./app.keys";
 
 async function bootstrap() {
+    process.env.NODE_ENV = env(AppConfig.NODE_ENV);
     const app = await NestFactory.create(AppModule, {
         cors: true
     });

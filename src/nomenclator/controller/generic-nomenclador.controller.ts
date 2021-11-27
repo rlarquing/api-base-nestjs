@@ -17,11 +17,10 @@ import {
     ApiOperation, ApiParam,
     ApiResponse, ApiTags
 } from '@nestjs/swagger';
-import {GetUser} from 'src/security/decorator';
+import {GetUser, Servicio} from 'src/security/decorator';
 import {UserEntity} from 'src/security/entity';
 import {GenericNomencladorService} from '../service';
 import {AuthGuard} from "@nestjs/passport";
-import {RolGuard} from "../../security/guard/rol.guard";
 import {BuscarDto, FiltroGenericoDto, ListadoDto, ResponseDto} from "../../shared/dto";
 import {
     CreateNomencladorDto,
@@ -33,10 +32,11 @@ import {
 import {AppConfig} from "../../app.keys";
 import {DeleteResult} from "typeorm";
 import {NomencladorTypeEnum} from "../enum/nomenclador-type.enum";
+import {PermissionGuard, RolGuard} from "../../security/guard";
 
 @ApiTags('Nomencladores')
 @Controller('nomenclador')
-@UseGuards(AuthGuard('jwt'), RolGuard)
+@UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
 @ApiBearerAuth()
 @UsePipes(ValidationPipe)
 export class GenericNomencladorController {
@@ -60,6 +60,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'getAllNomenclator')
     async getAllNomenclator(@Param('name') name: string): Promise<SelectDto[]> {
         return await this.nomencladorService.findAllNomenclator(name);
     }
@@ -78,6 +79,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'findById')
     async findById(
         @Param('name') name: string,
         @Param('id', ParseIntPipe) id: number
@@ -101,6 +103,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'findAll')
     async findAll(
         @Param('name') name: string,
         @Query('page') page: number = 1,
@@ -136,6 +139,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'findByIds')
     async findByIds(@Param('name') name: string, @Body() ids: number[]): Promise<ReadNomencladorDto[]> {
         return await this.nomencladorService.findByIds(name, ids);
     }
@@ -150,6 +154,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'create')
     async create(@Param('name') name: string, @GetUser() user: UserEntity, @Body() createNomencladorDto: CreateNomencladorDto): Promise<ResponseDto> {
         return await this.nomencladorService.create(name, user, createNomencladorDto);
     }
@@ -164,6 +169,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'createMultiple')
     async createMultiple(@Param('name') name: string, @GetUser() user: UserEntity, @Body() createNomencladorDto: CreateNomencladorDto[]): Promise<ResponseDto> {
         let result = new ResponseDto();
         for (const item of createNomencladorDto) {
@@ -182,6 +188,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'update')
     async update(
         @Param('name') name: string,
         @GetUser() user: UserEntity,
@@ -201,6 +208,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'updateMultiple')
     async updateMultiple(
         @Param('name') name: string,
         @GetUser() user: UserEntity,
@@ -219,6 +227,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'delete')
     async delete(@Param('name') name: string, @GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<ResponseDto> {
         return await this.nomencladorService.deleteMultiple(name, user, [id]);
     }
@@ -233,6 +242,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'deleteMultiple')
     async deleteMultiple(@Param('name') name: string, @GetUser() user: UserEntity, @Body() ids: number[]): Promise<ResponseDto> {
         return await this.nomencladorService.deleteMultiple(name, user, ids);
     }
@@ -243,6 +253,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'remove')
     async remove(@Param('name') name: string, @GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
         return await this.nomencladorService.removeMultiple(name, user, [id]);
     }
@@ -257,6 +268,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'removeMultiple')
     async removeMultiple(@Param('name') name: string, @GetUser() user: UserEntity, @Body() ids: number[]): Promise<DeleteResult> {
         return await this.nomencladorService.removeMultiple(name, user, ids);
     }
@@ -269,6 +281,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'count')
     async count(@Param('name') name: string): Promise<number> {
         return await this.nomencladorService.count(name);
     }
@@ -287,6 +300,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'filter')
     async filter(@Param('name') name: string,
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -319,6 +333,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'search')
     async search(@Param('name') name: string,
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -344,6 +359,7 @@ export class GenericNomencladorController {
     @ApiResponse({status: 401, description: 'Sin autorizacion.'})
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
+    @Servicio(GenericNomencladorController.name, 'nombreNomencladores')
     nombreNomencladores(): string[] {
         const array: string[] = [];
         for (const [, propertyValue] of Object.entries(NomencladorTypeEnum)) {

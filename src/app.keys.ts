@@ -4,4 +4,5 @@ export enum AppConfig {
   SSL = 'SSL',
   SECRET = 'SECRET',
   URL = 'URL',
+  NODE_ENV = 'NODE_ENV',
 }

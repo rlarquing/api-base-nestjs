@@ -113,6 +113,7 @@ async function buscarServicios(): Promise<Map<string, CreatePermisoDto>> {
             if (member.name && decoradores.includes('Servicio')) {
                 metodos.push(member.name.escapedText);
             }
+            decoradores=[];
         });
         if (className !== 'GenericController' && className !== 'GeometricController') {
             for (const metodo of metodos) {

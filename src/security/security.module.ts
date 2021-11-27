@@ -5,10 +5,10 @@ import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule, ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../app.keys";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import { PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
+import {PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
 import {AuthController, RolController, TrazaController, UserController} from "./controller";
 import {AuthService, PermisoService, RolService, TrazaService, UserService} from "./service";
-import { PermisoMapper, RolMapper, TrazaMapper, UserMapper} from "./mapper";
+import {PermisoMapper, RolMapper, TrazaMapper, UserMapper} from "./mapper";
 import {
     PermisoRepository,
     RolRepository,
@@ -17,7 +17,6 @@ import {
 } from "./repository";
 import {RefreshStrategy} from "./strategy/refresh.strategy";
 import {SharedModule} from "../shared/shared.module";
-import {NestFactory} from "@nestjs/core";
 
 @Module({
     imports: [
@@ -63,7 +62,8 @@ import {NestFactory} from "@nestjs/core";
         RolRepository,
         RolMapper,
         UserService,
-        UserMapper]
+        UserMapper,
+        JwtModule]
 })
 export class SecurityModule {
 }
