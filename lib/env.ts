@@ -4,8 +4,6 @@ import {parse} from 'dotenv';
 const defined = (v) => typeof v != 'undefined' && v != '';
 let envConfig: { [key: string]: string };
 export const env = (name: string, default_value?) => {
-    const isDevelopmentEnv = process.env.NODE_ENV !== "production";
-    if (isDevelopmentEnv) {
         const envFilePath = process.cwd() + '\\config\\.env';
         const existsPath = fs.existsSync(envFilePath);
         if (!existsPath) {
@@ -13,7 +11,6 @@ export const env = (name: string, default_value?) => {
             process.exit(0);
         }
         envConfig = parse(fs.readFileSync(envFilePath));
-    }
     let v: any = envConfig[name];
     if (!defined(default_value) && !defined(v)) {
         console.error(`Missing environment variable: "${name}"`);
