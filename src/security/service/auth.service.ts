@@ -5,7 +5,7 @@ import {AuthCredentialsDto, SecretDataDto, UserDto} from '../dto';
 import {RolRepository, UserRepository} from '../repository';
 import {RolType} from "../enum/rol-type.enum";
 import {PermisoEntity, RolEntity, UserEntity} from "../entity";
-import * as bcrypt from 'bcrypt';
+import { genSalt, hash } from 'bcryptjs';
 import {ResponseDto} from "../../shared/dto";
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
@@ -22,7 +22,7 @@ export class AuthService {
         let result = new ResponseDto();
         const {username, password, email} = userDto;
         const userEntity: UserEntity = new UserEntity(username, email);
-        userEntity.salt = await bcrypt.genSalt();
+        userEntity.salt = await genSalt();
         userEntity.password = await this.hashPassword(password, userEntity.salt);
         await this.userRepository.signUp(userEntity);
         try {
@@ -69,7 +69,7 @@ export class AuthService {
         };
     }
     private async hashPassword(password: string, salt: string): Promise<string> {
-        return bcrypt.hash(password, salt);
+        return hash(password, salt);
     }
     public async getRefreshToken(id: number): Promise<string> {
         const userEntity: UserEntity = await this.userRepository.findById(id);

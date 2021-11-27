@@ -5,7 +5,7 @@ import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {UserMapper} from "../mapper";
 import {TrazaService} from "./traza.service";
 import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
-import * as bcrypt from 'bcrypt';
+import { genSalt, hash } from 'bcryptjs';
 import {BuscarDto, FiltroGenericoDto, ResponseDto} from "../../shared/dto";
 import {eliminarDuplicado, removeFromArr} from "../../../lib/util";
 
@@ -52,7 +52,7 @@ export class UserService {
         try {
             const newUser = this.userMapper.dtoToEntity(userDto);
             let {password, roles, permisos} = userDto;
-            newUser.salt = await bcrypt.genSalt();
+            newUser.salt = await genSalt();
             newUser.password = await UserService.hashPassword(password, newUser.salt);
             newUser.roles = await this.rolRepository.findByIds(roles);
             if (!permisos) {
@@ -129,7 +129,7 @@ export class UserService {
         return await this.userRepository.delete(id);
     }
     private static async hashPassword(password: string, salt: string): Promise<string> {
-        return bcrypt.hash(password, salt);
+        return hash(password, salt);
     }
 
     async filter(

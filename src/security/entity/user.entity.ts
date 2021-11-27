@@ -5,7 +5,7 @@ import {
     ManyToMany,
     Unique
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import { hash } from 'bcryptjs';
 import {RolEntity} from './rol.entity';
 import {GenericEntity} from "../../shared/entity";
 import {PermisoEntity} from "./permiso.entity";
@@ -52,8 +52,7 @@ export class UserEntity extends GenericEntity {
     })
     permisos: PermisoEntity[];
     async validatePassword(password: string): Promise<boolean> {
-        const hash = await bcrypt.hash(password, this.salt);
-        return hash === this.password;
+        return this.password === await hash(password, this.salt);
     }
     constructor(username: string, email: string, permisos?: PermisoEntity[]) {
         super();
