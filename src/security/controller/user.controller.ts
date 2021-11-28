@@ -23,13 +23,14 @@ import {ConfigService} from "@nestjs/config";
 @ApiTags('Users')
 @Controller('user')
 @Roles(RolType.ADMINISTRADOR)
-@UseGuards(AuthGuard('jwt'), RolGuard)
+@UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
 @ApiBearerAuth()
 export class UserController {
     constructor(
         protected userService: UserService,
-        protected configService: ConfigService,
-    ) {}
+        protected configService: ConfigService
+    ) {
+    }
     @Get()
     @ApiOperation({summary: 'Obtener el listado de los usuarios'})
     @ApiResponse({
@@ -47,7 +48,6 @@ export class UserController {
     @ApiParam({required: false, name: "page", example: '1'})
     @ApiParam({required: false, name: "limit", example: '10'})
     @Servicio(UserController.name, 'findAll')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10
@@ -78,7 +78,6 @@ export class UserController {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(UserController.name, 'findById')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async findById(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
         return await this.userService.findById(id);
     }
@@ -97,7 +96,6 @@ export class UserController {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(UserController.name, 'create')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async create(@GetUser() user: UserEntity, @Body() userDto: UserDto): Promise<ResponseDto> {
         return await this.userService.create(user, userDto);
     }
@@ -116,7 +114,6 @@ export class UserController {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(UserController.name, 'update')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async update(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<ResponseDto> {
         return await this.userService.update(user, id, updateUserDto);
     }
@@ -131,7 +128,6 @@ export class UserController {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(UserController.name, 'delete')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async delete(@GetUser() user: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<ResponseDto> {
         return await this.userService.delete(user, id);
     }
@@ -152,7 +148,6 @@ export class UserController {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(UserController.name, 'filter')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async filter(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -189,7 +184,6 @@ export class UserController {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(UserController.name, 'search')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async search(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,

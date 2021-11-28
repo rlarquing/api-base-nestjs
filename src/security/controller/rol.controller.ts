@@ -44,7 +44,7 @@ import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Roles')
 @Controller('rol')
-@UseGuards(AuthGuard('jwt'), RolGuard)
+@UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
 @ApiBearerAuth()
 @UsePipes(ValidationPipe)
 export class RolController extends GenericController<RolEntity> {
@@ -72,7 +72,6 @@ export class RolController extends GenericController<RolEntity> {
     @ApiParam({required: false, name: "page", example: '1'})
     @ApiParam({required: false, name: "limit", example: '10'})
     @Servicio(RolController.name, 'findAll')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10
@@ -96,7 +95,6 @@ export class RolController extends GenericController<RolEntity> {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(RolController.name, 'findById')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async findById(@Param('id', ParseIntPipe) id: number): Promise<ReadRolDto> {
         return await super.findById(id);
     }
@@ -120,7 +118,6 @@ export class RolController extends GenericController<RolEntity> {
     @ApiResponse({status: 403, description: 'Sin autorizacion al recurso.'})
     @ApiResponse({status: 500, description: 'Error interno del servidor.'})
     @Servicio(RolController.name, 'findByIds')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async findByIds(@Body() ids: number[]): Promise<ReadRolDto[]> {
         return await super.findByIds(ids);
     }
@@ -144,7 +141,6 @@ export class RolController extends GenericController<RolEntity> {
         type: BadRequestDto
     })
     @Servicio(RolController.name, 'create')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async create(
         @GetUser() user: UserEntity,
         @Body() createRoleDto: CreateRolDto
@@ -171,7 +167,6 @@ export class RolController extends GenericController<RolEntity> {
         type: BadRequestDto
     })
     @Servicio(RolController.name, 'createMultiple')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async createMultiple(
         @GetUser() user: UserEntity,
         @Body() createRoleDto: CreateRolDto[]
@@ -198,7 +193,6 @@ export class RolController extends GenericController<RolEntity> {
         type: BadRequestDto
     })
     @Servicio(RolController.name, 'update')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async update(
         @GetUser() user: UserEntity,
         @Param('id', ParseIntPipe) id: number,
@@ -227,7 +221,6 @@ export class RolController extends GenericController<RolEntity> {
         type: BadRequestDto
     })
     @Servicio(RolController.name, 'updateMultiple')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async updateMultiple(
         @GetUser() user: UserEntity,
         @Body() updateMultipleRolDto: UpdateMultipleRolDto[]
@@ -253,7 +246,6 @@ export class RolController extends GenericController<RolEntity> {
     @ApiParam({required: false, name: "page", example: '1'})
     @ApiParam({required: false, name: "limit", example: '10'})
     @Servicio(RolController.name, 'filter')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async filter(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
@@ -282,7 +274,6 @@ export class RolController extends GenericController<RolEntity> {
     @ApiParam({required: false, name: "page", example: '1'})
     @ApiParam({required: false, name: "limit", example: '10'})
     @Servicio(RolController.name, 'search')
-    @UseGuards(AuthGuard('jwt'), PermissionGuard)
     async search(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
