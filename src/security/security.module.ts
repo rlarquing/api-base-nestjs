@@ -2,7 +2,6 @@ import {forwardRef, Module} from '@nestjs/common';
 import {JwtStrategy} from "./strategy/jwt.strategy";
 import {PassportModule} from "@nestjs/passport";
 import {JwtModule} from "@nestjs/jwt";
-import {ConfigModule, ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../app.keys";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {PermisoEntity, RolEntity, TrazaEntity, UserEntity} from "./entity";
@@ -17,6 +16,7 @@ import {
 } from "./repository";
 import {RefreshStrategy} from "./strategy/refresh.strategy";
 import {SharedModule} from "../shared/shared.module";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 
 @Module({
     imports: [
@@ -26,7 +26,7 @@ import {SharedModule} from "../shared/shared.module";
             inject: [ConfigService],
             useFactory(configService: ConfigService) {
                 return {
-                    secret: configService.config[AppConfig.SECRET],
+                    secret: configService.get(AppConfig.SECRET),
                     signOptions: {
                         expiresIn: 3600
                     }

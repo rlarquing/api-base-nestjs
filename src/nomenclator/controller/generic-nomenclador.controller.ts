@@ -1,4 +1,3 @@
-import {ConfigService} from '@atlasjs/config';
 import {
     Body,
     Controller, Delete,
@@ -33,6 +32,7 @@ import {AppConfig} from "../../app.keys";
 import {DeleteResult} from "typeorm";
 import {NomencladorTypeEnum} from "../enum/nomenclador-type.enum";
 import {PermissionGuard, RolGuard} from "../../security/guard";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Nomencladores')
 @Controller('nomenclador')
@@ -110,8 +110,8 @@ export class GenericNomencladorController {
         @Query('limit') limit: number = 10
     ): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         const data = await this.nomencladorService.findAll(name, {
             page,
             limit,
@@ -306,8 +306,8 @@ export class GenericNomencladorController {
         @Query('limit') limit: number = 10,
         @Body() filtroGenericoDto: FiltroGenericoDto): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         const data = await this.nomencladorService.filter(name, {
             page,
             limit,
@@ -339,8 +339,8 @@ export class GenericNomencladorController {
         @Query('limit') limit: number = 10,
         @Body() buscarDto: BuscarDto): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         const data = await this.nomencladorService.search(name, {
             page,
             limit,

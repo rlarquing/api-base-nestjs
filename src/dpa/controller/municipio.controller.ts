@@ -14,9 +14,9 @@ import {ReadMunicipioDto} from "../dto";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AppConfig} from "../../app.keys";
-import {ConfigService} from "@atlasjs/config";
 import {Roles} from "../../security/decorator";
 import {GeoJsonDto} from "../../shared/dto";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Municipios')
 @Controller('municipio')
@@ -47,8 +47,8 @@ export class MunicipioController {
       @Query('limit') limit: number = 10,
   ): Promise<Pagination<ReadMunicipioDto>> {
     limit = limit > 100 ? 100 : limit;
-    const url = this.configService.config[AppConfig.URL];
-    const port= this.configService.config[AppConfig.PORT];
+    const url = this.configService.get(AppConfig.URL);
+    const port = this.configService.get(AppConfig.PORT);
     return await this.municipioService.findAll({
       page,
       limit,

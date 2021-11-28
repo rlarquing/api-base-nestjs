@@ -39,8 +39,8 @@ import {
     ListadoDto,
     ResponseDto
 } from '../../shared/dto';
-import {ConfigService} from '@atlasjs/config';
 import {PermissionGuard} from "../guard";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Roles')
 @Controller('rol')

@@ -3,10 +3,10 @@ import {PassportStrategy} from "@nestjs/passport";
 import {Request} from "express";
 import {ExtractJwt, Strategy} from "passport-jwt";
 import {AppConfig} from "../../app.keys";
-import {ConfigService} from "@atlasjs/config";
 import {UserRepository} from "../repository";
 import {IJwtPayload} from "../interface/ijwt-payload.interface";
 import {UserEntity} from "../entity";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
@@ -17,7 +17,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
         super({
             ignoreExpiration: true,
             passReqToCallback: true,
-            secretOrKey: configService.config[AppConfig.SECRET],
+            secretOrKey: configService.get(AppConfig.SECRET),
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         })
     }

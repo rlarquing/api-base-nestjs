@@ -6,7 +6,6 @@ import {ReadUserDto, UpdateUserDto, UserDto} from '../dto';
 import {UserEntity} from '../entity';
 import {UserService} from '../service';
 import {RolType} from "../enum/rol-type.enum";
-import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
 import {
     ApiBearerAuth,
@@ -19,6 +18,7 @@ import {
 } from "@nestjs/swagger";
 import {BuscarDto, FiltroGenericoDto, ListadoDto, ResponseDto} from "../../shared/dto";
 import {PermissionGuard, RolGuard} from "../guard";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Users')
 @Controller('user')
@@ -53,8 +53,8 @@ export class UserController {
         @Query('limit') limit: number = 10
     ): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         const data = await this.userService.findAll({
             page,
             limit,
@@ -159,8 +159,8 @@ export class UserController {
         @Body() filtroGenericoDto: FiltroGenericoDto
     ): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         const data = await this.userService.filter(
             {
                 page,
@@ -196,8 +196,8 @@ export class UserController {
         @Body() buscarDto: BuscarDto
     ): Promise<ListadoDto> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         const data = await this.userService.search(
             {
                 page,

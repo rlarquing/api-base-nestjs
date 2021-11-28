@@ -2,17 +2,17 @@ import {Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, 
 import {AuthGuard} from '@nestjs/passport';
 import {GetUser} from '../decorator';
 import {Roles} from '../decorator';
-import {RolGuard} from '../guard/rol.guard';
+import {RolGuard} from '../guard';
 import {RolType} from '../enum/rol-type.enum';
 import {UserEntity} from '../entity';
 import {TrazaService} from '../service';
 import {TrazaDto} from "../dto/traza.dto";
 import {DeleteResult} from "typeorm";
 import {Pagination} from "nestjs-typeorm-paginate";
-import {ConfigService} from "@atlasjs/config";
 import {AppConfig} from "../../app.keys";
 import {ApiBearerAuth, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {FiltroDto} from "../dto/filtro.dto";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Trazas')
 @Controller('traza')
@@ -44,8 +44,8 @@ export class TrazaController {
         @Query('limit') limit: number = 10
     ): Promise<Pagination<TrazaDto>> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         return await this.trazaService.findAll({
             page,
             limit,

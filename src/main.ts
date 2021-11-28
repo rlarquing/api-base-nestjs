@@ -5,14 +5,14 @@ import {BadRequestException, ValidationPipe} from "@nestjs/common";
 import {ValidationError} from "class-validator";
 import {PermisoService} from "./security/service";
 import {parseController} from "../lib/parse-controller";
-import {env} from "../lib/env";
-import {AppConfig} from "./app.keys";
 
 async function bootstrap() {
-    process.env.NODE_ENV = env(AppConfig.NODE_ENV);
     const app = await NestFactory.create(AppModule, {
-        cors: true
+        cors: AppModule.cors
     });
+    if (AppModule.logger) {
+        app.useLogger(AppModule.loggerProvider);
+    }
     app.setGlobalPrefix('api');
     const options = new DocumentBuilder().addBearerAuth().setTitle('API-BASE').setDescription('Api básica con Nestjs').setVersion('1.0').build();
     const document = SwaggerModule.createDocument(app, options);

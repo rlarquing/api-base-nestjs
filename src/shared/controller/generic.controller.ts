@@ -15,7 +15,6 @@ import {
     ApiResponse
 } from '@nestjs/swagger';
 import {Pagination} from 'nestjs-typeorm-paginate';
-import {ConfigService} from '@atlasjs/config';
 import {AppConfig} from '../../app.keys';
 import {GetUser, Servicio} from '../../security/decorator';
 import {UserEntity} from '../../security/entity';
@@ -26,6 +25,7 @@ import {BuscarDto, FiltroGenericoDto, ResponseDto} from '../dto';
 import {SelectDto} from '../../nomenclator/dto';
 import {AuthGuard} from "@nestjs/passport";
 import {PermissionGuard} from "../../security/guard";
+import {ConfigService} from "@nestjs/config";
 
 export abstract class GenericController<ENTITY> implements IController {
     protected constructor(
@@ -43,8 +43,8 @@ export abstract class GenericController<ENTITY> implements IController {
         @GetUser() user: UserEntity = null
     ): Promise<Pagination<any>> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         return await this.service.findAll({
             page,
             limit,
@@ -216,8 +216,8 @@ export abstract class GenericController<ENTITY> implements IController {
         @Body() filtroGenericoDto: FiltroGenericoDto
     ): Promise<Pagination<any>> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         return await this.service.filter(
             {
                 page,
@@ -234,8 +234,8 @@ export abstract class GenericController<ENTITY> implements IController {
         @Body() buscarDto: BuscarDto
     ): Promise<Pagination<any>> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         return await this.service.search(
             {
                 page,

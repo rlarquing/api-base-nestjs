@@ -1,7 +1,7 @@
 import { ConnectionOptions } from 'typeorm';
-import { env } from './lib/env';
 import {Configuration} from './src/database/database.keys';
 import {AppConfig} from './src/app.keys';
+import {env} from 'config/config';
 
 const DB: ConnectionOptions = {
   ssl: env(AppConfig.SSL),

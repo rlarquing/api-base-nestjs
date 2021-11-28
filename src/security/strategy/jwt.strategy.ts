@@ -4,8 +4,8 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { IJwtPayload } from '../interface/ijwt-payload.interface';
 import { UserEntity } from '../entity';
 import { UserRepository } from '../repository';
-import { ConfigService } from '@atlasjs/config';
 import { AppConfig } from '../../app.keys';
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       ignoreExpiration: false,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.config[AppConfig.SECRET],
+      secretOrKey: configService.get(AppConfig.SECRET),
     });
   }
 

@@ -4,5 +4,9 @@ export enum AppConfig {
   SSL = 'SSL',
   SECRET = 'SECRET',
   URL = 'URL',
-  NODE_ENV = 'NODE_ENV',
+  CORS = 'CORS',
+  LOGGER = 'LOGGER',
+  LOGGER_LEVELS='LOGGER_LEVELS',
+  DATABASE = 'database',
+  LOGGERLEVELS = 'loggerLevels',
 }

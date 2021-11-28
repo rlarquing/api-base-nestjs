@@ -1,11 +1,11 @@
 import {Body, Param, ParseIntPipe, Post, UseGuards} from '@nestjs/common';
-import { ConfigService } from '@atlasjs/config';
 import { GeometricService } from '../service';
 import { GeoJsonDto, TypeDto } from '../dto';
 import { GenericController } from './generic.controller';
 import {Servicio} from "../../security/decorator";
 import {AuthGuard} from "@nestjs/passport";
-import {PermissionGuard} from "../../security/guard/permission.guard";
+import {PermissionGuard} from "../../security/guard";
+import {ConfigService} from "@nestjs/config";
 
 export abstract class GeometricController<
   ENTITY

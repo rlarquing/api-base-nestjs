@@ -8,8 +8,8 @@ import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {AppConfig} from "../../app.keys";
-import {ConfigService} from "@atlasjs/config";
 import {GeoJsonDto} from "../../shared/dto";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Provincias')
 @Controller('provincia')
@@ -41,8 +41,8 @@ export class ProvinciaController {
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<ReadProvinciaDto>> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
         return await this.provinciaService.findAll({
             page,
             limit,

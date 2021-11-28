@@ -6,6 +6,7 @@ import {HttpModule} from "@nestjs/axios";
 import {ScheduleModule} from "@nestjs/schedule";
 import {SocketGateway} from "./gateway/socket.gateway";
 import {SecurityModule} from "../security/security.module";
+import { LoggerProvider } from './logger/logger.provider';
 
 @Module({
     imports: [
@@ -14,7 +15,7 @@ import {SecurityModule} from "../security/security.module";
         forwardRef(() => SecurityModule)
     ],
     controllers: [SocketController],
-    providers: [GeoJsonMapper, SocketService, SocketGateway],
-    exports: [GeoJsonMapper, SocketService, SocketGateway]
+    providers: [GeoJsonMapper, SocketService, SocketGateway, LoggerProvider],
+    exports: [GeoJsonMapper, SocketService, SocketGateway,LoggerProvider]
 })
 export class SharedModule {}

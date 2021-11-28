@@ -29,8 +29,8 @@
     "migration:show": "npm run typeorm migration:show"
   },
   "dependencies": {
-    "@atlasjs/config": "^1.0.0",
     "@nestjs/common": "^8.2.1",
+    "@nestjs/config": "^1.1.5",
     "@nestjs/core": "^8.2.1",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.0.1",
