@@ -5,7 +5,7 @@ services:
     image: api-base-nestjs
     container_name: api-base-nestjs
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
     restart: always  
     environment:
       - NODE_PROJECT=/nodejs_project
@@ -13,10 +13,10 @@ services:
       - NODEJS_MIRROR=http://static.geocuba.cu/nodejs.org/
       - NODEJS_ORG_MIRROR=http://static.geocuba.cu/nodejs.org/dist/
       - no_proxy=https://npm.geocuba.cu
-      - PROJECTS_START_SCRIPT=start:dev
+      - PROJECTS_START_SCRIPT=start:prod
     extra_hosts:
       - "npm.geocuba.cu:10.11.1.244"
       - "static.geocuba.cu:10.11.1.244"
     volumes:
-      - /home/larquin/jsprojects/api-base-nestjs:/usr/src/app
+      - /home/jsprojects/api-base-nestjs:/app
 
