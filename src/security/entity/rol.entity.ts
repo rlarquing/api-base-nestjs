@@ -6,8 +6,9 @@ import {
 import { UserEntity } from './user.entity';
 import {GenericNomencladorEntity} from "../../nomenclator/entity";
 import {PermisoEntity} from "./permiso.entity";
+import {SchemaEnum} from "../../database/schema/schema.enum";
 
-@Entity('rol', { schema: 'mod_auth' })
+@Entity('rol', { schema: SchemaEnum.MOD_AUTH })
 export class RolEntity extends GenericNomencladorEntity {
 
   @ManyToMany(() => UserEntity, (user) => user.roles)

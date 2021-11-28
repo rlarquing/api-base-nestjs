@@ -7,9 +7,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import {ProvinciaEntity} from "./provincia.entity";
+import {SchemaEnum} from "../../database/schema/schema.enum";
 
 
-@Entity('municipio', { schema: 'mod_dpa' })
+@Entity('municipio', { schema: SchemaEnum.MOD_DPA })
 export class MunicipioEntity {
 
   @PrimaryGeneratedColumn('increment')

@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import {UserEntity} from "./user.entity";
+import {SchemaEnum} from "../../database/schema/schema.enum";
 
 export enum HISTORY_ACTION {
   ADD = 'Adicionar',
@@ -16,7 +17,7 @@ export enum HISTORY_ACTION {
 }
 
 @Entity('traza',{
-  schema: 'mod_auth'
+  schema: SchemaEnum.MOD_AUTH
 })
 export class TrazaEntity {
   @PrimaryGeneratedColumn()

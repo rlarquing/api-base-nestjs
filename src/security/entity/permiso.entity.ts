@@ -7,8 +7,9 @@ import {
 } from 'typeorm';
 import {UserEntity} from "./user.entity";
 import {RolEntity} from "./rol.entity";
+import {SchemaEnum} from "../../database/schema/schema.enum";
 
-@Entity('permiso', {schema: 'mod_auth'})
+@Entity('permiso', {schema: SchemaEnum.MOD_AUTH})
 export class PermisoEntity {
     @PrimaryGeneratedColumn()
     id: number;

@@ -9,8 +9,9 @@ import { hash } from 'bcryptjs';
 import {RolEntity} from './rol.entity';
 import {GenericEntity} from "../../shared/entity";
 import {PermisoEntity} from "./permiso.entity";
+import {SchemaEnum} from "../../database/schema/schema.enum";
 
-@Entity('user', {schema: 'mod_auth'})
+@Entity('user', {schema: SchemaEnum.MOD_AUTH})
 @Unique(['username'])
 export class UserEntity extends GenericEntity {
     @Column({type: 'varchar', unique: true, length: 25, nullable: false})
