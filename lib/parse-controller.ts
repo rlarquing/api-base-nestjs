@@ -3,8 +3,9 @@ import {PermisoService} from "../src/security/service";
 import {findElemento} from "./util";
 import * as ts from "typescript";
 import * as fs from "fs";
+import {normalize} from "path";
 
-const pathBase = process.cwd() + "\\src\\";
+const pathBase = normalize(`${process.cwd()}/src`);
 const finder = require("findit")(pathBase);
 let dirFiles = [];
 finder.on("file", function (file) {
