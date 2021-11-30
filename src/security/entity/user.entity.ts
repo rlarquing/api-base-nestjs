@@ -1,65 +1,67 @@
 import {
-    BaseEntity,
     Column,
     Entity,
     JoinTable,
     ManyToMany,
-    PrimaryGeneratedColumn,
-    CreateDateColumn, Unique,
+    Unique
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import {RoleEntity} from './role.entity';
+import { hash } from 'bcryptjs';
+import {RolEntity} from './rol.entity';
+import {GenericEntity} from "../../shared/entity";
+import {PermisoEntity} from "./permiso.entity";
+import {SchemaEnum} from "../../database/schema/schema.enum";
 
-@Entity('user', {schema: 'mod_auth'})
+@Entity('user', {schema: SchemaEnum.MOD_AUTH})
 @Unique(['username'])
-export class UserEntity extends BaseEntity {
-
-    model: string = 'UserEntity';
-
-    @PrimaryGeneratedColumn('increment')
-    id: number;
-
+export class UserEntity extends GenericEntity {
     @Column({type: 'varchar', unique: true, length: 25, nullable: false})
     username: string;
-
     @Column({type: 'varchar', nullable: true})
     email: string;
-
     @Column({type: 'varchar', nullable: false})
     password: string;
-
-    @Column({ nullable: true, name:'refreshtoken' })
+    @Column({nullable: true, name: 'refreshtoken'})
     refreshToken: string;
-
-    @Column({ type: 'date', nullable: true, name:'refreshtokenexp' })
+    @Column({type: 'date', nullable: true, name: 'refreshtokenexp'})
     refreshTokenExp: string;
-
     @Column({type: 'varchar', nullable: true})
     salt: string;
-
-    @ManyToMany((type) => RoleEntity, (role) => role.users, {eager: true})
-    @JoinTable()
-    roles: RoleEntity[];
-
-    @Column({type: 'varchar', default: 'ACTIVE', length: 8})
-    status: string;
-
-    @CreateDateColumn({type: 'timestamp', name: 'created_at'})
-    createdAt: Date;
-
-    @CreateDateColumn({type: 'timestamp', name: 'updated_at'})
-    updatedAt: Date;
-
+    @ManyToMany(() => RolEntity, (rol) => rol.users, {eager: false})
+    @JoinTable({
+        name: 'user_rol',
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "rol_id",
+            referencedColumnName: "id"
+        }
+    })
+    roles: RolEntity[];
+    @ManyToMany(() => PermisoEntity, (permiso) => permiso.users, {eager: false, onDelete: 'CASCADE'})
+    @JoinTable({
+        name: 'user_permiso',
+        joinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "permiso_id",
+            referencedColumnName: "id"
+        }
+    })
+    permisos: PermisoEntity[];
     async validatePassword(password: string): Promise<boolean> {
-        const hash = await bcrypt.hash(password, this.salt);
-        return hash === this.password;
+        return this.password === await hash(password, this.salt);
     }
-
-
-    constructor(username: string, email: string) {
+    constructor(username: string, email: string, permisos?: PermisoEntity[]) {
         super();
         this.username = username;
         this.email = email;
+        this.permisos = permisos;
     }
-
+    public toString(): string {
+        return this.username;
+    }
 }

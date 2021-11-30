@@ -16,6 +16,7 @@ import {SharedModule} from "../shared/shared.module";
     ],
     controllers: [ProvinciaController, MunicipioController],
     providers: [ProvinciaService, MunicipioService, ProvinciaRepository, MunicipioRepository, ProvinciaMapper, MunicipioMapper],
+    exports: [ProvinciaService, MunicipioService, ProvinciaRepository, MunicipioRepository, ProvinciaMapper, MunicipioMapper]
 })
 export class DpaModule {
 }

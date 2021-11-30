@@ -1,21 +1,26 @@
-import {IPaginationOptions, Pagination} from "nestjs-typeorm-paginate";
-import {DeleteResult} from "typeorm";
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { DeleteResult } from 'typeorm';
 
 export interface IRepository<ENTITY> {
+  findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>>;
 
-    findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>>;
-    
-    findById(id: any): Promise<ENTITY>;
-    
-    findByIds(ids: any[]): Promise<ENTITY[]>;
+  findById(id: any): Promise<ENTITY>;
 
-    create(object: ENTITY): Promise<ENTITY>;
+  findByIds(ids: any[]): Promise<ENTITY[]>;
 
-    update(object: ENTITY): Promise<ENTITY>;
+  createSelect(): Promise<any[]>;
 
-    delete(id: number): Promise<ENTITY>;
+  create(object: ENTITY): Promise<ENTITY>;
 
-    remove(id: number[]): Promise<DeleteResult>;
+  update(object: ENTITY): Promise<ENTITY>;
 
-    count(): Promise<number>;
+  delete(id: number): Promise<ENTITY>;
+
+  remove(id: number[]): Promise<DeleteResult>;
+
+  count(): Promise<number>;
+
+  filter(options: IPaginationOptions, claves: string[], valores: any[]): Promise<Pagination<ENTITY>>;
+
+  search(options: IPaginationOptions, search: any): Promise<Pagination<ENTITY>>;
 }

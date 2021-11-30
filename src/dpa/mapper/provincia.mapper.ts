@@ -6,9 +6,11 @@ import {ProvinciaEntity} from "../entity";
 export class ProvinciaMapper {
 
     entityToDto(provinciaEntity: ProvinciaEntity): ReadProvinciaDto {
+        const dtoToString: string = provinciaEntity.toString();
         return new ReadProvinciaDto(
             provinciaEntity.id,
-            provinciaEntity.nombre
+            provinciaEntity.nombre,
+            dtoToString
         );
     }
 }

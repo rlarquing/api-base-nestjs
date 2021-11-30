@@ -1,2 +1,3 @@
-export {GenericService} from './generic.service';
-export {SocketService} from './socket.service';
+export { GenericService } from './generic.service';
+export { GeometricService } from './geometric.service';
+export { SocketService } from './socket.service';

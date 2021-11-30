@@ -1,32 +1,23 @@
-import {
-    Controller,
-    Get,
-    Param,
-    ParseIntPipe, Query,
-    UseGuards,
-} from '@nestjs/common';
+import {Controller, Get, Param, ParseIntPipe, Query, UseGuards,} from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
 import {ProvinciaService} from '../service';
 import {Roles} from "../../security/decorator";
-import {RoleType} from "../../security/enum/roletype.enum";
-import {RoleGuard} from "../../security/guards/role.guard";
+import {RolType} from "../../security/enum/rol-type.enum";
+import {RolGuard} from "../../security/guard";
 import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {ReadRoleDto} from "../../security/dto";
 import {Pagination} from "nestjs-typeorm-paginate";
 import {AppConfig} from "../../app.keys";
-import {ConfigService} from "@atlasjs/config";
-import {getManager} from "typeorm";
-import {ProvinciaEntity} from "../entity";
 import {GeoJsonDto} from "../../shared/dto";
+import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Provincias')
-@Controller('provincias')
+@Controller('provincia')
 @Roles(
-    RoleType.ADMINISTRADOR,
-    RoleType.USUARIO,
+    RolType.ADMINISTRADOR,
+    RolType.USUARIO,
 )
-@UseGuards(AuthGuard(), RoleGuard)
+@UseGuards(AuthGuard(), RolGuard)
 export class ProvinciaController {
     constructor(
         private provinciaService: ProvinciaService,
@@ -45,17 +36,17 @@ export class ProvinciaController {
         status: 404,
         description: 'Provincias no encontradas.',
     })
-    async getAll(
+    async findAll(
         @Query('page') page: number = 1,
         @Query('limit') limit: number = 10,
     ): Promise<Pagination<ReadProvinciaDto>> {
         limit = limit > 100 ? 100 : limit;
-        const url = this.configService.config[AppConfig.URL];
-        const port = this.configService.config[AppConfig.PORT];
-        return await this.provinciaService.getAll({
+        const url = this.configService.get(AppConfig.URL);
+        const port = this.configService.get(AppConfig.PORT);
+        return await this.provinciaService.findAll({
             page,
             limit,
-            route: url + ':' + port + '/provincias',
+            route: url + ':' + port + '/provincia',
         });
     }
 
@@ -70,10 +61,10 @@ export class ProvinciaController {
         status: 404,
         description: 'provincia no encontrada.',
     })
-    async get(
+    async findById(
         @Param('id', ParseIntPipe) id: number,
     ): Promise<ReadProvinciaDto> {
-        return await this.provinciaService.get(id);
+        return await this.provinciaService.findById(id);
     }
 
     @Get('obtener/json')
@@ -83,7 +74,18 @@ export class ProvinciaController {
         description: 'Muestra el geojson de las provincias',
         type: GeoJsonDto,
     })
-    async geoJson(): Promise<GeoJsonDto>{
+    async geoJson(): Promise<GeoJsonDto> {
         return await this.provinciaService.geoJson();
+    }
+
+    @Get(':id/obtener/json')
+    @ApiOperation({summary: 'Obtener el geojson de una provincia'})
+    @ApiResponse({
+        status: 200,
+        description: 'Muestra el geojson de una provincia',
+        type: GeoJsonDto,
+    })
+    async geoJsonById(@Param('id', ParseIntPipe) id: number,): Promise<GeoJsonDto> {
+        return await this.provinciaService.geoJsonById(id);
     }
 }

@@ -1,12 +1,12 @@
-import {BadRequestException, Injectable, UnauthorizedException} from "@nestjs/common";
+import {BadRequestException, Injectable} from "@nestjs/common";
 import {PassportStrategy} from "@nestjs/passport";
 import {Request} from "express";
 import {ExtractJwt, Strategy} from "passport-jwt";
 import {AppConfig} from "../../app.keys";
-import {ConfigService} from "@atlasjs/config";
 import {UserRepository} from "../repository";
 import {IJwtPayload} from "../interface/ijwt-payload.interface";
-import * as moment from "moment";
+import {UserEntity} from "../entity";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
@@ -17,22 +17,17 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
         super({
             ignoreExpiration: true,
             passReqToCallback: true,
-            secretOrKey: configService.config[AppConfig.SECRET],
-            jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
-                let data = request?.cookies["auth-cookie"];
-                if (!data) {
-                    return null;
-                }
-                return data.accessToken
-            }])
+            secretOrKey: configService.get(AppConfig.SECRET),
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         })
     }
 
-    async validate(req: Request, payload: IJwtPayload) {
+    async validate(req: Request, payload: IJwtPayload): Promise<UserEntity> {
         if (!payload) {
             throw new BadRequestException('invalid jwt token');
         }
-        let data = req?.cookies["auth-cookie"];
+
+        let data = req?.body;
         if (!data) {
             throw new BadRequestException('invalid auth-cookie');
         }
