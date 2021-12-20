@@ -58,14 +58,13 @@ export class AuthService {
         }
         permisos = permisos.concat(permisosIndiv);
         let listaPermiso: string[] = permisos.map((permiso) => permiso.servicio);
-        const payload: IJwtPayload = {username, permisos: listaPermiso};
-        const accessToken = this.jwtService.sign(payload);
         const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
+        const payload: IJwtPayload = {username, permisos: listaPermiso,roles};
+        const accessToken = this.jwtService.sign(payload);
         const refreshToken = await this.getRefreshToken(user.id);
         return {
             accessToken,
-            refreshToken,
-            roles
+            refreshToken
         };
     }
     private async hashPassword(password: string, salt: string): Promise<string> {
@@ -91,14 +90,13 @@ export class AuthService {
         }
         permisos = permisos.concat(permisosIndiv);
         let listaPermiso: string[] = permisos.map((permiso) => permiso.servicio);
-        const payload: IJwtPayload = {username, permisos: listaPermiso};
+        const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
+        const payload: IJwtPayload = {username, permisos: listaPermiso,roles};
         const accessToken = this.jwtService.sign(payload);
         const refreshToken = await this.getRefreshToken(user.id);
-        const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
         return {
             accessToken,
-            refreshToken,
-            roles
+            refreshToken
         };
     }
     async logout(user: UserEntity): Promise<ResponseDto> {
