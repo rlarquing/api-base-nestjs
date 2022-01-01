@@ -12,8 +12,4 @@ export class SecretDataDto {
     @IsNotEmpty()
     @ApiProperty({description: 'Nombre del usuario.', example: 'OCbvl7fnhhzg5KVm'})
     refreshToken: string;
-
-    @IsNotEmpty()
-    @ApiProperty({description: 'Roles del usuario.', type: [], example:["ADMINISTRADOR", "USUARIO"]})
-    roles: RolType[];
 }

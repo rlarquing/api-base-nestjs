@@ -26,8 +26,4 @@ export class AuthCredentialsDto {
     })
     @ApiProperty({description: 'Contraseña del usuario.', example: 'Qwerty1234*'})
     password: string;
-
-    @IsOptional()
-    @ApiPropertyOptional({description: 'Email del usuario.', example: 'juan@camaguey.geocuba.cu'})
-    email?: string;
 }

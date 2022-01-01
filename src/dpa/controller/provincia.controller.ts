@@ -1,9 +1,5 @@
-import {Controller, Get, Param, ParseIntPipe, Query, UseGuards,} from '@nestjs/common';
-import {AuthGuard} from '@nestjs/passport';
+import {Controller, Get, Param, ParseIntPipe, Query} from '@nestjs/common';
 import {ProvinciaService} from '../service';
-import {Roles} from "../../security/decorator";
-import {RolType} from "../../security/enum/rol-type.enum";
-import {RolGuard} from "../../security/guard";
 import {ReadProvinciaDto} from "../dto";
 import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {Pagination} from "nestjs-typeorm-paginate";
@@ -13,11 +9,6 @@ import {ConfigService} from "@nestjs/config";
 
 @ApiTags('Provincias')
 @Controller('provincia')
-@Roles(
-    RolType.ADMINISTRADOR,
-    RolType.USUARIO,
-)
-@UseGuards(AuthGuard(), RolGuard)
 export class ProvinciaController {
     constructor(
         private provinciaService: ProvinciaService,
