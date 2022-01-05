@@ -60,7 +60,7 @@ export class UserController {
             limit,
             route: url + ':' + port + '/user'
         });
-        const header: string[] = ['id', 'Nombre', 'Email', 'Roles'];
+        const header: string[] = ['id', 'Nombre', 'Email', 'Roles','Permisos'];
         return new ListadoDto(header, data);
     }
     @Get(':id')
@@ -164,7 +164,7 @@ export class UserController {
             },
             filtroGenericoDto
         );
-        const header: string[] = ['id', 'Nombre', 'Email', 'Roles'];
+        const header: string[] = ['id', 'Nombre', 'Email', 'Roles','Permisos'];
         return new ListadoDto(header, data);
     }
     @Post('buscar')
@@ -200,7 +200,7 @@ export class UserController {
             },
             buscarDto
         );
-        const header: string[] = ['id', 'Nombre', 'Email', 'Roles'];
+        const header: string[] = ['id', 'Nombre', 'Email', 'Roles','Permisos'];
         return new ListadoDto(header, data);
     }
 }
