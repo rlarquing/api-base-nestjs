@@ -5,9 +5,8 @@ import {
   CreateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {MunicipioEntity} from "./municipio.entity";
-import {SchemaEnum} from "../../database/schema/schema.enum";
-
+import { MunicipioEntity } from './municipio.entity';
+import { SchemaEnum } from '../../database/schema/schema.enum';
 
 @Entity('provincia', { schema: SchemaEnum.MOD_DPA })
 export class ProvinciaEntity {
@@ -35,7 +34,7 @@ export class ProvinciaEntity {
   @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
   updatedAt: Date;
 
-  public toString():string{
+  public toString(): string {
     return this.nombre;
   }
 }

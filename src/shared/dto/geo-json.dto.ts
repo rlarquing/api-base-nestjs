@@ -1,18 +1,20 @@
-import {IsArray, IsString} from "class-validator";
-import {ApiProperty} from "@nestjs/swagger";
+import { IsArray, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
-export class GeoJsonDto{
+export class GeoJsonDto {
+  @IsString()
+  @ApiProperty({
+    description: 'FeatureCollection.',
+    example: 'FeatureCollection',
+  })
+  type: string;
 
-    @IsString()
-    @ApiProperty({description: 'FeatureCollection.', example: "FeatureCollection"})
-    type:string;
+  @IsArray()
+  @ApiProperty({ description: 'Features.', example: [] })
+  features: [];
 
-    @IsArray()
-    @ApiProperty({description: 'Features.', example: []})
-    features: [];
-
-    constructor(features) {
-       this.type="FeatureCollection";
-       this.features = features;
-    }
+  constructor(features) {
+    this.type = 'FeatureCollection';
+    this.features = features;
+  }
 }

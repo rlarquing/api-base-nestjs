@@ -4,13 +4,9 @@ import * as https from 'https';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../security/service';
 
-
 @Injectable()
 export class SocketService {
-  constructor(
-    private axios: HttpService,
-    private userService: UserService,
-  ) {}
+  constructor(private axios: HttpService, private userService: UserService) {}
   getHello(): string {
     return 'Hello World!';
   }

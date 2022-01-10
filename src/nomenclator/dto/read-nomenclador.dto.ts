@@ -2,8 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
 export class ReadNomencladorDto {
-
-  @IsString({message: 'El dtoToString debe de ser un string'})
+  @IsString({ message: 'El dtoToString debe de ser un string' })
   dtoToString: string;
 
   @IsNumber()
@@ -12,13 +11,21 @@ export class ReadNomencladorDto {
 
   @IsString()
   @ApiProperty({ description: 'Nombre del nomenclador.', example: 'Nom 1' })
-  nombre : string;
+  nombre: string;
 
   @IsString()
-  @ApiProperty({ description: 'Descripción del nomenclador.', example: 'Descripción del nom' })
+  @ApiProperty({
+    description: 'Descripción del nomenclador.',
+    example: 'Descripción del nom',
+  })
   descripcion: string;
 
-  constructor(id: number, nombre: string, descripcion: string, dtoToString: string) {
+  constructor(
+    id: number,
+    nombre: string,
+    descripcion: string,
+    dtoToString: string,
+  ) {
     this.id = id;
     this.nombre = nombre;
     this.descripcion = descripcion;

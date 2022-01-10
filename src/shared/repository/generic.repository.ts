@@ -89,7 +89,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       if (isNumber(valores[i])) {
         wheres[claves[i]] = valores[i];
       } else if (isDate(valores[i])) {
-        let datep = valores[i];
+        const datep = valores[i];
         const start = new Date(datep.setHours(0, 0, 0, 0));
         const end = new Date(datep.setHours(23, 59, 59, 999));
         wheres[claves[i]] = {
@@ -113,8 +113,8 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   ): Promise<Pagination<ENTITY>> {
     if (!isEmpty(search)) {
       const result = await this.repository.find({ where: { activo: true } });
-      let objs = new Map<string, string>();
-      let keys = new Map<string, string>();
+      const objs = new Map<string, string>();
+      const keys = new Map<string, string>();
       if (result.length > 0) {
         Object.keys(result[0]).forEach((key) => {
           keys.set(key, key);
@@ -146,7 +146,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
             isDate(search) &&
             item[key] === search
           ) {
-            let datep = item[key];
+            const datep = item[key];
             const start = new Date(datep.setHours(0, 0, 0, 0));
             const end = new Date(datep.setHours(23, 59, 59, 999));
             const date = {
@@ -175,7 +175,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       if (objs.size === 0) {
         queryBuilder.where(`q.activo = true AND q.id=0`);
       } else {
-        let where: string[] = [];
+        const where: string[] = [];
         objs.forEach((item) => {
           where.push(`q.${item}`);
         });

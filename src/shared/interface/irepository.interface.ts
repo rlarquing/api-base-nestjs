@@ -20,7 +20,11 @@ export interface IRepository<ENTITY> {
 
   count(): Promise<number>;
 
-  filter(options: IPaginationOptions, claves: string[], valores: any[]): Promise<Pagination<ENTITY>>;
+  filter(
+    options: IPaginationOptions,
+    claves: string[],
+    valores: any[],
+  ): Promise<Pagination<ENTITY>>;
 
   search(options: IPaginationOptions, search: any): Promise<Pagination<ENTITY>>;
 }

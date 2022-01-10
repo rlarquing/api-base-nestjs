@@ -1,13 +1,12 @@
-import {ApiProperty} from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
 
 export class ResponseDto {
+  @ApiProperty({ description: 'Id de la entidad.', example: 1 })
+  id?: number;
 
-    @ApiProperty({description: 'Id de la entidad.', example: 1})
-    id?:number
+  @ApiProperty({ description: 'Estado de la respuesta.', example: 'true' })
+  successStatus: boolean;
 
-    @ApiProperty({description: 'Estado de la respuesta.', example: 'true'})
-    successStatus: boolean;
-
-    @ApiProperty({description: 'mensaje de la respuesta.', example: 'success'})
-    message: string;
+  @ApiProperty({ description: 'mensaje de la respuesta.', example: 'success' })
+  message: string;
 }

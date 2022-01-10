@@ -1,27 +1,32 @@
-import {IPaginationOptions, Pagination} from 'nestjs-typeorm-paginate';
-import {DeleteResult} from 'typeorm';
-import {BuscarDto, FiltroGenericoDto, ResponseDto} from '../dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { DeleteResult } from 'typeorm';
+import { BuscarDto, FiltroGenericoDto, ResponseDto } from '../dto';
 import { SelectDto } from '../../nomenclator/dto';
 
 export interface IService {
+  findAll(options: IPaginationOptions): Promise<Pagination<any>>;
 
-    findAll(options: IPaginationOptions): Promise<Pagination<any>>;
+  findById(id: any): Promise<any>;
 
-    findById(id: any): Promise<any>;
+  createSelect(): Promise<SelectDto[]>;
 
-    createSelect(): Promise<SelectDto[]>;
+  create(user: any, object: any): Promise<ResponseDto>;
 
-    create(user: any, object: any): Promise<ResponseDto>;
+  update(user: any, id: number, object: any): Promise<ResponseDto>;
 
-    update(user: any, id: number, object: any): Promise<ResponseDto>;
+  deleteMultiple(user: any, ids: number[]): Promise<ResponseDto>;
 
-    deleteMultiple(user: any, ids: number[]): Promise<ResponseDto>;
+  removeMultiple(user: any, ids: number[]): Promise<DeleteResult>;
 
-    removeMultiple(user: any, ids: number[]): Promise<DeleteResult>;
+  count(): Promise<number>;
 
-    count(): Promise<number>;
+  filter(
+    options: IPaginationOptions,
+    filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<Pagination<any>>;
 
-    filter(options: IPaginationOptions, filtroGenericoDto: FiltroGenericoDto): Promise<Pagination<any>>;
-
-    search(options: IPaginationOptions, buscarDto: BuscarDto): Promise<Pagination<any>>;
+  search(
+    options: IPaginationOptions,
+    buscarDto: BuscarDto,
+  ): Promise<Pagination<any>>;
 }

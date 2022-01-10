@@ -4,10 +4,10 @@ import { SecurityModule } from './security/security.module';
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from './database/database.module';
 import { AppConfig } from './app.keys';
-import {NomenclatorModule} from "./nomenclator/nomenclator.module";
-import {ConfigModule, ConfigService} from "@nestjs/config";
-import {config} from "../config/config";
-import {LoggerProvider} from "./shared/logger/logger.provider";
+import { NomenclatorModule } from './nomenclator/nomenclator.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { config } from '../config/config';
+import { LoggerProvider } from './shared/logger/logger.provider';
 
 @Module({
   imports: [
@@ -16,10 +16,10 @@ import {LoggerProvider} from "./shared/logger/logger.provider";
     SecurityModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [config]
+      load: [config],
     }),
     DatabaseModule,
-    NomenclatorModule
+    NomenclatorModule,
   ],
   controllers: [],
   providers: [],
@@ -34,6 +34,6 @@ export class AppModule {
     AppModule.port = parseInt(this.configService.get(AppConfig.PORT));
     AppModule.cors = this.configService.get(AppConfig.CORS);
     AppModule.logger = this.configService.get(AppConfig.LOGGER);
-    AppModule.loggerProvider = new LoggerProvider(configService)
+    AppModule.loggerProvider = new LoggerProvider(configService);
   }
 }

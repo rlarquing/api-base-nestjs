@@ -9,7 +9,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEqualTo } from '../decorator';
 
-export class UserDto {
+export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(4, {
@@ -57,4 +57,12 @@ export class UserDto {
     example: 'juan@camaguey.geocuba.cu',
   })
   email?: string;
+
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Roles del usuario.', example: [1, 2] })
+  roles: number[];
+
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Permiso del usuario.', example: [1, 2] })
+  permisos: number[];
 }

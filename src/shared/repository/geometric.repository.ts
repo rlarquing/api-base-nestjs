@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { isBoolean, isDate, isObject, isArray } from 'class-validator';
 
 export abstract class GeometricRepository<
-  ENTITY
+  ENTITY,
 > extends GenericRepository<ENTITY> {
   constructor(
     protected repository: Repository<ENTITY>,
@@ -39,7 +39,7 @@ export abstract class GeometricRepository<
         data.push(entity);
       }
     }
-    let keys = new Map<string, string>();
+    const keys = new Map<string, string>();
     if (data.length > 0) {
       Object.keys(data[0]).forEach((key) => {
         keys.set(key, key);
@@ -53,7 +53,7 @@ export abstract class GeometricRepository<
         keys.delete(key);
       });
     }
-    let salida: any[] = [];
+    const salida: any[] = [];
     let objs = { properties: {}, geometry: {} };
     let properties = {};
     for (const item of data) {
@@ -110,7 +110,7 @@ export abstract class GeometricRepository<
         data = entity;
       }
     }
-    let keys = new Map<string, string>();
+    const keys = new Map<string, string>();
     if (data) {
       Object.keys(data).forEach((key) => {
         keys.set(key, key);
@@ -124,8 +124,8 @@ export abstract class GeometricRepository<
         keys.delete(key);
       });
     }
-    let objs = { properties: {}, geometry: {} };
-    let properties = {};
+    const objs = { properties: {}, geometry: {} };
+    const properties = {};
     keys.forEach((key) => {
       if (key === 'geom') {
         objs['geometry'] = data[key];

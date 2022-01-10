@@ -1,25 +1,23 @@
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { MunicipioService } from '../service';
+import { ReadMunicipioDto } from '../dto';
+import { Pagination } from 'nestjs-typeorm-paginate';
 import {
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
-import {MunicipioService} from "../service";
-import {ReadMunicipioDto} from "../dto";
-import {Pagination} from "nestjs-typeorm-paginate";
-import {ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {AppConfig} from "../../app.keys";
-import {Roles} from "../../security/decorator";
-import {GeoJsonDto} from "../../shared/dto";
-import {ConfigService} from "@nestjs/config";
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AppConfig } from '../../app.keys';
+import { GeoJsonDto } from '../../shared/dto';
+import { ConfigService } from '@nestjs/config';
 
 @ApiTags('Municipios')
 @Controller('municipio')
 export class MunicipioController {
   constructor(
-      private municipioService: MunicipioService,
-      private configService: ConfigService
+    private municipioService: MunicipioService,
+    private configService: ConfigService,
   ) {}
 
   @Get()
@@ -34,8 +32,8 @@ export class MunicipioController {
     description: 'Municipios no encontrados.',
   })
   async findAll(
-      @Query('page') page: number = 1,
-      @Query('limit') limit: number = 10,
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
   ): Promise<Pagination<ReadMunicipioDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
@@ -43,7 +41,7 @@ export class MunicipioController {
     return await this.municipioService.findAll({
       page,
       limit,
-      route: url+':'+port+'/municipios',
+      route: url + ':' + port + '/municipios',
     });
   }
 
@@ -75,30 +73,33 @@ export class MunicipioController {
     description: 'Municipios no encontrados.',
   })
   @Get('/provincia/:id')
-  async findByProvincia(@Param('id', ParseIntPipe) id: number,
+  async findByProvincia(
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<ReadMunicipioDto[]> {
     return await this.municipioService.findByProvincia(id);
   }
 
   @Get('obtener/json')
-  @ApiOperation({summary: 'Obtener el geojson de los municipios'})
+  @ApiOperation({ summary: 'Obtener el geojson de los municipios' })
   @ApiResponse({
     status: 200,
     description: 'Muestra el geojson de los municipios',
     type: GeoJsonDto,
   })
-  async geoJson(): Promise<GeoJsonDto>{
+  async geoJson(): Promise<GeoJsonDto> {
     return await this.municipioService.geoJson();
   }
 
   @Get(':id/obtener/json')
-  @ApiOperation({summary: 'Obtener el geojson de un municipio'})
+  @ApiOperation({ summary: 'Obtener el geojson de un municipio' })
   @ApiResponse({
     status: 200,
     description: 'Muestra el geojson de un municipio',
     type: GeoJsonDto,
   })
-  async geoJsonById(@Param('id', ParseIntPipe) id: number,): Promise<GeoJsonDto>{
+  async geoJsonById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<GeoJsonDto> {
     return await this.municipioService.geoJsonById(id);
   }
 }
