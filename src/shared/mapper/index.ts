@@ -1,1 +1,1 @@
-export {GeoJsonMapper} from './geo-json.mapper';
+export { GeoJsonMapper } from './geo-json.mapper';

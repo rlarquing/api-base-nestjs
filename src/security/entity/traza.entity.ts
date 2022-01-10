@@ -1,4 +1,3 @@
-
 import {
   Column,
   CreateDateColumn,
@@ -7,8 +6,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {UserEntity} from "./user.entity";
-import {SchemaEnum} from "../../database/schema/schema.enum";
+import { UserEntity } from './user.entity';
+import { SchemaEnum } from '../../database/schema/schema.enum';
 
 export enum HISTORY_ACTION {
   ADD = 'Adicionar',
@@ -16,14 +15,14 @@ export enum HISTORY_ACTION {
   DEL = 'Eliminar',
 }
 
-@Entity('traza',{
-  schema: SchemaEnum.MOD_AUTH
+@Entity('traza', {
+  schema: SchemaEnum.MOD_AUTH,
 })
 export class TrazaEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity,{eager: true})
+  @ManyToOne(() => UserEntity, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 

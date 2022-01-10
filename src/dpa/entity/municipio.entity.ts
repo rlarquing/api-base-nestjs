@@ -6,13 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import {ProvinciaEntity} from "./provincia.entity";
-import {SchemaEnum} from "../../database/schema/schema.enum";
-
+import { ProvinciaEntity } from './provincia.entity';
+import { SchemaEnum } from '../../database/schema/schema.enum';
 
 @Entity('municipio', { schema: SchemaEnum.MOD_DPA })
 export class MunicipioEntity {
-
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -37,7 +35,7 @@ export class MunicipioEntity {
   @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
   updatedAt: Date;
 
-  public toString():string{
+  public toString(): string {
     return this.nombre;
   }
 }

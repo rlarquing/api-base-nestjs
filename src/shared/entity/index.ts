@@ -1,1 +1,1 @@
-export {GenericEntity} from './generic.entity';
+export { GenericEntity } from './generic.entity';

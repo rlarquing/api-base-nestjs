@@ -57,7 +57,7 @@ export abstract class GenericService<ENTITY> implements IService {
   }
 
   async create(user: UserEntity, createDto: any): Promise<ResponseDto> {
-    let result = new ResponseDto();
+    const result = new ResponseDto();
     const newEntity = await this.mapper.dtoToEntity(createDto);
     try {
       const objEntity: any = await this.genericRepository.create(newEntity);
@@ -80,7 +80,7 @@ export abstract class GenericService<ENTITY> implements IService {
     id: number,
     updateDto: any,
   ): Promise<ResponseDto> {
-    let result = new ResponseDto();
+    const result = new ResponseDto();
     const foundObj: ENTITY = await this.genericRepository.findById(id);
     if (!foundObj) {
       throw new NotFoundException('No existe');
@@ -105,9 +105,9 @@ export abstract class GenericService<ENTITY> implements IService {
   }
 
   async deleteMultiple(user: UserEntity, ids: number[]): Promise<ResponseDto> {
-    let result = new ResponseDto();
+    const result = new ResponseDto();
     try {
-      for (let id of ids) {
+      for (const id of ids) {
         const objEntity: ENTITY = await this.genericRepository.findById(id);
         if (this.traza) {
           await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
@@ -125,7 +125,7 @@ export abstract class GenericService<ENTITY> implements IService {
   }
 
   async removeMultiple(user: UserEntity, ids: number[]): Promise<DeleteResult> {
-    for (let id of ids) {
+    for (const id of ids) {
       const objEntity: ENTITY = await this.genericRepository.findOne(id);
       if (!objEntity) {
         throw new NotFoundException('No existe');

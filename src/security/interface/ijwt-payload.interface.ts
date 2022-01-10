@@ -1,4 +1,5 @@
 export interface IJwtPayload {
   username: string;
-  permisos:string[];
+  permisos: string[];
+  roles: string[];
 }

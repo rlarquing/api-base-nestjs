@@ -1,3 +1,2 @@
-export enum NomencladorTypeEnum {
-    // MES = 'mes',
-}
+export enum NomencladorTypeEnum {}
+// MES = 'mes',

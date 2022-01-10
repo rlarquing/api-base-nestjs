@@ -1,1 +1,1 @@
-export {GenericNomencladorController} from './generic-nomenclador.controller';
+export { GenericNomencladorController } from './generic-nomenclador.controller';

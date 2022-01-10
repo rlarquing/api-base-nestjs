@@ -1,2 +1,1 @@
-export {GenericNomencladorMapper} from './generic-nomenclador.mapper';
-
+export { GenericNomencladorMapper } from './generic-nomenclador.mapper';

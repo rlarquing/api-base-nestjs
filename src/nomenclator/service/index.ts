@@ -1,2 +1,1 @@
-export {GenericNomencladorService} from './generic-nomenclador.service';
-
+export { GenericNomencladorService } from './generic-nomenclador.service';

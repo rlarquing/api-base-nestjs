@@ -1,1 +1,1 @@
-export {GenericNomencladorRepository} from './generic-nomenclador.repository';
+export { GenericNomencladorRepository } from './generic-nomenclador.repository';

@@ -6,7 +6,7 @@ export enum AppConfig {
   URL = 'URL',
   CORS = 'CORS',
   LOGGER = 'LOGGER',
-  LOGGER_LEVELS='LOGGER_LEVELS',
+  LOGGER_LEVELS = 'LOGGER_LEVELS',
   DATABASE = 'database',
   LOGGERLEVELS = 'loggerLevels',
 }
