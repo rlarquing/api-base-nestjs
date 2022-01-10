@@ -12,8 +12,8 @@ export class SocketController {
     return this.socketService.getHello();
   }
 
-   // @Get(':id')
-   // async gpsTren(@Param('id') id: string): Promise<any> {
-  //   return await this.socketService.gpsTren(id);
-  //  }
+   @Get(':id')
+   async gpsTren(@Param('id') id: string): Promise<any> {
+    return await this.socketService.gpsTren(id);
+   }
 }
