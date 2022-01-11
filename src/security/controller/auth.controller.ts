@@ -3,7 +3,6 @@ import {
   Controller,
   Post,
   ValidationPipe,
-  Get,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../service';
@@ -66,7 +65,7 @@ export class AuthController {
     return await this.authService.signIn(authCredentialsDto);
   }
 
-  @Get('refresh-tokens')
+  @Post('refresh-tokens')
   @ApiOperation({ summary: 'Obtener el token nuevo para los usuarios' })
   @ApiResponse({
     status: 200,
@@ -81,7 +80,7 @@ export class AuthController {
   @ApiResponse({ status: 500, description: 'Error interno del servicor.' })
   @UseGuards(AuthGuard('refresh'))
   @ApiBearerAuth()
-  async regenerateTokens(@GetUser() user: UserEntity): Promise<any> {
+  async regenerateTokens(@GetUser() user: UserEntity): Promise<SecretDataDto> {
     return await this.authService.regenerateTokens(user);
   }
 

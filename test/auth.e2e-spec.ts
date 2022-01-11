@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { SecurityModule } from '../src/security/security.module';
 import { TypeORMExceptionFilter } from '../src/shared/filter/typeorm-exception.filter';
-import { AuthCredentialsDto, UserDto } from '../src/security/dto';
+import { AuthCredentialsDto, UserDto, RefreshTokenDto} from '../src/security/dto';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
@@ -43,7 +43,27 @@ describe('AuthController (e2e)', () => {
       .type('form')
       .send(authCredentialsDto)
       .expect(201);
-      expect(loginUserRequest.status).toBe(201);
+    expect(loginUserRequest.status).toBe(201);
+  });
+  it('Refresh-tokens User', async () => {
+    const server = request(app.getHttpServer());
+    const authCredentialsDto: AuthCredentialsDto = {
+      username: 'reynelbis',
+      password: 'Qwerty1234*',
+    };
+    const loginUserRequest = await server
+    .post('/auth/signin')
+    .type('form')
+    .send(authCredentialsDto)
+    .expect(201);
+    expect(loginUserRequest.status).toBe(201);
+    const {refreshToken} = loginUserRequest.body;
+    const refreshTokenUserRequest = await server
+    .post('/auth/refresh-tokens')
+    .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+    .send({refreshToken})
+    .expect(201);
+    expect(refreshTokenUserRequest.status).toBe(201);
   });
   it('Deslogear User', async () => {
     const server = request(app.getHttpServer());

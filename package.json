@@ -20,6 +20,7 @@
     "test:cov": "jest --coverage --passWithNoTests",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --runInBand --detectOpenHandles --coverage",
+    "test:e2e:watch": "jest --config ./test/jest-e2e.json --runInBand --detectOpenHandles --coverage --watch",
     "merge:cov": "ts-node ./merge-coverage.ts --report coverage/unit/coverage-final.json --report coverage/e2e/coverage-final.json",
     "verify": "npm run lint && npm run test:cov && npm run test:e2e && npm run merge:cov",
     "typeorm": "npx ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -f orm.config.ts",

@@ -179,7 +179,7 @@ export class UserRepository {
     }
     return await paginate<UserEntity>(this.userRepository, options, {
       where: wheres,
-      relations: ['roles', 'persona'],
+      relations: ['roles', 'permisos'],
     });
   }
 
