@@ -74,16 +74,17 @@ export class AuthService {
   }
   async regenerateTokens(user: UserEntity): Promise<SecretDataDto> {
     const username = user.username;
-    const permisosIndiv: PermisoEntity[] = user.permisos;
+    const userEntity: UserEntity = await this.userRepository.findById(user.id);
+    const permisosIndiv: PermisoEntity[] = userEntity.permisos;
     let permisos: PermisoEntity[] = [];
     let item: RolEntity;
-    for (const rol of user.roles) {
+    for (const rol of userEntity.roles) {
       item = await this.rolRepository.findById(rol.id);
       item.permisos.forEach((permiso) => permisos.push(permiso));
     }
     permisos = permisos.concat(permisosIndiv);
     const listaPermiso: string[] = permisos.map((permiso) => permiso.servicio);
-    const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
+    const roles = userEntity.roles.map((rol: RolEntity) => rol.nombre as RolType);
     const payload: IJwtPayload = { username, permisos: listaPermiso, roles };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
