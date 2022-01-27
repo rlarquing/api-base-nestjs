@@ -1,0 +1,12 @@
+#stages:
+#  - despliegue
+#
+#deploy:
+#  stage: despliegue
+#  tags:
+#    - apps
+#  script:
+#    - cd /home/alpine-synfony/api-gobierno
+#    - git reset --hard
+#    - git pull https://larquincmg:admgeomix*@cig.geocuba.cu/gitlab/udctcmg/api-gobierno.git
+#    - docker restart home_php_1
