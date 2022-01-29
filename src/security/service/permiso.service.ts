@@ -3,6 +3,7 @@ import { PermisoRepository } from '../repository';
 import { CreatePermisoDto } from '../dto';
 import { PermisoEntity } from '../entity';
 import { DeleteResult } from 'typeorm';
+import {SelectDto} from "../../nomenclator/dto";
 
 @Injectable()
 export class PermisoService {
@@ -22,5 +23,13 @@ export class PermisoService {
   }
   async remove(servicio: string): Promise<DeleteResult> {
     return await this.permisoRepository.remove(servicio);
+  }
+  async createSelect(): Promise<SelectDto[]> {
+    const items: any[] = await this.permisoRepository.findAll();
+    const selectDto: SelectDto[] = [];
+    for (const item of items) {
+      selectDto.push(new SelectDto(item.id, item.toString()));
+    }
+    return selectDto;
   }
 }

@@ -6,7 +6,7 @@ import { AppConfig } from '../app.keys';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PermisoEntity, RolEntity, TrazaEntity, UserEntity } from './entity';
 import {
-  AuthController,
+  AuthController, PermisoController,
   RolController,
   TrazaController,
   UserController,
@@ -52,7 +52,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     ]),
     forwardRef(() => SharedModule),
   ],
-  controllers: [UserController, RolController, AuthController, TrazaController],
+  controllers: [UserController, RolController, AuthController, TrazaController, PermisoController],
   providers: [
     UserRepository,
     RolRepository,
