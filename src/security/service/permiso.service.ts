@@ -3,7 +3,7 @@ import { PermisoRepository } from '../repository';
 import { CreatePermisoDto } from '../dto';
 import { PermisoEntity } from '../entity';
 import { DeleteResult } from 'typeorm';
-import {SelectDto} from "../../nomenclator/dto";
+import { SelectDto } from '../../nomenclator/dto';
 
 @Injectable()
 export class PermisoService {

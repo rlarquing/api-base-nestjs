@@ -8,7 +8,7 @@ export class SelectDto {
 
   @IsString()
   @ApiProperty({ description: 'Nombre del nomenclador.', example: 'Nom 1' })
-  label : string;
+  label: string;
 
   constructor(id: number, nombre: string) {
     this.value = id;

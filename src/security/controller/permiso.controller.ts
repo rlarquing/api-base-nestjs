@@ -1,8 +1,11 @@
 import {
   Controller,
-  UseGuards, Get, UsePipes, ValidationPipe,
+  UseGuards,
+  Get,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { PermisoService} from '../service';
+import { PermisoService } from '../service';
 
 import {
   ApiBearerAuth,
@@ -12,9 +15,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import {SelectDto} from "../../nomenclator/dto";
-import {PermissionGuard, RolGuard} from "../guard";
-import {Servicio} from "../decorator";
+import { SelectDto } from '../../nomenclator/dto';
+import { PermissionGuard, RolGuard } from '../guard';
+import { Servicio } from '../decorator';
 
 @ApiTags('Permisos')
 @Controller('permiso')
@@ -31,7 +34,7 @@ export class PermisoController {
   @ApiResponse({
     status: 200,
     description:
-        'Muestra la información de los elementos del conjunto para crear un select',
+      'Muestra la información de los elementos del conjunto para crear un select',
     type: [SelectDto],
   })
   @ApiNotFoundResponse({

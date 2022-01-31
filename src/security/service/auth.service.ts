@@ -84,7 +84,9 @@ export class AuthService {
     }
     permisos = permisos.concat(permisosIndiv);
     const listaPermiso: string[] = permisos.map((permiso) => permiso.servicio);
-    const roles = userEntity.roles.map((rol: RolEntity) => rol.nombre as RolType);
+    const roles = userEntity.roles.map(
+      (rol: RolEntity) => rol.nombre as RolType,
+    );
     const payload: IJwtPayload = { username, permisos: listaPermiso, roles };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
