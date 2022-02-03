@@ -6,7 +6,7 @@ FROM docker-registry.geocuba.cu:5000/node:16.13.0
 WORKDIR /app
 
 COPY package.json ./
-RUN npm install
 COPY . .
+RUN npm install
 RUN npm run build
 CMD [ "npm","run", "start" ]
