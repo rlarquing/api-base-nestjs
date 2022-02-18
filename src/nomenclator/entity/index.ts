@@ -1,1 +1,1 @@
-export { GenericNomencladorEntity } from './generic.nomenclador.entity';
+export { GenericNomencladorEntity } from './generic-nomenclador.entity';
