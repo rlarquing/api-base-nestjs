@@ -21,6 +21,11 @@ export class PermisoService {
     }
     return resultado;
   }
+
+  async update(servicio: string, nombre: string): Promise<void> {
+    return await this.permisoRepository.update(servicio, nombre);
+  }
+
   async remove(servicio: string): Promise<DeleteResult> {
     return await this.permisoRepository.remove(servicio);
   }

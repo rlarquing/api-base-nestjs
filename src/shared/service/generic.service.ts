@@ -75,6 +75,48 @@ export abstract class GenericService<ENTITY> implements IService {
     return result;
   }
 
+  async createMultiple(
+    user: UserEntity,
+    createDto: any[],
+  ): Promise<ResponseDto[]> {
+    const result: ResponseDto[] = [];
+    for (const dtoElement of createDto) {
+      result.push(await this.create(user, dtoElement));
+    }
+    return result;
+  }
+
+  async importar(user: UserEntity, createDto: any[]): Promise<ResponseDto[]> {
+    const result: ResponseDto[] = [];
+    for (const dtoElement of createDto) {
+      const clave: string[] = [];
+      const valor: any[] = [];
+      for (const key in dtoElement) {
+        clave.push(key);
+        valor.push(createDto[key]);
+      }
+      const filtroGenericoDto: FiltroGenericoDto = { clave, valor };
+      const filtro: any = await this.filter(
+        {
+          page: 1,
+          limit: 10,
+          route: '',
+        },
+        filtroGenericoDto,
+      );
+      if (filtro.data.meta.totalItems === 0) {
+        result.push(await this.create(user, dtoElement));
+      } else {
+        result.push({
+          id: 0,
+          successStatus: false,
+          message: 'Ya existe en la base de datos.',
+        });
+      }
+    }
+    return result;
+  }
+
   async update(
     user: UserEntity,
     id: number,

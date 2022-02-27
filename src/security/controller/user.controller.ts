@@ -13,7 +13,12 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser, Servicio } from '../decorator';
 import { Roles } from '../decorator';
-import { ReadUserDto, UpdateUserDto, CreateUserDto } from '../dto';
+import {
+  ReadUserDto,
+  UpdateUserDto,
+  CreateUserDto,
+  ChangePasswordDto,
+} from '../dto';
 import { UserEntity } from '../entity';
 import { UserService } from '../service';
 import { RolType } from '../enum/rol-type.enum';
@@ -227,5 +232,28 @@ export class UserController {
     );
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Permisos'];
     return new ListadoDto(header, data);
+  }
+
+  @Patch(':id/change/password')
+  @ApiOperation({ summary: 'Cambiar password a un usuario' })
+  @ApiBody({
+    description: 'Estructura para camviar el password del usuario.',
+    type: UpdateUserDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Cambia el password de un usuario',
+    type: ResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  @Servicio(UserController.name, 'changePassword')
+  async changePassword(
+    @GetUser() user: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<ResponseDto> {
+    return await this.userService.changePassword(user, id, changePasswordDto);
   }
 }

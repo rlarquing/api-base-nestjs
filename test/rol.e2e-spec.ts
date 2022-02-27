@@ -1,10 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { SecurityModule } from '../src/security/security.module';
 import { TypeORMExceptionFilter } from '../src/shared/filter/typeorm-exception.filter';
-import { AuthCredentialsDto } from '../src/security/dto';
+import {
+  AuthCredentialsDto,
+  CreateRolDto,
+  UpdateRolDto,
+  UpdateUserDto,
+} from '../src/security/dto';
 
 describe('RolController (e2e)', () => {
   let app: INestApplication;
@@ -14,8 +19,10 @@ describe('RolController (e2e)', () => {
       imports: [AppModule, SecurityModule],
     }).compile();
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     app.useGlobalFilters(new TypeORMExceptionFilter());
-    currentSize=0;
+    app.setGlobalPrefix('api');
+    currentSize = 0;
     await app.init();
   });
 
@@ -26,41 +33,125 @@ describe('RolController (e2e)', () => {
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
-      .post('/auth/signin')
+      .post('/api/auth/signin')
       .type('form')
       .send(authCredentialsDto)
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
     const findAllRequest = await server
-      .get('/rol')
+      .get('/api/rol')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
     expect(findAllRequest.status).toBe(200);
     currentSize = await findAllRequest.body.data.meta.totalItems;
   });
-  // const currentGetAllRequest = await server.get('/user').expect(401);
-  // const currentSize = currentGetAllRequest.body.length;
-  // await server
-  //   .post('/user')
-  //   .type('form')
-  //   .send(authCredentialsDto)
-  //   .expect(400);
-  // const postNewRequest = await server.get('/user').expect(200);
-  // const postNewSize = postNewRequest.body.length;
-  // expect(postNewSize).toBe(currentSize + 1);
-  // const id = newUserRequest.body.id;
-  // const getUserByIdRequest = await server.get(`/users/${id}`).expect(200);
-  // expect(getUserByIdRequest.body.id).toBe(id);
-  // const updateUser: UserDto = {
-  //     id: newUserRequest.body.id,
-  //     name: 'Reynelbis Larquin'
-  // };
-  // const updateUserRequest = await server.put(`/users/${updateUser.id}`).expect(200).type('form').send(updateUser);
-  // expect(updateUserRequest.body.name).toEqual(updateUser.name);
-  // await server.delete(`/users/${updateUser.id}`).expect(200);
-  // const postDeleteGetAllRequest = await server.get('/users').expect(200);
-  // const postDeleteSize = postDeleteGetAllRequest.body.length;
-  // expect(postDeleteSize).toBe(currentSize);
+
+  it('Crear Rol', async () => {
+    const server = request(app.getHttpServer());
+    const authCredentialsDto: AuthCredentialsDto = {
+      username: 'juan',
+      password: 'Qwerty1234*',
+    };
+    const loginUserRequest = await server
+      .post('/api/auth/signin')
+      .type('form')
+      .send(authCredentialsDto)
+      .expect(201);
+    expect(loginUserRequest.status).toBe(201);
+
+    const rolDto: CreateRolDto = {
+      nombre: 'Especialista principal economia',
+      descripcion: 'Se encarga de toda la dimension economica',
+      dimension: 1,
+      users: [],
+      permisos: [610, 611],
+    };
+
+    const newRolRequest = await server
+      .post('/api/rol')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .send(rolDto)
+      .expect(201);
+    expect(newRolRequest.body.message).toBe('success');
+    const postNewRequest = await server
+      .get('/api/rol')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    const postNewSize = postNewRequest.body.data.meta.totalItems;
+    expect(postNewSize).toBe(currentSize + 1);
+  });
+
+  it('Editar Rol', async () => {
+    const server = request(app.getHttpServer());
+    const authCredentialsDto: AuthCredentialsDto = {
+      username: 'juan',
+      password: 'Qwerty1234*',
+    };
+    const loginUserRequest = await server
+      .post('/api/auth/signin')
+      .type('form')
+      .send(authCredentialsDto)
+      .expect(201);
+    expect(loginUserRequest.status).toBe(201);
+    const updateRolDto: UpdateRolDto = {
+      nombre: 'this_is_not_a_real_rol',
+      descripcion: 'Este rol es de prueba',
+      dimension: 1,
+    };
+    const listRolRequest = await server
+      .get('/api/rol')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    const id: number =
+      listRolRequest.body.data.items[listRolRequest.body.data.items.length - 1]
+        .id;
+
+    const getRolRequest = await server
+      .get(`/api/rol/${id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+
+    const updateRolRequest = await server
+      .patch(`/api/rol/${getRolRequest.body.id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .send(updateRolDto)
+      .expect(200);
+    expect(updateRolRequest.body.message).toBe('success');
+  });
+
+  it('Eliminar Rol', async () => {
+    const server = request(app.getHttpServer());
+    const authCredentialsDto: AuthCredentialsDto = {
+      username: 'juan',
+      password: 'Qwerty1234*',
+    };
+    const loginUserRequest = await server
+      .post('/api/auth/signin')
+      .type('form')
+      .send(authCredentialsDto)
+      .expect(201);
+    expect(loginUserRequest.status).toBe(201);
+
+    const listRolRequest = await server
+      .get('/api/rol')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(listRolRequest.status).toBe(200);
+    const id: number =
+      listRolRequest.body.data.items[listRolRequest.body.data.items.length - 1]
+        .id;
+    const getRolRequest = await server
+      .get(`/api/rol/${id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(getRolRequest.status).toBe(200);
+    const deleteRolRequest = await server
+      .delete(`/api/rol/${getRolRequest.body.id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(deleteRolRequest.body.message).toBe('success');
+  });
+
   afterAll(async () => {
     await app.close();
   });

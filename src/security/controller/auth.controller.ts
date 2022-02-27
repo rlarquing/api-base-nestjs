@@ -15,6 +15,7 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiExcludeEndpoint,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -40,6 +41,7 @@ export class AuthController {
     description: 'Estructura para crear el usuario.',
     type: UserDto,
   })
+  @ApiExcludeEndpoint()
   async signUp(@Body(ValidationPipe) userDto: UserDto): Promise<ResponseDto> {
     return await this.authService.signUp(userDto);
   }
@@ -77,7 +79,7 @@ export class AuthController {
     type: RefreshTokenDto,
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
-  @ApiResponse({ status: 500, description: 'Error interno del servicor.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @UseGuards(AuthGuard('refresh'))
   @ApiBearerAuth()
   async regenerateTokens(@GetUser() user: UserEntity): Promise<SecretDataDto> {
@@ -92,7 +94,7 @@ export class AuthController {
     type: ResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
-  @ApiResponse({ status: 500, description: 'Error interno del servicor.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @UseGuards(AuthGuard('jwt'))
   async logout(@GetUser() user: UserEntity): Promise<ResponseDto> {
     return await this.authService.logout(user);

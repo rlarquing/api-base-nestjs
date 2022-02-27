@@ -14,6 +14,6 @@ export class RolRepository
     @InjectRepository(RolEntity)
     private rolRepository: Repository<RolEntity>,
   ) {
-    super(rolRepository, ['users', 'permisos']);
+    super(rolRepository, ['users', 'permisos', 'dimension']);
   }
 }

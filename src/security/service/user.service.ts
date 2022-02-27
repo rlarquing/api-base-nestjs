@@ -14,7 +14,12 @@ import {
   RolRepository,
   UserRepository,
 } from '../repository';
-import { CreateUserDto, ReadUserDto, UpdateUserDto } from '../dto';
+import {
+  ChangePasswordDto,
+  CreateUserDto,
+  ReadUserDto,
+  UpdateUserDto,
+} from '../dto';
 import { UserMapper } from '../mapper';
 import { TrazaService } from './traza.service';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
@@ -73,7 +78,7 @@ export class UserService {
       newUser.salt = await genSalt();
       newUser.password = await UserService.hashPassword(password, newUser.salt);
       newUser.roles = await this.rolRepository.findByIds(roles);
-      if (!permisos) {
+      if (permisos !== undefined) {
         let permisosGrupo: PermisoEntity[] = [];
         newUser.roles.forEach((rol: RolEntity) => {
           permisosGrupo.concat(rol.permisos);
@@ -114,7 +119,7 @@ export class UserService {
       const { roles } = updateUserDto;
       let { permisos } = updateUserDto;
       foundUser.roles = await this.rolRepository.findByIds(roles);
-      if (!permisos) {
+      if (permisos !== undefined) {
         let permisosGrupo: PermisoEntity[] = [];
         foundUser.roles.forEach((rol: RolEntity) => {
           permisosGrupo.concat(rol.permisos);
@@ -188,5 +193,35 @@ export class UserService {
       readDto.push(await this.userMapper.entityToDto(item));
     }
     return new Pagination(readDto, items.meta, items.links);
+  }
+
+  async changePassword(
+    user: UserEntity,
+    id: number,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<ResponseDto> {
+    const result = new ResponseDto();
+    const foundUser: UserEntity = await this.userRepository.findById(id);
+    if (!foundUser) {
+      throw new NotFoundException('No existe el user');
+    }
+    try {
+      const { password } = changePasswordDto;
+      foundUser.password = await UserService.hashPassword(
+        password,
+        foundUser.salt,
+      );
+      await this.userRepository.update(foundUser);
+      delete foundUser.salt;
+      delete foundUser.password;
+      await this.trazaService.create(user, foundUser, HISTORY_ACTION.MOD);
+      result.successStatus = true;
+      result.message = 'success';
+    } catch (error) {
+      result.message = error.response;
+      result.successStatus = false;
+      return result;
+    }
+    return result;
   }
 }

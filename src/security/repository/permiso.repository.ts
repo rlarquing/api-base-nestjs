@@ -30,6 +30,14 @@ export class PermisoRepository {
     await this.permisoRepository.save(permisoEntity);
   }
 
+  async update(servicio: string, nombre: string): Promise<void> {
+    const permiso: PermisoEntity = await this.findByServicio(servicio);
+    if (permiso.nombre !== nombre) {
+      permiso.nombre = nombre;
+      await this.permisoRepository.save(permiso);
+    }
+  }
+
   async remove(servicio: string): Promise<DeleteResult> {
     const permiso: PermisoEntity = await this.findByServicio(servicio);
     return await this.permisoRepository.delete(permiso.id);

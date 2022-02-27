@@ -14,6 +14,7 @@ describe('AuthController (e2e)', () => {
     }).compile();
     app = moduleFixture.createNestApplication();
     app.useGlobalFilters(new TypeORMExceptionFilter());
+    app.setGlobalPrefix('api');
     await app.init();
   });
 
@@ -26,7 +27,7 @@ describe('AuthController (e2e)', () => {
     };
 
     const newUserRequest = await server
-      .post('/auth/signup')
+      .post('/api/auth/signup')
       .type('form')
       .send(userDto)
       .expect(201);
@@ -39,7 +40,7 @@ describe('AuthController (e2e)', () => {
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
-      .post('/auth/signin')
+      .post('/api/auth/signin')
       .type('form')
       .send(authCredentialsDto)
       .expect(201);
@@ -52,14 +53,14 @@ describe('AuthController (e2e)', () => {
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
-      .post('/auth/signin')
+      .post('/api/auth/signin')
       .type('form')
       .send(authCredentialsDto)
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
     const { refreshToken } = loginUserRequest.body;
     const refreshTokenUserRequest = await server
-      .post('/auth/refresh-tokens')
+      .post('/api/auth/refresh-tokens')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .send({ refreshToken })
       .expect(201);
@@ -72,40 +73,17 @@ describe('AuthController (e2e)', () => {
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
-      .post('/auth/signin')
+      .post('/api/auth/signin')
       .type('form')
       .send(authCredentialsDto)
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
 
     const logoutUserRequest = await server
-      .post('/auth/logout')
+      .post('/api/auth/logout')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(201);
     expect(logoutUserRequest.status).toBe(201);
-    // const currentGetAllRequest = await server.get('/user').expect(401);
-    // const currentSize = currentGetAllRequest.body.length;
-    // await server
-    //   .post('/user')
-    //   .type('form')
-    //   .send(authCredentialsDto)
-    //   .expect(400);
-    // const postNewRequest = await server.get('/user').expect(200);
-    // const postNewSize = postNewRequest.body.length;
-    // expect(postNewSize).toBe(currentSize + 1);
-    // const id = newUserRequest.body.id;
-    // const getUserByIdRequest = await server.get(`/users/${id}`).expect(200);
-    // expect(getUserByIdRequest.body.id).toBe(id);
-    // const updateUser: UserDto = {
-    //     id: newUserRequest.body.id,
-    //     name: 'Reynelbis Larquin'
-    // };
-    // const updateUserRequest = await server.put(`/users/${updateUser.id}`).expect(200).type('form').send(updateUser);
-    // expect(updateUserRequest.body.name).toEqual(updateUser.name);
-    // await server.delete(`/users/${updateUser.id}`).expect(200);
-    // const postDeleteGetAllRequest = await server.get('/users').expect(200);
-    // const postDeleteSize = postDeleteGetAllRequest.body.length;
-    // expect(postDeleteSize).toBe(currentSize);
   });
   afterAll(async () => {
     await app.close();

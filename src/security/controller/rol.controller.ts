@@ -53,8 +53,9 @@ export class RolController extends GenericController<RolEntity> {
     protected rolService: RolService,
     protected configService: ConfigService,
   ) {
-    super(rolService, configService, 'rol', RolController);
+    super(rolService, configService, 'rol', 'RolController');
   }
+
   @Get()
   @Roles(RolType.ADMINISTRADOR) //El decorador Roles no funciona arriba en la cabeza del controlador.
   @ApiOperation({ summary: 'Obtener el listado de elementos del conjunto' })
@@ -173,6 +174,33 @@ export class RolController extends GenericController<RolEntity> {
     @Body() createRoleDto: CreateRolDto[],
   ): Promise<ResponseDto[]> {
     return await super.createMultiple(user, createRoleDto);
+  }
+
+  @Post('/importar/elementos')
+  @ApiOperation({ summary: 'Importar un grupo de elementos del conjunto.' })
+  @ApiBody({
+    description: 'Estructura para crear el grupo de elementos del conjunto.',
+    type: [CreateRolDto],
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Crea un grupo de elementos del conjunto.',
+    type: ResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  @ApiResponse({
+    status: 400,
+    description: 'Solicitud con errores.',
+    type: BadRequestDto,
+  })
+  @Servicio(RolController.name, 'importar')
+  async importar(
+    @GetUser() user: UserEntity,
+    @Body() createRoleDto: CreateRolDto[],
+  ): Promise<ResponseDto[]> {
+    return await super.importar(user, createRoleDto);
   }
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un elemento del conjunto.' })

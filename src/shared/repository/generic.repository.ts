@@ -45,6 +45,13 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     });
   }
 
+  async findByName(username: string): Promise<ENTITY> {
+    return await this.repository.findOne({
+      where: { activo: true, username: username },
+      relations: ['roles', 'permisos'],
+    });
+  }
+
   async createSelect(): Promise<any[]> {
     return await this.repository.find({
       where: { activo: true },

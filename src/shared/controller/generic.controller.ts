@@ -29,13 +29,14 @@ import { PermissionGuard } from '../../security/guard';
 import { ConfigService } from '@nestjs/config';
 
 export abstract class GenericController<ENTITY> implements IController {
+  protected controller;
   protected constructor(
     protected service: GenericService<ENTITY>,
     protected configService: ConfigService,
     protected ruta: string,
-    protected controller: any,
+    controller: any,
   ) {
-    this.controller = controller.name;
+    this.controller = controller;
   }
   @Get()
   async findAll(
@@ -93,12 +94,17 @@ export abstract class GenericController<ENTITY> implements IController {
     @GetUser() user: UserEntity,
     @Body() objects: any[],
   ): Promise<ResponseDto[]> {
-    const result: ResponseDto[] = [];
-    for (const item of objects) {
-      result.push(await this.service.create(user, item));
-    }
-    return result;
+    return await this.service.createMultiple(user, objects);
   }
+
+  @Post('/importar/elementos')
+  async importar(
+    @GetUser() user: UserEntity,
+    @Body() objects: any[],
+  ): Promise<ResponseDto[]> {
+    return await this.service.importar(user, objects);
+  }
+
   @Patch(':id')
   async update(
     @GetUser() user: UserEntity,
