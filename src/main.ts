@@ -3,9 +3,9 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
-import { PermisoService } from './security/service';
-import { parseController } from '../lib/parse-controller';
 import { TypeORMExceptionFilter } from './shared/filter/typeorm-exception.filter';
+import { EndPointService } from './core/service';
+import { parseController } from '../lib';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -18,8 +18,10 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   const options = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('API-BASE')
-    .setDescription('Api básica con Nestjs')
+    .setTitle('API-SIGDT-ODET-CO')
+    .setDescription(
+      'Api del Sistema Informático para la Gestión del Desarrollo Territorial del Observatorio para el Desarrollo Territorial Region Centro Oriental.',
+    )
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);
@@ -41,8 +43,8 @@ async function bootstrap() {
   const isDevelopmentEnv = process.env.NODE_ENV !== 'production';
   if (isDevelopmentEnv) {
     const application = await app;
-    const permisoService = application.get(PermisoService);
-    await parseController(permisoService);
+    const endPointService = application.get(EndPointService);
+    await parseController(endPointService);
   }
 }
 bootstrap();

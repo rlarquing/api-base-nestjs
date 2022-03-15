@@ -1,25 +1,23 @@
-import { SharedModule } from './shared/shared.module';
-import { DpaModule } from './dpa/dpa.module';
-import { SecurityModule } from './security/security.module';
 import { Module } from '@nestjs/common';
-import { DatabaseModule } from './database/database.module';
 import { AppConfig } from './app.keys';
-import { NomenclatorModule } from './nomenclator/nomenclator.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from '../config/config';
-import { LoggerProvider } from './shared/logger/logger.provider';
+import { CoreModule } from './core/core.module';
+import { DatabaseModule } from './database/database.module';
+import { PersistenceModule } from './persistence/persistence.module';
+import { LoggerProvider } from './core/logger/logger.provider';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
-    SharedModule,
-    DpaModule,
-    SecurityModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config],
     }),
     DatabaseModule,
-    NomenclatorModule,
+    PersistenceModule,
+    CoreModule,
+    ApiModule,
   ],
   controllers: [],
   providers: [],

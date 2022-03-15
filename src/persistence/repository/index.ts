@@ -1,0 +1,11 @@
+export { GenericRepository } from './generic.repository';
+export { GeometricRepository } from './geometric.repository';
+export { MenuRepository } from './menu.repository';
+export { EndPointRepository } from './end-point.repository';
+export { FuncionRepository } from './funcion.repository';
+export { GenericNomencladorRepository } from './generic-nomenclador.repository';
+export { MunicipioRepository } from './municipio.repository';
+export { ProvinciaRepository } from './provincia.repository';
+export { RolRepository } from './rol.repository';
+export { TrazaRepository } from './traza.repository';
+export { UserRepository } from './user.repository';

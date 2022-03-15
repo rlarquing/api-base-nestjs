@@ -1,0 +1,55 @@
+import { JwtStrategy } from './strategy/jwt.strategy';
+import { RefreshStrategy } from './strategy/refresh.strategy';
+import {
+  AuthService,
+  EndPointService,
+  FuncionService,
+  GenericNomencladorService,
+  MenuService,
+  MunicipioService,
+  ProvinciaService,
+  RolService,
+  SocketService,
+  TrazaService,
+  UserService,
+} from './service';
+import {
+  EndPointMapper,
+  FuncionMapper,
+  GenericNomencladorMapper,
+  GeoJsonMapper,
+  MenuMapper,
+  MunicipioMapper,
+  ProvinciaMapper,
+  RolMapper,
+  TrazaMapper,
+  UserMapper,
+} from './mapper';
+import { LoggerProvider } from './logger/logger.provider';
+
+export const providers = [
+  JwtStrategy,
+  RefreshStrategy,
+  TrazaService,
+  TrazaMapper,
+  LoggerProvider,
+  AuthService,
+  UserService,
+  UserMapper,
+  RolMapper,
+  FuncionMapper,
+  EndPointMapper,
+  MenuMapper,
+  RolService,
+  GenericNomencladorService,
+  GenericNomencladorMapper,
+  MunicipioService,
+  MunicipioMapper,
+  ProvinciaService,
+  ProvinciaMapper,
+  GeoJsonMapper,
+  EndPointService,
+  FuncionService,
+  MenuService,
+  SocketService,
+];

@@ -1,7 +1,6 @@
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { DeleteResult } from 'typeorm';
-import { BuscarDto, FiltroGenericoDto, ResponseDto } from '../dto';
-import { SelectDto } from '../../nomenclator/dto';
+import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
 
 export interface IService {
   findAll(options: IPaginationOptions): Promise<Pagination<any>>;
@@ -11,6 +10,8 @@ export interface IService {
   createSelect(): Promise<SelectDto[]>;
 
   create(user: any, object: any): Promise<ResponseDto>;
+
+  createMultiple(user: any, object: any[]): Promise<ResponseDto[]>;
 
   update(user: any, id: number, object: any): Promise<ResponseDto>;
 

@@ -1,0 +1,10 @@
+export { EndPointMapper } from './end-point.mapper';
+export { FuncionMapper } from './funcion.mapper';
+export { GenericNomencladorMapper } from './generic-nomenclador.mapper';
+export { GeoJsonMapper } from './geo-json.mapper';
+export { MenuMapper } from './menu.mapper';
+export { MunicipioMapper } from './municipio.mapper';
+export { ProvinciaMapper } from './provincia.mapper';
+export { RolMapper } from './rol.mapper';
+export { TrazaMapper } from './traza.mapper';
+export { UserMapper } from './user.mapper';

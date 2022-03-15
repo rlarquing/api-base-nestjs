@@ -1,6 +1,5 @@
 import { Pagination } from 'nestjs-typeorm-paginate';
-import { BuscarDto, FiltroGenericoDto, ResponseDto } from '../dto';
-import { SelectDto } from '../../nomenclator/dto';
+import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
 
 export interface IController {
   findAll(page?: number, limit?: number, user?: any): Promise<Pagination<any>>;
