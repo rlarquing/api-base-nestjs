@@ -14,6 +14,6 @@ export class MenuRepository
     @InjectRepository(MenuEntity)
     private menuRepository: Repository<MenuEntity>,
   ) {
-    super(menuRepository, ['dimension', 'menu']);
+    super(menuRepository, ['menu']);
   }
 }

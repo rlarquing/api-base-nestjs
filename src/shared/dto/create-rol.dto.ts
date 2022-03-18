@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
@@ -27,11 +26,6 @@ export class CreateRolDto {
     example: 'Tiene endPoint total del api.',
   })
   descripcion: string;
-
-  @IsNumber({}, { message: 'La dimensión tiene que ser un número' })
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Dimension', example: 1 })
-  dimension: number;
 
   @IsArray()
   @IsOptional()

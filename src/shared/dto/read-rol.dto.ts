@@ -2,7 +2,6 @@ import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ReadEndPointDto } from './read-end-point.dto';
 import { ReadFuncionDto } from './read-funcion.dto';
-import { ReadDimensionDto } from './read-dimension.dto';
 
 export class ReadRolDto {
   @IsString({ message: 'El dtoToString debe de ser un string' })
@@ -20,8 +19,7 @@ export class ReadRolDto {
   })
   descripcion: string;
 
-  @ApiProperty({ description: 'dimension', type: ReadDimensionDto })
-  dimension: ReadDimensionDto;
+
 
   @ApiProperty({ description: 'Funciones del rol.', type: [ReadEndPointDto] })
   funcions: ReadFuncionDto[];
@@ -31,14 +29,12 @@ export class ReadRolDto {
     id: number,
     nombre: string,
     descripcion: string,
-    dimension: ReadDimensionDto,
     funcions: ReadFuncionDto[],
   ) {
     this.dtoToString = dtoToString;
     this.id = id;
     this.nombre = nombre;
     this.descripcion = descripcion;
-    this.dimension = dimension;
     this.funcions = funcions;
   }
 }

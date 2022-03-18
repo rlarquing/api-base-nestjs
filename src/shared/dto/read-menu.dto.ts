@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ReadDimensionDto } from './read-dimension.dto';
 
 export class ReadMenuDto {
   @ApiProperty({ description: 'Nombre del objeto', example: 'Objeto 1' })
@@ -27,12 +26,6 @@ export class ReadMenuDto {
   to: string;
 
   @ApiProperty({
-    description: 'Aquí escriba una descripción para el atributo dimension',
-    example: 'Aquí una muestra para ese atributo',
-  })
-  dimension: ReadDimensionDto;
-
-  @ApiProperty({
     description: 'Aquí escriba una descripción para el atributo menu',
     example: 'Aquí una muestra para ese atributo',
   })
@@ -43,7 +36,6 @@ export class ReadMenuDto {
     label: string,
     icon: string,
     to: string,
-    dimension: ReadDimensionDto,
     menus: ReadMenuDto[],
   ) {
     this.dtoToString = dtoToString;
@@ -51,7 +43,6 @@ export class ReadMenuDto {
     this.label = label;
     this.icon = icon;
     this.to = to;
-    this.dimension = dimension;
     this.menus = menus;
   }
 }

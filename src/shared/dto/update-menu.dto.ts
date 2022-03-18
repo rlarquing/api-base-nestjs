@@ -23,12 +23,7 @@ export class UpdateMenuDto {
     example: 'Aquí una muestra para ese atributo',
   })
   to: string;
-  @IsNumber({}, { message: 'El atributo dimension debe ser un número' })
-  @ApiProperty({
-    description: 'Aquí escriba una descripción para el atributo dimension',
-    example: 'Aquí una muestra para ese atributo',
-  })
-  dimension: number;
+
   @IsNumber({}, { message: 'El atributo menu debe ser un número' })
   @ApiProperty({
     description: 'Aquí escriba una descripción para el atributo menu',

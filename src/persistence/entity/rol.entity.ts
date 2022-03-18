@@ -11,7 +11,6 @@ import { UserEntity } from './user.entity';
 import { FuncionEntity } from './funcion.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
 import { GenericEntity } from './generic.entity';
-import { DimensionEntity } from './dimension.entity';
 
 @Entity('rol', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 @Unique(['nombre'])
@@ -24,11 +23,6 @@ export class RolEntity extends GenericEntity {
   @ManyToMany(() => UserEntity, (user) => user.roles)
   @JoinColumn()
   users: UserEntity[];
-  @ManyToOne(() => DimensionEntity, (dimension) => dimension.rols, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'dimension_id' })
-  dimension: DimensionEntity;
   @ManyToMany(() => FuncionEntity, (funcion) => funcion.rols, { eager: false })
   @JoinTable({
     name: 'rol_funcion',
@@ -45,14 +39,12 @@ export class RolEntity extends GenericEntity {
   constructor(
     nombre: string,
     descripcion: string,
-    dimension: DimensionEntity,
     funcions: FuncionEntity[],
     users?: UserEntity[],
   ) {
     super();
     this.nombre = nombre;
     this.descripcion = descripcion;
-    this.dimension = dimension;
     this.users = users;
     this.funcions = funcions;
   }
