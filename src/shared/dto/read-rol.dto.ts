@@ -19,8 +19,6 @@ export class ReadRolDto {
   })
   descripcion: string;
 
-
-
   @ApiProperty({ description: 'Funciones del rol.', type: [ReadEndPointDto] })
   funcions: ReadFuncionDto[];
 

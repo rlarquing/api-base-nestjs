@@ -19,7 +19,6 @@ export class UserMapper {
   dtoToEntity(userDto: UserDto): UserEntity {
     return new UserEntity(userDto.username, userDto.email);
   }
-
   dtoToUpdateEntity(
     updateUserDto: UpdateUserDto,
     updateUserEntity: UserEntity,
@@ -28,7 +27,6 @@ export class UserMapper {
     updateUserEntity.email = updateUserDto.email;
     return updateUserEntity;
   }
-
   async entityToDto(userEntity: UserEntity): Promise<ReadUserDto> {
     const readRolDto: ReadRolDto[] = [];
     for (const rol of userEntity.roles) {
@@ -38,7 +36,6 @@ export class UserMapper {
     for (const funcion of userEntity.funcions) {
       readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
     }
-
     const dtoToString: string = userEntity.toString();
     return new ReadUserDto(
       dtoToString,

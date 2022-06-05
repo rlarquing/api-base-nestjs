@@ -3,7 +3,10 @@ import { DeleteResult } from 'typeorm';
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
 
 export interface IService {
-  findAll(options: IPaginationOptions): Promise<Pagination<any>>;
+  findAll(
+    options: IPaginationOptions,
+    sinPaginacion?: boolean,
+  ): Promise<Pagination<any> | any[]>;
 
   findById(id: any): Promise<any>;
 

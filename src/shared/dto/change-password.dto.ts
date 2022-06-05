@@ -8,7 +8,7 @@ export class ChangePasswordDto {
     message: 'La contraseña debe tener al menos 8 carácteres.',
   })
   @MaxLength(255, {
-    message: 'La contraseña debe tener como máximo 20 carácteres.',
+    message: 'La contraseña debe tener como máximo 255 carácteres.',
   })
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
     message: 'La contraseña es muy débil.',

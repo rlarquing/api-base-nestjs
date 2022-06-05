@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiNotFoundResponse,
   ApiOperation,
@@ -29,7 +30,7 @@ import {
   SelectDto,
 } from '../../shared/dto';
 import { GetUser, Servicio } from '../decorator';
-import { PermissionGuard } from '../guard';
+import { PermissionGuard, RolGuard } from '../guard';
 import { UserEntity } from '../../persistence/entity';
 
 export abstract class GenericController<ENTITY> implements IController {
@@ -40,17 +41,21 @@ export abstract class GenericController<ENTITY> implements IController {
   ) {}
   @Get('/')
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-  ): Promise<Pagination<any>> {
+    page?: number,
+    limit?: number,
+    sinPaginacion?: boolean,
+    @GetUser() user?: UserEntity,
+  ): Promise<Pagination<any> | any[]> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
-    return await this.service.findAll({
-      page,
-      limit,
-      route: url + ':' + port + '/api/' + this.ruta,
-    });
+    return await this.service.findAll(
+      {
+        page,
+        limit,
+        route: url + '/api/' + this.ruta,
+      },
+      sinPaginacion,
+    );
   }
   @Get('/:id')
   async findById(@Param('id', ParseIntPipe) id: number): Promise<any> {
@@ -77,8 +82,6 @@ export abstract class GenericController<ENTITY> implements IController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio(undefined, 'createSelect')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
   async createSelect(): Promise<SelectDto[]> {
     return await this.service.createSelect();
   }
@@ -102,7 +105,7 @@ export abstract class GenericController<ENTITY> implements IController {
     @GetUser() user: UserEntity,
     @Body() objects: any[],
   ): Promise<ResponseDto[]> {
-    return await this.service.importar(user, objects);
+    return await this.service.import(user, objects);
   }
 
   @Patch('/:id')
@@ -133,7 +136,8 @@ export abstract class GenericController<ENTITY> implements IController {
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @Servicio(undefined, 'delete')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async delete(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
@@ -154,7 +158,8 @@ export abstract class GenericController<ENTITY> implements IController {
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @Servicio(undefined, 'deleteMultiple')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async deleteMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
@@ -170,7 +175,8 @@ export abstract class GenericController<ENTITY> implements IController {
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @Servicio(undefined, 'remove')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async remove(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
@@ -191,7 +197,8 @@ export abstract class GenericController<ENTITY> implements IController {
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @Servicio(undefined, 'removeMultiple')
-  @UseGuards(AuthGuard('jwt'), PermissionGuard)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async removeMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
@@ -223,12 +230,11 @@ export abstract class GenericController<ENTITY> implements IController {
   ): Promise<Pagination<any>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     return await this.service.filter(
       {
         page,
         limit,
-        route: url + ':' + port + '/api/' + this.ruta,
+        route: url + '/api/' + this.ruta + '/filtro/por',
       },
       filtroGenericoDto,
     );
@@ -241,12 +247,11 @@ export abstract class GenericController<ENTITY> implements IController {
   ): Promise<Pagination<any>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     return await this.service.search(
       {
         page,
         limit,
-        route: url + ':' + port + '/api/' + this.ruta,
+        route: url + '/api/' + this.ruta + '/buscar',
       },
       buscarDto,
     );

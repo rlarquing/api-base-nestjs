@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -18,11 +19,12 @@ import {
   ApiBody,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionGuard, RolGuard } from '../guard';
-import { GetUser, Roles, Servicio } from '../decorator';
+import { GetUser, Roles } from '../decorator';
 import { GenericController } from './generic.controller';
 import { FuncionEntity, UserEntity } from '../../persistence/entity';
 import { FuncionService } from '../../core/service';
@@ -35,6 +37,7 @@ import {
   ListadoDto,
   ReadFuncionDto,
   ResponseDto,
+  SelectDto,
   UpdateFuncionDto,
   UpdateMultipleFuncionDto,
 } from '../../shared/dto';
@@ -53,7 +56,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Get('/')
-  @Roles(RolType.ADMINISTRADOR) //El decorador roles no trabaja arriba en la cabeza del controlador.
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Obtener el listado de elementos del conjunto' })
   @ApiResponse({
     status: 200,
@@ -67,12 +70,15 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('funcion', 'findAll')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiParam({ required: false, name: 'sinPaginacion', example: false })
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
+    @Query('sinPaginacion') sinPaginacion = false,
   ): Promise<any> {
-    const data = await super.findAll(page, limit);
+    const data = await super.findAll(page, limit, sinPaginacion);
     const header: string[] = [
       'id',
       'Nombre',
@@ -84,6 +90,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Get('/:id')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Obtener un elemento del conjunto' })
   @ApiResponse({
     status: 200,
@@ -97,7 +104,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('funcion', 'findById')
   async findById(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ReadFuncionDto> {
@@ -105,6 +111,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Post('/elementos/multiples')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Obtener multiples elementos del conjunto' })
   @ApiBody({
     description:
@@ -123,12 +130,33 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('funcion', 'findByIds')
   async findByIds(@Body() ids: number[]): Promise<ReadFuncionDto[]> {
     return await super.findByIds(ids);
   }
+  @Get('/crear/select')
+  @Roles(RolType.ADMINISTRADOR)
+  @ApiOperation({
+    summary: 'Obtener los elementos del conjunto para crear un select',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Muestra la información de los elementos del conjunto para crear un select',
+    type: [SelectDto],
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Elemento del conjunto no encontrado.',
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async createSelect(): Promise<SelectDto[]> {
+    return await super.createSelect();
+  }
 
   @Post('/')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Crear un elemento del conjunto.' })
   @ApiBody({
     description: 'Estructura para crear el elemento del conjunto.',
@@ -147,7 +175,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('funcion', 'create')
   async create(
     @GetUser() user: UserEntity,
     @Body() createFuncionDto: CreateFuncionDto,
@@ -156,6 +183,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Post('/multiple')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Crear un grupo de elementos del conjunto.' })
   @ApiBody({
     description: 'Estructura para crear el grupo de elementos del conjunto.',
@@ -174,7 +202,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('funcion', 'createMultiple')
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() createFuncionDto: CreateFuncionDto[],
@@ -183,6 +210,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Post('/importar/elementos')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Importar un grupo de elementos del conjunto.' })
   @ApiBody({
     description: 'Estructura para crear el grupo de elementos del conjunto.',
@@ -201,7 +229,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('funcion', 'import')
   async import(
     @GetUser() user: UserEntity,
     @Body() createFuncionDto: CreateFuncionDto[],
@@ -210,6 +237,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Patch('/:id')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Actualizar un elemento del conjunto.' })
   @ApiBody({
     description: 'Estructura para modificar el elemento del conjunto.',
@@ -228,7 +256,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('funcion', 'update')
   async update(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
@@ -238,6 +265,7 @@ export class FuncionController extends GenericController<FuncionEntity> {
   }
 
   @Patch('/elementos/multiples')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Actualizar un grupo de elementos del conjunto.' })
   @ApiBody({
     description:
@@ -257,7 +285,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('funcion', 'updateMultiple')
   async updateMultiple(
     @GetUser() user: UserEntity,
     @Body() updateMultipleFuncioneDto: UpdateMultipleFuncionDto[],
@@ -265,7 +292,44 @@ export class FuncionController extends GenericController<FuncionEntity> {
     return await super.updateMultiple(user, updateMultipleFuncioneDto);
   }
 
+  @Delete('/:id')
+  @Roles(RolType.ADMINISTRADOR)
+  @ApiOperation({
+    summary: 'Eliminar un elemento del conjunto utilizando borrado virtual.',
+  })
+  @ApiResponse({ status: 201, description: 'El elemento se ha eliminado.' })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async delete(
+    @GetUser() user: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ResponseDto> {
+    return await super.deleteMultiple(user, [id]);
+  }
+  @Delete('/elementos/multiples')
+  @Roles(RolType.ADMINISTRADOR)
+  @ApiOperation({
+    summary:
+      'Eliminar un grupo de elementos del conjunto utilizando borrado virtual.',
+  })
+  @ApiBody({
+    description: 'Estructura para eliminar el grupo de elementos del conjunto.',
+    type: [Number],
+  })
+  @ApiResponse({ status: 201, description: 'El elemento se ha eliminado.' })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async deleteMultiple(
+    @GetUser() user: UserEntity,
+    @Body() ids: number[],
+  ): Promise<ResponseDto> {
+    return await super.deleteMultiple(user, ids);
+  }
+
   @Post('/filtrar')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({
     summary: 'Filtrar el conjunto por los parametros establecidos',
   })
@@ -281,7 +345,8 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('funcion', 'filter')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
   async filter(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -297,7 +362,8 @@ export class FuncionController extends GenericController<FuncionEntity> {
     ];
     return new ListadoDto(header, data);
   }
-  @Post('buscar')
+  @Post('/buscar')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({
     summary: 'Buscar en el conjunto por el parametro establecido',
   })
@@ -308,12 +374,13 @@ export class FuncionController extends GenericController<FuncionEntity> {
   })
   @ApiBody({
     description: 'Estructura para crear la busqueda.',
-    type: String,
+    type: BuscarDto,
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('funcion', 'search')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
   async search(
     @Query('page') page = 1,
     @Query('limit') limit = 10,

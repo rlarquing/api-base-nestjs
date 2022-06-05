@@ -8,10 +8,13 @@ import { GeoJsonMapper, ProvinciaMapper } from '../mapper';
 import { ProvinciaRepository } from '../../persistence/repository';
 import { GeoJsonDto, ReadProvinciaDto } from '../../shared/dto';
 import { ProvinciaEntity } from '../../persistence/entity';
+import { AppConfig } from '../../app.keys';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProvinciaService {
   constructor(
+    private configService: ConfigService,
     private provinciaRepository: ProvinciaRepository,
     private provinciaMapper: ProvinciaMapper,
     private geoJsonMapper: GeoJsonMapper,
@@ -49,6 +52,12 @@ export class ProvinciaService {
 
   async geoJsonById(id: number): Promise<GeoJsonDto> {
     const provincia = await this.provinciaRepository.geoJsonById(id);
+    return this.geoJsonMapper.entityToDto(provincia);
+  }
+
+  async centroide(): Promise<GeoJsonDto> {
+    const nombreCorto: string = this.configService.get(AppConfig.PROVINCIA);
+    const provincia = await this.provinciaRepository.centroide(nombreCorto);
     return this.geoJsonMapper.entityToDto(provincia);
   }
 }

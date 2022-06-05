@@ -2,7 +2,10 @@ import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { DeleteResult } from 'typeorm';
 
 export interface IRepository<ENTITY> {
-  findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>>;
+  findAll(
+    options: IPaginationOptions,
+    sinPaginacion?: boolean,
+  ): Promise<Pagination<ENTITY> | ENTITY[]>;
 
   findById(id: any): Promise<ENTITY>;
 

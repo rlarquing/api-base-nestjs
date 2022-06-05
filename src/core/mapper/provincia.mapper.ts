@@ -7,9 +7,11 @@ export class ProvinciaMapper {
   entityToDto(provinciaEntity: ProvinciaEntity): ReadProvinciaDto {
     const dtoToString: string = provinciaEntity.toString();
     return new ReadProvinciaDto(
+      dtoToString,
       provinciaEntity.id,
       provinciaEntity.nombre,
-      dtoToString,
+      provinciaEntity.codigo,
+      provinciaEntity.nombreCorto,
     );
   }
 }

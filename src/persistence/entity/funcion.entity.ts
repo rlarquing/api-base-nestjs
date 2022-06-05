@@ -13,7 +13,7 @@ import { SchemaEnum } from '../../database/schema/schema.enum';
 import { GenericEntity } from './generic.entity';
 import { MenuEntity } from './menu.entity';
 
-@Entity('funcion', { schema: SchemaEnum.MOD_AUTH })
+@Entity('funcion', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class FuncionEntity extends GenericEntity {
   @Column({
     type: 'varchar',
@@ -42,7 +42,7 @@ export class FuncionEntity extends GenericEntity {
   endPoints: EndPointEntity[];
   @OneToOne(() => MenuEntity, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'menu_id' })
-  menu: MenuEntity;
+  menu?: MenuEntity;
   @ManyToMany(() => RolEntity, (rol) => rol.funcions)
   @JoinColumn()
   rols: RolEntity[];
@@ -53,7 +53,7 @@ export class FuncionEntity extends GenericEntity {
     nombre: string,
     descripcion: string,
     endPoints: EndPointEntity[],
-    menu: MenuEntity,
+    menu?: MenuEntity,
   ) {
     super();
     this.nombre = nombre;

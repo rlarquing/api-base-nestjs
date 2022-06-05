@@ -21,15 +21,28 @@ export abstract class GenericService<ENTITY> implements IService {
     protected traza?: boolean,
   ) {}
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<any>> {
-    const items: Pagination<ENTITY> = await this.genericRepository.findAll(
-      options,
-    );
+  async findAll(
+    options: IPaginationOptions,
+    sinPaginacion?: boolean,
+  ): Promise<Pagination<any> | any[]> {
+    const items: Pagination<ENTITY> | ENTITY[] =
+      await this.genericRepository.findAll(options, sinPaginacion);
     const readDto: any[] = [];
-    for (const item of items.items) {
-      readDto.push(await this.mapper.entityToDto(item));
+    if (sinPaginacion) {
+      for (const item of items as ENTITY[]) {
+        readDto.push(await this.mapper.entityToDto(item));
+      }
+      return readDto;
+    } else {
+      for (const item of (items as Pagination<ENTITY>).items) {
+        readDto.push(await this.mapper.entityToDto(item));
+      }
+      return new Pagination(
+        readDto,
+        (items as Pagination<ENTITY>).meta,
+        (items as Pagination<ENTITY>).links,
+      );
     }
-    return new Pagination(readDto, items.meta, items.links);
   }
 
   async findById(id: any): Promise<any> {
@@ -91,7 +104,7 @@ export abstract class GenericService<ENTITY> implements IService {
     return result;
   }
 
-  async importar(user: UserEntity, createDto: any[]): Promise<ResponseDto[]> {
+  async import(user: UserEntity, createDto: any[]): Promise<ResponseDto[]> {
     const result: ResponseDto[] = [];
     for (const dtoElement of createDto) {
       const clave: string[] = [];

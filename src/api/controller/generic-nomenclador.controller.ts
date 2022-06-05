@@ -44,23 +44,22 @@ import { NomencladorTypeEnum } from '../../shared/enum';
 
 @ApiTags('Nomencladores')
 @Controller('nomenclador')
-@UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
-@ApiBearerAuth()
 @UsePipes(ValidationPipe)
 export class GenericNomencladorController {
   constructor(
     protected nomencladorService: GenericNomencladorService,
     protected configService: ConfigService,
   ) {}
-  @Get('/:name')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @Get('/:name/create/select')
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({
-    summary: 'Obtener el listado de elementos del conjunto para el select',
+    summary:
+      'Obtener el listado de elementos del conjunto para crear un select.',
   })
   @ApiResponse({
     status: 200,
-    description: 'Listado de elementos del conjunto para el select',
-    type: SelectDto,
+    description: 'Listado de elementos del conjunto para crear un select.',
+    type: [SelectDto],
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -69,12 +68,13 @@ export class GenericNomencladorController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('nomenclador', 'getAllNomenclator')
-  async getAllNomenclator(@Param('name') name: string): Promise<SelectDto[]> {
-    return await this.nomencladorService.findAllNomenclator(name);
+  async createSelect(@Param('name') name: string): Promise<SelectDto[]> {
+    return await this.nomencladorService.createSelect(name);
   }
   @Get('/:name/:id')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Obtener un elemento del conjunto' })
   @ApiResponse({
     status: 200,
@@ -95,8 +95,11 @@ export class GenericNomencladorController {
   ): Promise<any> {
     return await this.nomencladorService.findById(name, id);
   }
+
   @Get('/:name/listado/elementos')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiParam({ required: false, name: 'page', example: '1' })
   @ApiParam({ required: false, name: 'limit', example: '10' })
   @ApiOperation({ summary: 'Obtener el listado de elementos del conjunto' })
@@ -120,17 +123,18 @@ export class GenericNomencladorController {
   ): Promise<ListadoDto> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     const data = await this.nomencladorService.findAll(name, {
       page,
       limit,
-      route: url + ':' + port + '/api/nomenclador',
+      route: url + '/api/nomenclador/' + name,
     });
     const header: string[] = ['id', 'Nombre'];
     return new ListadoDto(header, data);
   }
   @Post('/:name/elementos/multiples')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Obtener multiples elementos del conjunto' })
   @ApiBody({
     description:
@@ -157,7 +161,9 @@ export class GenericNomencladorController {
     return await this.nomencladorService.findByIds(name, ids);
   }
   @Post('/:name')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Crear un elemento del conjunto.' })
   @ApiBody({
     description: 'Estructura para crear el elemento del conjunto.',
@@ -184,7 +190,9 @@ export class GenericNomencladorController {
     );
   }
   @Post('/:name/multiple')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Crear un grupo de elementos del conjunto.' })
   @ApiBody({
     description: 'Estructura para crear el grupo de elementos del conjunto.',
@@ -212,7 +220,9 @@ export class GenericNomencladorController {
   }
 
   @Post('/:name/importar/elementos')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Importar un grupo de elementos del conjunto.' })
   @ApiBody({
     description: 'Estructura para crear el grupo de elementos del conjunto.',
@@ -239,7 +249,9 @@ export class GenericNomencladorController {
     );
   }
   @Patch('/:name/:id')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Actualizar un elemento del conjunto.' })
   @ApiBody({
     description: 'Estructura para modificar el elemento del conjunto.',
@@ -268,7 +280,9 @@ export class GenericNomencladorController {
     );
   }
   @Patch('/:name/elementos/multiples')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({ summary: 'Actualizar un grupo de elementos del conjunto.' })
   @ApiBody({
     description:
@@ -296,7 +310,9 @@ export class GenericNomencladorController {
     return result;
   }
   @Delete('/:name/:id')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({
     summary: 'Eliminar un elemento del conjunto utilizando borrado virtual.',
   })
@@ -313,7 +329,9 @@ export class GenericNomencladorController {
     return await this.nomencladorService.deleteMultiple(name, user, [id]);
   }
   @Delete('/:name/elementos/multiples')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({
     summary:
       'Eliminar un grupo de elementos del conjunto utilizando borrado virtual.',
@@ -335,7 +353,9 @@ export class GenericNomencladorController {
     return await this.nomencladorService.deleteMultiple(name, user, ids);
   }
   @Delete('/:name/:id/delete/real')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({
     summary: 'Eliminar un elemento del conjunto utilizando borrado real.',
   })
@@ -352,7 +372,9 @@ export class GenericNomencladorController {
     return await this.nomencladorService.removeMultiple(name, user, [id]);
   }
   @Delete('/:name/delete/real/elementos/multiples')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({
     summary:
       'Eliminar un grupo de elementos del conjunto utilizando borrado real.',
@@ -374,7 +396,7 @@ export class GenericNomencladorController {
     return await this.nomencladorService.removeMultiple(name, user, ids);
   }
   @Get('/:name/cantidad/elementos')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiParam({ required: false, name: 'page', example: '1' })
   @ApiParam({ required: false, name: 'limit', example: '10' })
   @ApiOperation({
@@ -388,12 +410,13 @@ export class GenericNomencladorController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('nomenclador', 'count')
   async count(@Param('name') name: string): Promise<number> {
     return await this.nomencladorService.count(name);
   }
   @Post('/:name/filtrar/por')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiOperation({
     summary: 'Filtrar el conjunto por los parametros establecidos',
   })
@@ -418,13 +441,12 @@ export class GenericNomencladorController {
   ): Promise<ListadoDto> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     const data = await this.nomencladorService.filter(
       name,
       {
         page,
         limit,
-        route: url + ':' + port + '/api/nomenclador',
+        route: url + '/api/nomenclador' + name + '/filtrar/por',
       },
       filtroGenericoDto,
     );
@@ -432,7 +454,9 @@ export class GenericNomencladorController {
     return new ListadoDto(header, data);
   }
   @Post('/:name/buscar')
-  @ApiParam({ name: 'name', example: 'clasificacionTransporte' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  @ApiParam({ name: 'name', example: 'sector' })
   @ApiParam({ required: false, name: 'page', example: '1' })
   @ApiParam({ required: false, name: 'limit', example: '10' })
   @ApiOperation({
@@ -445,7 +469,7 @@ export class GenericNomencladorController {
   })
   @ApiBody({
     description: 'Estructura para crear la búsqueda.',
-    type: String,
+    type: BuscarDto,
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
@@ -459,13 +483,12 @@ export class GenericNomencladorController {
   ): Promise<ListadoDto> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     const data = await this.nomencladorService.search(
       name,
       {
         page,
         limit,
-        route: url + ':' + port + '/api/nomenclador',
+        route: url + '/api/nomenclador/' + name + '/buscar',
       },
       buscarDto,
     );
@@ -489,5 +512,34 @@ export class GenericNomencladorController {
       array.push(propertyValue);
     }
     return array;
+  }
+
+  @Post('/:name/create/select/dependiente')
+  @ApiParam({ name: 'name', example: 'sector' })
+  @ApiOperation({
+    summary: 'Crear un select del conjunto por los parametros establecidos',
+  })
+  @ApiResponse({
+    status: 201,
+    description:
+      'Crea un select del conjunto por los parametros que se le puedan pasar',
+    type: [SelectDto],
+  })
+  @ApiBody({
+    description:
+      'Estructura para crear el filtrado que sera usado para crear el select.',
+    type: FiltroGenericoDto,
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async createSelectDependiente(
+    @Param('name') name: string,
+    @Body() filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]> {
+    return await this.nomencladorService.createSelectDependiente(
+      name,
+      filtroGenericoDto,
+    );
   }
 }

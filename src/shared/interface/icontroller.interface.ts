@@ -2,7 +2,12 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
 
 export interface IController {
-  findAll(page?: number, limit?: number, user?: any): Promise<Pagination<any>>;
+  findAll(
+    page?: number,
+    limit?: number,
+    sinPaginacion?: boolean,
+    user?: any,
+  ): Promise<Pagination<any> | any[]>;
 
   findById(id: any): Promise<any>;
 

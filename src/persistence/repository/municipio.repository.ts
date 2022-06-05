@@ -1,4 +1,7 @@
-import { MunicipioEntity } from '../entity';
+import {
+  MunicipioEntity,
+  ProvinciaEntity,
+} from '../entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -22,11 +25,23 @@ export class MunicipioRepository {
   }
 
   async findById(id: number): Promise<MunicipioEntity> {
-    return await this.municipioRepository.findOne(id);
+    return await this.municipioRepository.findOne(id, {
+      relations: ['provincia'],
+    });
   }
 
-  async findByProvincia(id: number): Promise<MunicipioEntity[]> {
-    return await this.municipioRepository.find({ where: { provincia: id } });
+  async findByIds(ids: number[]): Promise<MunicipioEntity[]> {
+    return await this.municipioRepository.findByIds(ids, {
+      relations: ['provincia'],
+    });
+  }
+
+  async findByProvincia(
+    provincia: ProvinciaEntity | number,
+  ): Promise<MunicipioEntity[]> {
+    return await this.municipioRepository.find({
+      where: { provincia: provincia },
+    });
   }
 
   async geoJson(): Promise<any> {
@@ -44,5 +59,14 @@ export class MunicipioRepository {
       .addSelect('ST_AsGeoJSON(m.geom)::json', 'geometry')
       .andWhere('m.id=:id', { id: id })
       .getRawOne();
+  }
+
+  async geoJsonByProvincia(provincia: ProvinciaEntity): Promise<any> {
+    return await this.municipioRepository
+      .createQueryBuilder('m')
+      .select("json_build_object( 'id', id, 'nombre', nombre)", 'properties')
+      .addSelect('ST_AsGeoJSON(m.geom)::json', 'geometry')
+      .andWhere('m.provincia=:provincia', { provincia: provincia.id })
+      .getRawMany();
   }
 }

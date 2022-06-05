@@ -1,21 +1,30 @@
-import { IsNumber, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ReadProvinciaDto {
-  @IsString({ message: 'El dtoToString debe de ser un string' })
   dtoToString: string;
 
-  @IsNumber()
   @ApiProperty({ description: 'id de la provincia.', example: 1 })
   id: number;
 
-  @IsString()
   @ApiProperty({ description: 'Nombre de la provincia.', example: 'Camaguey' })
   nombre: string;
 
-  constructor(id: number, nombre: string, dtoToString: string) {
+  @ApiProperty({ description: 'Código de la provincia.', example: '30' })
+  codigo: string;
+
+  @ApiProperty({ description: 'Nombre corto de la provincia.', example: 'CM' })
+  nombreCorto: string;
+  constructor(
+    dtoToString: string,
+    id: number,
+    nombre: string,
+    codigo: string,
+    nombreCorto: string,
+  ) {
+    this.dtoToString = dtoToString;
     this.id = id;
     this.nombre = nombre;
-    this.dtoToString = dtoToString;
+    this.codigo = codigo;
+    this.nombreCorto = nombreCorto;
   }
 }

@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser, Servicio } from '../decorator';
+import { GetUser } from '../decorator';
 import { Roles } from '../decorator';
 import {
   ApiBearerAuth,
@@ -50,6 +50,7 @@ export class UserController {
     protected configService: ConfigService,
   ) {}
   @Get('/')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Obtener el listado de los usuarios' })
   @ApiResponse({
     status: 200,
@@ -65,20 +66,18 @@ export class UserController {
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @ApiParam({ required: false, name: 'page', example: '1' })
   @ApiParam({ required: false, name: 'limit', example: '10' })
-  @Servicio('user', 'findAll')
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ): Promise<ListadoDto> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     const data = await this.userService.findAll({
       page,
       limit,
-      route: url + ':' + port + '/user',
+      route: url + '/user',
     });
-    const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'End points'];
+    const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     return new ListadoDto(header, data);
   }
   @Get('/:id')
@@ -95,11 +94,11 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'findById')
   async findById(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
     return await this.userService.findById(id);
   }
   @Post('/')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Crear un usuario' })
   @ApiBody({
     description: 'Estructura para crear el usuario.',
@@ -113,7 +112,6 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'create')
   async create(
     @GetUser() user: UserEntity,
     @Body() createUserDto: CreateUserDto,
@@ -121,6 +119,7 @@ export class UserController {
     return await this.userService.create(user, createUserDto);
   }
   @Patch('/:id')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Actualizar un usuario' })
   @ApiBody({
     description: 'Estructura para modificar el usuario.',
@@ -134,7 +133,6 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'update')
   async update(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
@@ -143,6 +141,7 @@ export class UserController {
     return await this.userService.update(user, id, updateUserDto);
   }
   @Delete('/:id')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Eliminar un usuario' })
   @ApiResponse({
     status: 200,
@@ -152,14 +151,32 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'delete')
   async delete(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<ResponseDto> {
     return await this.userService.delete(user, id);
   }
+
+  @Delete('/elementos/multiples')
+  @Roles(RolType.ADMINISTRADOR)
+  @ApiOperation({ summary: 'Eliminar un grupo de usuarios.' })
+  @ApiBody({
+    description: 'Estructura para eliminar el grupo de usuarios.',
+    type: [Number],
+  })
+  @ApiResponse({ status: 201, description: 'El elemento se ha eliminado.' })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async deleteMultiple(
+    @GetUser() user: UserEntity,
+    @Body() ids: number[],
+  ): Promise<ResponseDto> {
+    return await this.userService.deleteMultiple(user, ids);
+  }
+
   @Post('/filtrar')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({
     summary: 'Filtrar el conjunto por los parametros establecidos',
   })
@@ -175,7 +192,8 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'filter')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
   async filter(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -183,19 +201,19 @@ export class UserController {
   ): Promise<ListadoDto> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     const data = await this.userService.filter(
       {
         page,
         limit,
-        route: url + ':' + port + '/user',
+        route: url + '/user',
       },
       filtroGenericoDto,
     );
-    const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'End points'];
+    const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     return new ListadoDto(header, data);
   }
   @Post('/buscar')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({
     summary: 'Buscar en el conjunto por el parametro establecido',
   })
@@ -211,7 +229,8 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'search')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
   async search(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -219,24 +238,24 @@ export class UserController {
   ): Promise<ListadoDto> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     const data = await this.userService.search(
       {
         page,
         limit,
-        route: url + ':' + port + '/user',
+        route: url + '/user',
       },
       buscarDto,
     );
-    const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'End points'];
+    const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     return new ListadoDto(header, data);
   }
 
   @Patch('/:id/change/password')
+  @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({ summary: 'Cambiar password a un usuario' })
   @ApiBody({
-    description: 'Estructura para camviar el password del usuario.',
-    type: UpdateUserDto,
+    description: 'Estructura para cambiar el password del usuario.',
+    type: ChangePasswordDto,
   })
   @ApiResponse({
     status: 200,
@@ -246,7 +265,6 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('user', 'changePassword')
   async changePassword(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,

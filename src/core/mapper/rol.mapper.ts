@@ -26,12 +26,14 @@ export class RolMapper {
     protected funcionMapper: FuncionMapper,
   ) {}
   async dtoToEntity(createRolDto: CreateRolDto): Promise<RolEntity> {
-    const users: UserEntity[] = await this.userRepository.findByIds(
-      createRolDto.users,
-    );
-    const funcions: FuncionEntity[] = await this.funcionRepository.findByIds(
-      createRolDto.funcions,
-    );
+    let users: UserEntity[] = [];
+    if (createRolDto.users != undefined) {
+      users = await this.userRepository.findByIds(createRolDto.users);
+    }
+    let funcions: FuncionEntity[] = [];
+    if (createRolDto.funcions != undefined) {
+      funcions = await this.funcionRepository.findByIds(createRolDto.funcions);
+    }
     return new RolEntity(
       createRolDto.nombre,
       createRolDto.descripcion,
@@ -60,7 +62,6 @@ export class RolMapper {
 
     updateRolEntity.nombre = updateRolDto.nombre;
     updateRolEntity.descripcion = updateRolDto.descripcion;
-
     return updateRolEntity;
   }
   async entityToDto(rolEntity: RolEntity): Promise<ReadRolDto> {

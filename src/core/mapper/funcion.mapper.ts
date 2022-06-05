@@ -32,17 +32,25 @@ export class FuncionMapper {
   async dtoToEntity(
     createFuncionDto: CreateFuncionDto,
   ): Promise<FuncionEntity> {
-    const menu: MenuEntity = await this.menuRepository.findById(
-      createFuncionDto.menu,
-    );
     const endPoints: EndPointEntity[] = await this.endPointRepository.findByIds(
       createFuncionDto.endPoints,
     );
+    if (createFuncionDto.menu !== undefined) {
+      const menu: MenuEntity = await this.menuRepository.findById(
+        createFuncionDto.menu,
+      );
+      return new FuncionEntity(
+        createFuncionDto.nombre,
+        createFuncionDto.descripcion,
+        endPoints,
+        menu,
+      );
+    }
+
     return new FuncionEntity(
       createFuncionDto.nombre,
       createFuncionDto.descripcion,
       endPoints,
-      menu,
     );
   }
 
@@ -53,13 +61,19 @@ export class FuncionMapper {
     const endPoints: EndPointEntity[] = await this.endPointRepository.findByIds(
       updateFuncionDto.endPoints,
     );
-    const menu: MenuEntity = await this.menuRepository.findById(
-      updateFuncionDto.menu,
-    );
+    if (updateFuncionDto.menu !== undefined) {
+      if (updateFuncionDto.menu !== null) {
+        updateFuncionEntity.menu = await this.menuRepository.findById(
+          updateFuncionDto.menu,
+        );
+      } else {
+        updateFuncionEntity.menu = null;
+      }
+    }
     updateFuncionEntity.nombre = updateFuncionDto.nombre;
     updateFuncionEntity.descripcion = updateFuncionDto.descripcion;
     updateFuncionEntity.endPoints = endPoints;
-    updateFuncionEntity.menu = menu;
+
     return updateFuncionEntity;
   }
 

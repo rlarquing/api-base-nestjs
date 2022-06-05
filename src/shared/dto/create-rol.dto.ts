@@ -1,12 +1,13 @@
 import {
   IsArray,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateRolDto {
   @IsNotEmpty()
   @IsString()
@@ -23,13 +24,18 @@ export class CreateRolDto {
   @IsString()
   @ApiProperty({
     description: 'Descripción del rol.',
-    example: 'Tiene endPoint total del api.',
+    example: 'Tiene acceso total del api.',
   })
   descripcion: string;
 
+  @IsNumber({}, { message: 'La dimensión tiene que ser un número' })
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Dimensión', example: 1 })
+  dimension: number;
+
   @IsArray()
   @IsOptional()
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Usuarios que tienen este rol.',
     example: [1, 2],
   })
@@ -37,6 +43,6 @@ export class CreateRolDto {
 
   @IsArray()
   @IsOptional()
-  @ApiProperty({ description: 'Funciones del rol.', example: [1, 2] })
+  @ApiPropertyOptional({ description: 'Funciones del rol.', example: [1, 2] })
   funcions?: number[];
 }

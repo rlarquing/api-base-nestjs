@@ -34,7 +34,7 @@ export class EndPointRepository {
     const endPoint: EndPointEntity = await this.findByNombre(
       endPointEntity.nombre,
     );
-    if (endPoint !== null) {
+    if (endPoint) {
       endPointEntity.id = endPoint.id;
       await this.endPointRepository.save(endPointEntity);
     }

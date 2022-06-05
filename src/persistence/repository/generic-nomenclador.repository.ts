@@ -13,22 +13,8 @@ import {
   isNumber,
   isString,
 } from 'class-validator';
-import {
-  SectorEntity,
-  FormaPropiedadEntity,
-  UnidadMedidaEntity,
-  AlcanceEntity,
-} from '../entity';
 export class GenericNomencladorRepository {
   constructor(
-    @InjectRepository(AlcanceEntity)
-    protected alcanceRepository: Repository<AlcanceEntity>,
-    @InjectRepository(SectorEntity)
-    protected sectorRepository: Repository<SectorEntity>,
-    @InjectRepository(FormaPropiedadEntity)
-    protected formaPropiedadRepository: Repository<FormaPropiedadEntity>,
-    @InjectRepository(UnidadMedidaEntity)
-    protected unidadMedidaRepository: Repository<UnidadMedidaEntity>,
   ) {}
   async findById(name: string, id: number): Promise<any> {
     if (!this[`${name}Repository`])
@@ -95,6 +81,16 @@ export class GenericNomencladorRepository {
       );
     const repo = this[`${name}Repository`];
     return await repo.save(newObj);
+  }
+  async createSelect(name: string): Promise<any[]> {
+    if (!this[`${name}Repository`])
+      throw new NotFoundException(
+        `No existe un nomenclador con nombre ${name}`,
+      );
+    const repo = this[`${name}Repository`];
+    return await repo.find({
+      where: { activo: true },
+    });
   }
   async update(name: string, updateObj: any): Promise<any> {
     if (!this[`${name}Repository`])
@@ -220,5 +216,32 @@ export class GenericNomencladorRepository {
       }
     }
     return await paginate<any>(repo, options, { where: wheres });
+  }
+
+  async findBy(name: string, claves: string[], valores: any[]): Promise<any[]> {
+    if (!this[`${name}Repository`])
+      throw new NotFoundException(
+        `No existe un nomenclador con nombre ${name}`,
+      );
+    const repo = this[`${name}Repository`];
+    const wheres = { activo: true };
+    for (let i = 0; i < claves.length; i++) {
+      if (isNumber(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else if (isDate(valores[i])) {
+        const datep = valores[i];
+        const start = new Date(datep.setHours(0, 0, 0, 0));
+        const end = new Date(datep.setHours(23, 59, 59, 999));
+        const date = { date: Between(start.toISOString(), end.toISOString()) };
+        wheres[claves[i]] = date;
+      } else if (isBoolean(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else {
+        wheres[claves[i]] = ILike(`%${valores[i]}%`);
+      }
+    }
+    return await repo.find({
+      where: wheres,
+    });
   }
 }

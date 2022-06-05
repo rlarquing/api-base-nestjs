@@ -70,7 +70,7 @@ export class UserService {
   ): Promise<ResponseDto> {
     const result = new ResponseDto();
     try {
-      const newUser = this.userMapper.dtoToEntity(createUserDto);
+      const newUser = await this.userMapper.dtoToEntity(createUserDto);
       const { password, roles } = createUserDto;
       let { funcions } = createUserDto;
       newUser.salt = await genSalt();
@@ -161,6 +161,20 @@ export class UserService {
     salt: string,
   ): Promise<string> {
     return hash(password, salt);
+  }
+
+  async deleteMultiple(user: UserEntity, ids: number[]): Promise<ResponseDto> {
+    let result = new ResponseDto();
+    try {
+      for (const id of ids) {
+        result = await this.delete(user, id);
+      }
+    } catch (error) {
+      result.message = error.detail;
+      result.successStatus = false;
+      return result;
+    }
+    return result;
   }
 
   async filter(

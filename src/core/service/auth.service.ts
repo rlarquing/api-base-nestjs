@@ -5,11 +5,14 @@ import * as randomToken from 'rand-token';
 import * as moment from 'moment';
 import {
   FuncionRepository,
+  MenuRepository,
   RolRepository,
   UserRepository,
 } from '../../persistence/repository';
 import {
   AuthCredentialsDto,
+  ReadFuncionDto,
+  ReadMenuDto,
   ResponseDto,
   SecretDataDto,
   UserDto,
@@ -17,6 +20,7 @@ import {
 import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import { eliminarDuplicado } from '../../../lib';
 import { IJwtPayload } from '../../shared/interface';
+import { FuncionMapper, MenuMapper } from '../mapper';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +28,9 @@ export class AuthService {
     private userRepository: UserRepository,
     private rolRepository: RolRepository,
     private funcionRepository: FuncionRepository,
+    private funcionMapper: FuncionMapper,
+    private menuRepository: MenuRepository,
+    private menuMapper: MenuMapper,
     private jwtService: JwtService,
   ) {}
   async signUp(userDto: UserDto): Promise<ResponseDto> {
@@ -31,7 +38,10 @@ export class AuthService {
     const { username, password, email } = userDto;
     const userEntity: UserEntity = new UserEntity(username, email);
     userEntity.salt = await genSalt();
-    userEntity.password = await this.hashPassword(password, userEntity.salt);
+    userEntity.password = await AuthService.hashPassword(
+      password,
+      userEntity.salt,
+    );
     try {
       await this.userRepository.signUp(userEntity);
       result.successStatus = true;
@@ -58,29 +68,37 @@ export class AuthService {
     let item: RolEntity;
     for (const rol of user.roles) {
       item = await this.rolRepository.findById(rol.id);
-      item.funcions.forEach((funcion) => funcions.push(funcion));
+      item.funcions.forEach((funcion: FuncionEntity) =>
+        funcion.activo ? funcions.push(funcion) : null,
+      );
     }
     funcions = funcions.concat(funcionsIndiv);
-    let endPoints: string[] = [];
-    let fun: FuncionEntity;
+    funcions = eliminarDuplicado(funcions);
+
+    const readFuncionDtos: ReadFuncionDto[] = [];
     for (const funcion of funcions) {
-      fun = await this.funcionRepository.findById(funcion.id);
-      for (const endPoint of fun.endPoints) {
-        endPoints.push(endPoint.controller + '.' + endPoint.servicio);
+      readFuncionDtos.push(await this.funcionMapper.entityToDto(funcion));
+    }
+    const readMenuDtos: ReadMenuDto[] = [];
+    for (const readFuncionDto of readFuncionDtos) {
+      if (readFuncionDto.menu !== undefined) {
+        readMenuDtos.push(readFuncionDto.menu);
       }
     }
-    endPoints = eliminarDuplicado(endPoints);
-    // const listaFuncions: string[] = funcions.map((funcion) => funcion.nombre);
-    // const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
-    const payload: IJwtPayload = { username, endPoints };
+    const payload: IJwtPayload = { username };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
     return {
       accessToken,
       refreshToken,
+      functions: readFuncionDtos,
+      menus: readMenuDtos,
     };
   }
-  private async hashPassword(password: string, salt: string): Promise<string> {
+  private static async hashPassword(
+    password: string,
+    salt: string,
+  ): Promise<string> {
     return hash(password, salt);
   }
   public async getRefreshToken(id: number): Promise<string> {
@@ -98,24 +116,32 @@ export class AuthService {
     let item: RolEntity;
     for (const rol of user.roles) {
       item = await this.rolRepository.findById(rol.id);
-      item.funcions.forEach((funcion) => funcions.push(funcion));
+      item.funcions.forEach((funcion: FuncionEntity) =>
+        funcion.activo ? funcions.push(funcion) : null,
+      );
     }
     funcions = funcions.concat(funcionsIndiv);
-    let endPoints: string[] = [];
+    funcions = eliminarDuplicado(funcions);
+
+    const readFuncionDtos: ReadFuncionDto[] = [];
     for (const funcion of funcions) {
-      for (const endPoint of funcion.endPoints) {
-        endPoints.push(endPoint.controller + '.' + endPoint.servicio);
+      readFuncionDtos.push(await this.funcionMapper.entityToDto(funcion));
+    }
+    // const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
+    const readMenuDtos: ReadMenuDto[] = [];
+    for (const readFuncionDto of readFuncionDtos) {
+      if (readFuncionDto.menu !== undefined) {
+        readMenuDtos.push(readFuncionDto.menu);
       }
     }
-    endPoints = eliminarDuplicado(endPoints);
-    // const listaFuncions: string[] = funcions.map((funcion) => funcion.nombre);
-    // const roles = user.roles.map((rol: RolEntity) => rol.nombre as RolType);
-    const payload: IJwtPayload = { username, endPoints };
+    const payload: IJwtPayload = { username };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
     return {
       accessToken,
       refreshToken,
+      functions: readFuncionDtos,
+      menus: readMenuDtos,
     };
   }
   async logout(user: UserEntity): Promise<ResponseDto> {

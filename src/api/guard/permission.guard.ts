@@ -1,13 +1,24 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { aInicialMinuscula, quitarSeparador } from '../../../lib';
+import {
+  aInicialMinuscula,
+  eliminarDuplicado,
+  quitarSeparador,
+} from '../../../lib';
+import { FuncionService, RolService } from '../../core/service';
+import { FuncionEntity } from '../../persistence/entity';
+import { ReadFuncionDto, ReadRolDto } from '../../shared/dto';
+import { FuncionMapper } from '../../core/mapper';
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly jwt: JwtService,
+    private readonly rolService: RolService,
+    // private readonly funcionService: FuncionService,
+    private readonly funcionMapper: FuncionMapper,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     let endPoint: string = this.reflector.get<string>(
@@ -25,17 +36,37 @@ export class PermissionGuard implements CanActivate {
         .filter((path) => path !== '');
       let controlador = ruta[1];
       controlador = aInicialMinuscula(quitarSeparador(controlador, '-'));
-
       endPoint = controlador + '.' + funcionalidad;
     }
+    // const {
+    //   user,
+    //   headers: { authorization },
+    // } = request;
+    const { user } = request;
+    const funcionsIndiv: FuncionEntity[] = user.funcions;
+    let funcions: ReadFuncionDto[] = [];
+    let item: ReadRolDto;
+    for (const rol of user.roles) {
+      item = await this.rolService.findById(rol.id);
+      item.funcions.forEach((funcion: ReadFuncionDto) =>
+        funcions.push(funcion),
+      );
+    }
+    for (const fun of funcionsIndiv) {
+      funcions.push(await this.funcionMapper.entityToDto(fun));
+    }
+    funcions = eliminarDuplicado(funcions);
 
-    const {
-      user,
-      headers: { authorization },
-    } = request;
-    const endPoints: string[] = await this.jwt.verify(
-      authorization.split(' ')[1],
-    ).endPoints;
+    let endPoints: string[] = [];
+    for (const funcion of funcions) {
+      for (const endPoint of funcion.endPoints) {
+        endPoints.push(endPoint.controller + '.' + endPoint.servicio);
+      }
+    }
+    endPoints = eliminarDuplicado(endPoints);
+    // const endPoints: string[] = await this.jwt.verify(
+    //   authorization.split(' ')[1],
+    // ).endPoints;
     const hasEndPoint = () => {
       return endPoints.includes(endPoint);
     };

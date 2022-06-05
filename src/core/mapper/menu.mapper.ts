@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import {
   MenuRepository,
 } from '../../persistence/repository';
+import { MenuEntity } from '../../persistence/entity';
 import {
   CreateMenuDto,
   ReadMenuDto,
   UpdateMenuDto,
 } from '../../shared/dto';
-import {MenuEntity} from "../../persistence/entity";
 
 @Injectable()
 export class MenuMapper {
@@ -16,7 +16,6 @@ export class MenuMapper {
   ) {}
 
   async dtoToEntity(createMenuDto: CreateMenuDto): Promise<MenuEntity> {
-
     const menu: MenuEntity = await this.menuRepository.findById(
       createMenuDto.menu,
     );
@@ -25,6 +24,7 @@ export class MenuMapper {
       createMenuDto.icon,
       createMenuDto.to,
       menu,
+      createMenuDto.tipo,
     );
   }
 
@@ -37,6 +37,7 @@ export class MenuMapper {
     );
     updateMenuEntity.label = updateMenuDto.label;
     updateMenuEntity.icon = updateMenuDto.icon;
+    updateMenuEntity.tipo = updateMenuDto.tipo;
     updateMenuEntity.to = updateMenuDto.to;
     updateMenuEntity.menu = menu;
     return updateMenuEntity;
@@ -45,9 +46,11 @@ export class MenuMapper {
   async entityToDto(menuEntity: MenuEntity): Promise<ReadMenuDto> {
     const menu: MenuEntity = await this.menuRepository.findById(menuEntity.id);
     const menuDto: ReadMenuDto[] = [];
-    if (menu.menu !== null) {
+    if (menu.menu === null) {
       for (const menuHijo of menu.menus) {
-        menuDto.push(await this.entityToDto(menuHijo));
+        if (menuHijo.activo === true) {
+          menuDto.push(await this.entityToDto(menuHijo));
+        }
       }
     }
 
@@ -59,6 +62,7 @@ export class MenuMapper {
       menuEntity.icon,
       menuEntity.to,
       menuDto,
+      menuEntity.tipo,
     );
   }
 }

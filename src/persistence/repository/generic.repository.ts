@@ -20,11 +20,21 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     protected relations?: string[],
   ) {}
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<ENTITY>> {
-    return await paginate<ENTITY>(this.repository, options, {
-      where: { activo: true },
-      relations: this.relations,
-    });
+  async findAll(
+    options: IPaginationOptions,
+    sinPaginacion?: boolean,
+  ): Promise<Pagination<ENTITY> | ENTITY[]> {
+    if (!sinPaginacion) {
+      return await paginate<ENTITY>(this.repository, options, {
+        where: { activo: true },
+        relations: this.relations,
+      });
+    } else {
+      return await this.repository.find({
+        where: { activo: true },
+        relations: this.relations,
+      });
+    }
   }
 
   async findById(id: number): Promise<ENTITY> {
@@ -38,7 +48,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     return await this.repository.findOne(id, { relations: this.relations });
   }
 
-  async findByIds(ids: any[]): Promise<ENTITY[]> {
+  async findByIds(ids: number[]): Promise<ENTITY[]> {
     return await this.repository.findByIds(ids, {
       where: { activo: true },
       relations: this.relations,
@@ -185,5 +195,64 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       }
       return await paginate<ENTITY>(queryBuilder, options);
     }
+  }
+
+  async findBy(
+    claves: string[],
+    valores: any[],
+    order?: any,
+    take?: number,
+  ): Promise<ENTITY[]> {
+    const wheres = { activo: true };
+    for (let i = 0; i < claves.length; i++) {
+      if (isNumber(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else if (isDate(valores[i])) {
+        const datep = valores[i];
+        const start = new Date(datep.setHours(0, 0, 0, 0));
+        const end = new Date(datep.setHours(23, 59, 59, 999));
+        wheres[claves[i]] = {
+          date: Between(start.toISOString(), end.toISOString()),
+        };
+      } else if (isBoolean(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else {
+        wheres[claves[i]] = ILike(`%${valores[i]}%`);
+      }
+    }
+    return await this.repository.find({
+      where: wheres,
+      relations: this.relations,
+      order: order,
+      take: take,
+    });
+  }
+  async findOneBy(
+    claves: string[],
+    valores: any[],
+    order?: any,
+  ): Promise<ENTITY> {
+    const wheres = { activo: true };
+    for (let i = 0; i < claves.length; i++) {
+      if (isNumber(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else if (isDate(valores[i])) {
+        const datep = valores[i];
+        const start = new Date(datep.setHours(0, 0, 0, 0));
+        const end = new Date(datep.setHours(23, 59, 59, 999));
+        wheres[claves[i]] = {
+          date: Between(start.toISOString(), end.toISOString()),
+        };
+      } else if (isBoolean(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else {
+        wheres[claves[i]] = ILike(`%${valores[i]}%`);
+      }
+    }
+    return await this.repository.findOne({
+      where: wheres,
+      relations: this.relations,
+      order: order,
+    });
   }
 }

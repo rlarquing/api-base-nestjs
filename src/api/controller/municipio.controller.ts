@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { MunicipioService } from '../../core/service';
-import { GeoJsonDto, ReadMunicipioDto } from '../../shared/dto';
+import { GeoJsonDto, ReadMunicipioDto, SelectDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
 
 @ApiTags('Municipios')
@@ -36,11 +36,10 @@ export class MunicipioController {
   ): Promise<Pagination<ReadMunicipioDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     return await this.municipioService.findAll({
       page,
       limit,
-      route: url + ':' + port + '/municipios',
+      route: url + '/municipios',
     });
   }
 
@@ -89,6 +88,19 @@ export class MunicipioController {
     return await this.municipioService.geoJson();
   }
 
+  @Get('/provincia/obtener/json')
+  @ApiOperation({
+    summary: 'Obtener el geojson de los municipios de una provincia',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Muestra el geojson de los municipios de una provincia',
+    type: GeoJsonDto,
+  })
+  async geoJsonByProvincia(): Promise<GeoJsonDto> {
+    return await this.municipioService.geoJsonByProvincia();
+  }
+
   @Get('/:id/obtener/json')
   @ApiOperation({ summary: 'Obtener el geojson de un municipio' })
   @ApiResponse({
@@ -100,5 +112,26 @@ export class MunicipioController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GeoJsonDto> {
     return await this.municipioService.geoJsonById(id);
+  }
+
+  @Get('/create/select')
+  @ApiOperation({
+    summary: 'Listar municipios por su provincia para crear un select.',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Listado de los municipios por su provincia para crear un select.',
+    type: [SelectDto],
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Elemento del conjunto no encontrado.',
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async createSelect(): Promise<SelectDto[]> {
+    return await this.municipioService.createSelect();
   }
 }

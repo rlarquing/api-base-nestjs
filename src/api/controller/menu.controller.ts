@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -18,6 +19,7 @@ import {
   ApiBody,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -26,7 +28,7 @@ import { GenericController } from './generic.controller';
 import { MenuEntity, UserEntity } from '../../persistence/entity';
 import { MenuService } from '../../core/service';
 import { RolType } from '../../shared/enum';
-import { GetUser, Roles, Servicio } from '../decorator';
+import { GetUser, Roles } from '../decorator';
 import {
   BadRequestDto,
   BuscarDto,
@@ -41,8 +43,6 @@ import {
 
 @ApiTags('Menus')
 @Controller('menu')
-@UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
-@ApiBearerAuth()
 @UsePipes(ValidationPipe)
 export class MenuController extends GenericController<MenuEntity> {
   constructor(
@@ -53,7 +53,6 @@ export class MenuController extends GenericController<MenuEntity> {
   }
 
   @Get('/')
-  @Roles(RolType.ADMINISTRADOR) //El decorador roles no trabaja arriba en la cabeza del controlador.
   @ApiOperation({ summary: 'Obtener el listado de elementos del conjunto' })
   @ApiResponse({
     status: 200,
@@ -67,12 +66,18 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('menu', 'findAll')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiParam({ required: false, name: 'sinPaginacion', example: false })
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
+    @Query('sinPaginacion') sinPaginacion = false,
   ): Promise<any> {
-    const data = await super.findAll(page, limit);
+    const data = await super.findAll(page, limit, sinPaginacion);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Dimension', 'Menu'];
     return new ListadoDto(header, data);
   }
@@ -91,9 +96,37 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('menu', 'findById')
+  @ApiParam({ required: true, name: 'id', example: 1 })
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async findById(@Param('id', ParseIntPipe) id: number): Promise<ReadMenuDto> {
     return await super.findById(id);
+  }
+
+  @Get('/:tipo/')
+  @ApiOperation({
+    summary: 'Obtener un elemento del conjunto por tipo y dimensión',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Muestra la información de un elemento del conjunto tipo y dimensión',
+    type: ReadMenuDto,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Elemento del conjunto no encontrado.',
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  @ApiParam({ required: true, name: 'tipo', example: 'reporte' })
+  @ApiParam({ required: true, name: 'dimension', example: 1 })
+  async findByTipoAndDimension(
+    @Param('tipo') tipo: string,
+  ): Promise<ReadMenuDto[]> {
+    return await this.menuService.findByTipo(tipo);
   }
 
   @Post('/elementos/multiples')
@@ -115,7 +148,9 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('menu', 'findByIds')
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async findByIds(@Body() ids: number[]): Promise<ReadMenuDto[]> {
     return await super.findByIds(ids);
   }
@@ -139,7 +174,9 @@ export class MenuController extends GenericController<MenuEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('menu', 'create')
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async create(
     @GetUser() user: UserEntity,
     @Body() createMenuDto: CreateMenuDto,
@@ -166,7 +203,9 @@ export class MenuController extends GenericController<MenuEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('menu', 'createMultiple')
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() createMenuDto: CreateMenuDto[],
@@ -193,7 +232,9 @@ export class MenuController extends GenericController<MenuEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('menu', 'import')
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async import(
     @GetUser() user: UserEntity,
     @Body() createMenuDto: CreateMenuDto[],
@@ -220,7 +261,9 @@ export class MenuController extends GenericController<MenuEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('menu', 'update')
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async update(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
@@ -249,12 +292,54 @@ export class MenuController extends GenericController<MenuEntity> {
     description: 'Solicitud con errores.',
     type: BadRequestDto,
   })
-  @Servicio('menu', 'updateMultiple')
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async updateMultiple(
     @GetUser() user: UserEntity,
     @Body() updateMultipleMenueDto: UpdateMultipleMenuDto[],
   ): Promise<ResponseDto> {
     return await super.updateMultiple(user, updateMultipleMenueDto);
+  }
+
+  @Delete('/:id')
+  @ApiOperation({
+    summary: 'Eliminar un elemento del conjunto utilizando borrado virtual.',
+  })
+  @ApiResponse({ status: 201, description: 'El elemento se ha eliminado.' })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  async delete(
+    @GetUser() user: UserEntity,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ResponseDto> {
+    return await super.deleteMultiple(user, [id]);
+  }
+  @Delete('/elementos/multiples')
+  @Roles(RolType.ADMINISTRADOR)
+  @ApiOperation({
+    summary:
+      'Eliminar un grupo de elementos del conjunto utilizando borrado virtual.',
+  })
+  @ApiBody({
+    description: 'Estructura para eliminar el grupo de elementos del conjunto.',
+    type: [Number],
+  })
+  @ApiResponse({ status: 201, description: 'El elemento se ha eliminado.' })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
+  async deleteMultiple(
+    @GetUser() user: UserEntity,
+    @Body() ids: number[],
+  ): Promise<ResponseDto> {
+    return await super.deleteMultiple(user, ids);
   }
 
   @Post('/filtrar')
@@ -273,7 +358,11 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('menu', 'filter')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async filter(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -294,12 +383,16 @@ export class MenuController extends GenericController<MenuEntity> {
   })
   @ApiBody({
     description: 'Estructura para crear la busqueda.',
-    type: String,
+    type: BuscarDto,
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('menu', 'search')
+  @ApiParam({ required: false, name: 'page', example: '1' })
+  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @Roles(RolType.ADMINISTRADOR)
+  @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
+  @ApiBearerAuth()
   async search(
     @Query('page') page = 1,
     @Query('limit') limit = 10,

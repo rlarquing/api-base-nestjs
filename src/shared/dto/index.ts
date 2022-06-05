@@ -37,4 +37,6 @@ export { UpdateMenuDto } from './update-menu.dto';
 export { UpdateMultipleMenuDto } from './update-multiple-menu.dto';
 export { UpdateMultipleNomencladorDto } from './update-multiple-nomenclador.dto';
 export { UpdateNomencladorDto } from './update-nomenclador.dto';
+export { ResponsesDto } from './responses.dto';
+export { TablaDto } from './tabla.dto';
 

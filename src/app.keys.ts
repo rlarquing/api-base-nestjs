@@ -9,4 +9,5 @@ export enum AppConfig {
   LOGGER_LEVELS = 'LOGGER_LEVELS',
   DATABASE = 'database',
   LOGGERLEVELS = 'loggerLevels',
+  PROVINCIA = 'PROVINCIA',
 }

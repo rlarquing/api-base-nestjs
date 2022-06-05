@@ -60,11 +60,10 @@ export class TrazaController {
   ): Promise<Pagination<TrazaDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     return await this.trazaService.findAll({
       page,
       limit,
-      route: url + ':' + port + '/trazas',
+      route: url + '/trazas',
     });
   }
   @Get('/:id')

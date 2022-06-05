@@ -8,7 +8,7 @@ import {
 import { FuncionEntity } from './funcion.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
 
-@Entity('end_point', { schema: SchemaEnum.MOD_AUTH })
+@Entity('end_point', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class EndPointEntity {
   @PrimaryGeneratedColumn()
   id: number;

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import {
   CreateNomencladorDto,
   ReadNomencladorDto,
-  SelectDto,
   UpdateNomencladorDto,
 } from '../../shared/dto';
 import { GenericNomencladorEntity } from '../../persistence/entity';
@@ -32,9 +31,5 @@ export class GenericNomencladorMapper {
       nomencladorEntity.descripcion,
       nomencladorEntity.toString(),
     );
-  }
-
-  entityToSelectDto(nomencladorEntity: GenericNomencladorEntity): SelectDto {
-    return new SelectDto(nomencladorEntity.id, nomencladorEntity.nombre);
   }
 }

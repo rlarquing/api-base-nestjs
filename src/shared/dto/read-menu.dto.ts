@@ -8,28 +8,34 @@ export class ReadMenuDto {
   id: number;
 
   @ApiProperty({
-    description: 'Aquí escriba una descripción para el atributo label',
-    example: 'Aquí una muestra para ese atributo',
+    description: 'Nombre del menu',
+    example: 'Listado de los indicadores',
   })
   label: string;
 
   @ApiProperty({
-    description: 'Aquí escriba una descripción para el atributo icon',
-    example: 'Aquí una muestra para ese atributo',
+    description: 'Icono del menu',
+    example: 'Book',
   })
   icon: string;
 
   @ApiProperty({
-    description: 'Aquí escriba una descripción para el atributo to',
-    example: 'Aquí una muestra para ese atributo',
+    description: 'Dirección hacia donde va el menu',
+    example: '/home',
   })
   to: string;
 
   @ApiProperty({
-    description: 'Aquí escriba una descripción para el atributo menu',
-    example: 'Aquí una muestra para ese atributo',
+    description: 'Menu hijos que tiene',
+    example: [ReadMenuDto],
   })
   menus: ReadMenuDto[];
+
+  @ApiProperty({
+    description: 'Tipo de menu',
+    example: 'reporte',
+  })
+  tipo: string;
   constructor(
     dtoToString: string,
     id: number,
@@ -37,6 +43,7 @@ export class ReadMenuDto {
     icon: string,
     to: string,
     menus: ReadMenuDto[],
+    tipo: string,
   ) {
     this.dtoToString = dtoToString;
     this.id = id;
@@ -44,5 +51,6 @@ export class ReadMenuDto {
     this.icon = icon;
     this.to = to;
     this.menus = menus;
+    this.tipo = tipo;
   }
 }

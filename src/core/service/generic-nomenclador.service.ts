@@ -21,19 +21,6 @@ export class GenericNomencladorService {
     protected mapper: GenericNomencladorMapper,
     protected trazaService: TrazaService,
   ) {}
-  async findAllNomenclator(name: string): Promise<SelectDto[]> {
-    const returned: SelectDto[] = [];
-    const entitys = await this.repository.get(name);
-    for (let index = 0; index < entitys.length; index++) {
-      returned.push(await this.mapper.entityToSelectDto(entitys[index]));
-    }
-    return returned;
-  }
-
-  async findById(name: string, id: number): Promise<ReadNomencladorDto> {
-    const entity = await this.repository.findById(name, id);
-    return this.mapper.entityToDto(entity);
-  }
 
   async findAll(
     name: string,
@@ -44,6 +31,11 @@ export class GenericNomencladorService {
       (item: any) => this.mapper.entityToDto(item),
     );
     return new Pagination(readNomencladorDto, items.meta, items.links);
+  }
+
+  async findById(name: string, id: number): Promise<ReadNomencladorDto> {
+    const entity = await this.repository.findById(name, id);
+    return this.mapper.entityToDto(entity);
   }
 
   async findByIds(name: string, ids: any[]): Promise<ReadNomencladorDto[]> {
@@ -81,6 +73,15 @@ export class GenericNomencladorService {
       result.push(await this.create(name, user, dtoElement));
     }
     return result;
+  }
+
+  async createSelect(name: string): Promise<SelectDto[]> {
+    const items: any[] = await this.repository.createSelect(name);
+    const selectDto: SelectDto[] = [];
+    for (const item of items) {
+      selectDto.push(new SelectDto(item.id, item.toString()));
+    }
+    return selectDto;
   }
 
   async importar(
@@ -222,5 +223,21 @@ export class GenericNomencladorService {
       (item: any) => this.mapper.entityToDto(item),
     );
     return new Pagination(readNomencladorDto, items.meta, items.links);
+  }
+
+  async createSelectDependiente(
+    name: string,
+    filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]> {
+    const selectDto: SelectDto[] = [];
+    const items: any[] = await this.repository.findBy(
+      name,
+      filtroGenericoDto.clave,
+      filtroGenericoDto.valor,
+    );
+    for (const item of items) {
+      selectDto.push(new SelectDto(item.id, item.toString()));
+    }
+    return selectDto;
   }
 }

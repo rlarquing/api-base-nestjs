@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ReadFuncionDto } from './read-funcion.dto';
+import { ReadMenuDto } from './read-menu.dto';
 
 export class SecretDataDto {
   @IsString()
@@ -18,4 +20,18 @@ export class SecretDataDto {
     example: 'OCbvl7fnhhzg5KVm',
   })
   refreshToken: string;
+
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Funciones del usuario.',
+    example: [ReadFuncionDto],
+  })
+  functions: ReadFuncionDto[];
+
+  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Menu del usuario.',
+    example: [ReadMenuDto],
+  })
+  menus: ReadMenuDto[];
 }
