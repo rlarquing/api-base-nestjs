@@ -20,7 +20,6 @@ import {
   ApiBody,
   ApiNotFoundResponse,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,

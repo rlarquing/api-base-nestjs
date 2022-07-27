@@ -44,7 +44,6 @@ export abstract class GenericController<ENTITY> implements IController {
     page?: number,
     limit?: number,
     sinPaginacion?: boolean,
-    @GetUser() user?: UserEntity,
   ): Promise<Pagination<any> | any[]> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);

@@ -6,7 +6,7 @@ import {
   eliminarDuplicado,
   quitarSeparador,
 } from '../../../lib';
-import { FuncionService, RolService } from '../../core/service';
+import { RolService } from '../../core/service';
 import { FuncionEntity } from '../../persistence/entity';
 import { ReadFuncionDto, ReadRolDto } from '../../shared/dto';
 import { FuncionMapper } from '../../core/mapper';

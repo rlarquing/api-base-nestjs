@@ -5,7 +5,6 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
-  OneToMany,
 } from 'typeorm';
 import { ProvinciaEntity } from './provincia.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';

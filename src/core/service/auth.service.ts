@@ -21,7 +21,7 @@ import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import { eliminarDuplicado } from '../../../lib';
 import { IJwtPayload } from '../../shared/interface';
 import { FuncionMapper, MenuMapper } from '../mapper';
-import {MailService} from "../../mail/mail.service";
+import { MailService } from '../../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,7 @@ export class AuthService {
     private menuRepository: MenuRepository,
     private menuMapper: MenuMapper,
     private jwtService: JwtService,
-    private mailService: MailService
+    private mailService: MailService,
   ) {}
   async signUp(userDto: UserDto): Promise<ResponseDto> {
     const result = new ResponseDto();

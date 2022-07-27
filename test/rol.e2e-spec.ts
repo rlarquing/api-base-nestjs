@@ -2,21 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { SecurityModule } from '../src/security/security.module';
 import { TypeORMExceptionFilter } from '../src/shared/filter/typeorm-exception.filter';
 import {
   AuthCredentialsDto,
   CreateRolDto,
   UpdateRolDto,
-  UpdateUserDto,
-} from '../src/security/dto';
+} from '../src/shared/dto';
 
 describe('RolController (e2e)', () => {
   let app: INestApplication;
   let currentSize: number;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, SecurityModule],
+      imports: [AppModule],
     }).compile();
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -62,9 +60,7 @@ describe('RolController (e2e)', () => {
     const rolDto: CreateRolDto = {
       nombre: 'Especialista principal economia',
       descripcion: 'Se encarga de toda la dimension economica',
-      dimension: 1,
       users: [],
-      permisos: [610, 611],
     };
 
     const newRolRequest = await server
@@ -96,7 +92,6 @@ describe('RolController (e2e)', () => {
     const updateRolDto: UpdateRolDto = {
       nombre: 'this_is_not_a_real_rol',
       descripcion: 'Este rol es de prueba',
-      dimension: 1,
     };
     const listRolRequest = await server
       .get('/api/rol')
