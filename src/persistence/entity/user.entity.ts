@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  Unique,
-} from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, Unique } from 'typeorm';
 import { hash } from 'bcryptjs';
 import { RolEntity } from './rol.entity';
 import { FuncionEntity } from './funcion.entity';
@@ -47,11 +41,7 @@ export class UserEntity extends GenericEntity {
   })
   funcions?: FuncionEntity[];
 
-  constructor(
-    username: string,
-    email: string,
-    funcions?: FuncionEntity[],
-  ) {
+  constructor(username: string, email: string, funcions?: FuncionEntity[]) {
     super();
     this.username = username;
     this.email = email;

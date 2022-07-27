@@ -2,6 +2,7 @@ import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import {
   ApiNotFoundResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -30,17 +31,18 @@ export class ProvinciaController {
     status: 404,
     description: 'Provincias no encontradas.',
   })
+  @ApiQuery({ required: false, name: 'page', example: 1 })
+  @ApiQuery({ required: false, name: 'limit', example: 10 })
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ): Promise<Pagination<ReadProvinciaDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const port = this.configService.get(AppConfig.PORT);
     return await this.provinciaService.findAll({
       page,
       limit,
-      route: url + ':' + port + '/provincia',
+      route: url + '/provincia',
     });
   }
 
@@ -83,5 +85,16 @@ export class ProvinciaController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GeoJsonDto> {
     return await this.provinciaService.geoJsonById(id);
+  }
+
+  @Get('/obtener/centroide/json')
+  @ApiOperation({ summary: 'Obtener el centoide de una provincia' })
+  @ApiResponse({
+    status: 200,
+    description: 'Muestra el centroide de una provincia',
+    type: GeoJsonDto,
+  })
+  async centroide(): Promise<GeoJsonDto> {
+    return await this.provinciaService.centroide();
   }
 }

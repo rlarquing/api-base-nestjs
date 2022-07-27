@@ -5,11 +5,7 @@ import {
   RolRepository,
   UserRepository,
 } from '../../persistence/repository';
-import {
-  FuncionEntity,
-  RolEntity,
-  UserEntity,
-} from '../../persistence/entity';
+import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import {
   CreateRolDto,
   ReadFuncionDto,
@@ -53,7 +49,6 @@ export class RolMapper {
         updateRolEntity.users = users;
       }
     }
-
     if (updateRolDto.funcions !== undefined) {
       updateRolEntity.funcions = await this.funcionRepository.findByIds(
         updateRolDto.funcions,
@@ -62,6 +57,7 @@ export class RolMapper {
 
     updateRolEntity.nombre = updateRolDto.nombre;
     updateRolEntity.descripcion = updateRolDto.descripcion;
+
     return updateRolEntity;
   }
   async entityToDto(rolEntity: RolEntity): Promise<ReadRolDto> {

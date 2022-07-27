@@ -29,12 +29,6 @@ export class UpdateMultipleMenuDto {
     example: '/home',
   })
   to: string;
-  @IsNumber({}, { message: 'El atributo dimension debe ser un número' })
-  @ApiProperty({
-    description: 'Dimension al que pertenece el menu',
-    example: 1,
-  })
-  dimension: number;
 
   @IsOptional()
   @IsNumber({}, { message: 'El atributo menu debe ser un número' })

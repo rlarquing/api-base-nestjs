@@ -129,7 +129,8 @@ export class GenericNomencladorController {
       route: url + '/api/nomenclador/' + name,
     });
     const header: string[] = ['id', 'Nombre'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre'];
+    return new ListadoDto(header, key, data);
   }
   @Post('/:name/elementos/multiples')
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
@@ -451,7 +452,8 @@ export class GenericNomencladorController {
       filtroGenericoDto,
     );
     const header: string[] = ['id', 'Nombre'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre'];
+    return new ListadoDto(header, key, data);
   }
   @Post('/:name/buscar')
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
@@ -493,7 +495,8 @@ export class GenericNomencladorController {
       buscarDto,
     );
     const header: string[] = ['id', 'Nombre'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre'];
+    return new ListadoDto(header, key, data);
   }
   @Get()
   @ApiOperation({ summary: 'Muestra todos los nombres de los nomencladores' })

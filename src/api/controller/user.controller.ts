@@ -18,7 +18,7 @@ import {
   ApiBody,
   ApiNotFoundResponse,
   ApiOperation,
-  ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -64,8 +64,8 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -78,7 +78,8 @@ export class UserController {
       route: url + '/user',
     });
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre', 'email', 'rol', 'funcion'];
+    return new ListadoDto(header, key, data);
   }
   @Get('/:id')
   @ApiOperation({ summary: 'Obtener un usuario' })
@@ -192,8 +193,8 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   async filter(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -210,7 +211,8 @@ export class UserController {
       filtroGenericoDto,
     );
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre', 'email', 'rol', 'funcion'];
+    return new ListadoDto(header, key, data);
   }
   @Post('/buscar')
   @Roles(RolType.ADMINISTRADOR)
@@ -229,8 +231,8 @@ export class UserController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   async search(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -247,7 +249,8 @@ export class UserController {
       buscarDto,
     );
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre', 'email', 'rol', 'funcion'];
+    return new ListadoDto(header, key, data);
   }
 
   @Patch('/:id/change/password')

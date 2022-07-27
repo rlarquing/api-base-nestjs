@@ -3,16 +3,18 @@ import { GeoJsonMapper } from '../mapper';
 import { GeometricRepository } from '../../persistence/repository';
 import { TrazaService } from './traza.service';
 import { GeoJsonDto, TypeDto } from '../../shared/dto';
+import { ConfigService } from '@nestjs/config';
 
 export abstract class GeometricService<ENTITY> extends GenericService<ENTITY> {
   protected geoJsonMapper: GeoJsonMapper;
   protected constructor(
+    protected configService: ConfigService,
     protected geometricRepository: GeometricRepository<ENTITY>,
     protected mapper: any,
     protected trazaService: TrazaService,
     protected traza?: boolean,
   ) {
-    super(geometricRepository, mapper, trazaService, traza);
+    super(configService, geometricRepository, mapper, trazaService, traza);
     this.geoJsonMapper = new GeoJsonMapper();
   }
 

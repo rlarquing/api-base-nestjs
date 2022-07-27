@@ -1,19 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import {
-  MenuRepository,
-} from '../../persistence/repository';
+import { MenuRepository } from '../../persistence/repository';
+import { CreateMenuDto, ReadMenuDto, UpdateMenuDto } from '../../shared/dto';
 import { MenuEntity } from '../../persistence/entity';
-import {
-  CreateMenuDto,
-  ReadMenuDto,
-  UpdateMenuDto,
-} from '../../shared/dto';
 
 @Injectable()
 export class MenuMapper {
-  constructor(
-    protected menuRepository: MenuRepository,
-  ) {}
+  constructor(protected menuRepository: MenuRepository) {}
 
   async dtoToEntity(createMenuDto: CreateMenuDto): Promise<MenuEntity> {
     const menu: MenuEntity = await this.menuRepository.findById(

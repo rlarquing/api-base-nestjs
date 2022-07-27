@@ -13,10 +13,12 @@ export enum HISTORY_ACTION {
   ADD = 'Adicionar',
   MOD = 'Modificar',
   DEL = 'Eliminar',
+  REM = 'Eliminar_completamente',
 }
 
 @Entity('traza', {
   schema: SchemaEnum.MOD_AUTH,
+  orderBy: { id: 'ASC' },
 })
 export class TrazaEntity {
   @PrimaryGeneratedColumn()

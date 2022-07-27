@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { PersistenceModule } from './persistence/persistence.module';
 import { LoggerProvider } from './core/logger/logger.provider';
 import { ApiModule } from './api/api.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ApiModule } from './api/api.module';
     PersistenceModule,
     CoreModule,
     ApiModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],

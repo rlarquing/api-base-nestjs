@@ -3,6 +3,7 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 import {
   ApiNotFoundResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -30,6 +31,8 @@ export class MunicipioController {
     status: 404,
     description: 'Municipios no encontrados.',
   })
+  @ApiQuery({ required: false, name: 'page', example: 1 })
+  @ApiQuery({ required: false, name: 'limit', example: 10 })
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,

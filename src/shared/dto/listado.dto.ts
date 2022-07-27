@@ -6,6 +6,10 @@ export class ListadoDto {
   @ApiProperty({ description: 'Header.', example: [] })
   header: string[];
 
+  @IsArray()
+  @ApiProperty({ description: 'Llaves.', example: [] })
+  key: string[];
+
   @IsNotEmpty()
   @ApiProperty({
     description: 'Datos que se mostrarán.',
@@ -28,8 +32,9 @@ export class ListadoDto {
   })
   data: object;
 
-  constructor(header: string[], data: object) {
+  constructor(header: string[], key: string[], data: object) {
     this.header = header;
+    this.key = key;
     this.data = data;
   }
 }

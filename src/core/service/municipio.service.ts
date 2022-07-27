@@ -11,10 +11,7 @@ import {
   ProvinciaRepository,
 } from '../../persistence/repository';
 import { GeoJsonDto, ReadMunicipioDto, SelectDto } from '../../shared/dto';
-import {
-  MunicipioEntity,
-  ProvinciaEntity,
-} from '../../persistence/entity';
+import { MunicipioEntity, ProvinciaEntity } from '../../persistence/entity';
 import { NomencladorTypeEnum } from '../../shared/enum';
 import { AppConfig } from '../../app.keys';
 import { ConfigService } from '@nestjs/config';

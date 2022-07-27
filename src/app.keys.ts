@@ -10,4 +10,11 @@ export enum AppConfig {
   DATABASE = 'database',
   LOGGERLEVELS = 'loggerLevels',
   PROVINCIA = 'PROVINCIA',
+  NODE_ENV = 'NODE_ENV',
+  EMAIL_ID = 'EMAIL_ID',
+  EMAIL_PASS = 'EMAIL_PASS',
+  EMAIL_SMTP = 'EMAIL_SMTP',
+  EMAIL_PORT = 'EMAIL_PORT',
+  EMAIL_SECURE = 'EMAIL_SECURE',
+  EMAIL_FROM = 'EMAIL_FROM',
 }

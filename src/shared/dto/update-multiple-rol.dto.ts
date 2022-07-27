@@ -32,11 +32,6 @@ export class UpdateMultipleRolDto {
   })
   descripcion: string;
 
-  @IsNumber({}, { message: 'La dimensión tiene que ser un número' })
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Dimensión', example: 1 })
-  dimension: number;
-
   @IsArray()
   @IsOptional()
   @ApiProperty({

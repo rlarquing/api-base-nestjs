@@ -21,6 +21,7 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -71,9 +72,9 @@ export class RolController extends GenericController<RolEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
-  @ApiParam({ required: false, name: 'sinPaginacion', example: false })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'sinPaginacion', example: false })
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -81,7 +82,8 @@ export class RolController extends GenericController<RolEntity> {
   ): Promise<any> {
     const data = await super.findAll(page, limit, sinPaginacion);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre', 'descripcion'];
+    return new ListadoDto(header, key, data);
   }
   @Get('/:id')
   @Roles(RolType.ADMINISTRADOR)
@@ -334,8 +336,8 @@ export class RolController extends GenericController<RolEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   async filter(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -343,7 +345,8 @@ export class RolController extends GenericController<RolEntity> {
   ): Promise<any> {
     const data = await super.filter(page, limit, filtroGenericoDto);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre', 'descripcion'];
+    return new ListadoDto(header, key, data);
   }
   @Post('/buscar')
   @Roles(RolType.ADMINISTRADOR)
@@ -362,8 +365,8 @@ export class RolController extends GenericController<RolEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   async search(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
@@ -371,6 +374,7 @@ export class RolController extends GenericController<RolEntity> {
   ): Promise<any> {
     const data = await super.search(page, limit, buscarDto);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
-    return new ListadoDto(header, data);
+    const key: string[] = ['id', 'nombre', 'descripcion'];
+    return new ListadoDto(header, key, data);
   }
 }

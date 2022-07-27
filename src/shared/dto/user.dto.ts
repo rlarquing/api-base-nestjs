@@ -1,5 +1,6 @@
 import {
-  IsNotEmpty, IsNumber,
+  IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,

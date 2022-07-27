@@ -12,14 +12,21 @@ import {
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
 import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '../../app.keys';
 
 export abstract class GenericService<ENTITY> implements IService {
+  private isProductionEnv;
   protected constructor(
+    protected configService: ConfigService,
     protected genericRepository: GenericRepository<ENTITY>,
     protected mapper: any,
     protected trazaService: TrazaService,
     protected traza?: boolean,
-  ) {}
+  ) {
+    this.isProductionEnv =
+      this.configService.get(AppConfig.NODE_ENV) === 'production';
+  }
 
   async findAll(
     options: IPaginationOptions,
@@ -79,7 +86,7 @@ export abstract class GenericService<ENTITY> implements IService {
     const newEntity = await this.mapper.dtoToEntity(createDto);
     try {
       const objEntity: any = await this.genericRepository.create(newEntity);
-      if (this.traza) {
+      if (this.traza && this.isProductionEnv) {
         await this.trazaService.create(user, objEntity, HISTORY_ACTION.ADD);
       }
       result.id = objEntity.id;
@@ -151,7 +158,7 @@ export abstract class GenericService<ENTITY> implements IService {
     );
     try {
       await this.genericRepository.update(updateEntity);
-      if (this.traza) {
+      if (this.traza && this.isProductionEnv) {
         await this.trazaService.create(user, updateEntity, HISTORY_ACTION.MOD);
       }
       result.successStatus = true;
@@ -169,7 +176,7 @@ export abstract class GenericService<ENTITY> implements IService {
     try {
       for (const id of ids) {
         const objEntity: ENTITY = await this.genericRepository.findById(id);
-        if (this.traza) {
+        if (this.traza && this.isProductionEnv) {
           await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
         }
         await this.genericRepository.delete(id);
@@ -190,8 +197,8 @@ export abstract class GenericService<ENTITY> implements IService {
       if (!objEntity) {
         throw new NotFoundException('No existe');
       }
-      if (this.traza) {
-        await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
+      if (this.traza && this.isProductionEnv) {
+        await this.trazaService.create(user, objEntity, HISTORY_ACTION.REM);
       }
     }
     return await this.genericRepository.remove(ids);

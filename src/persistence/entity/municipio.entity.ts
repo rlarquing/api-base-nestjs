@@ -24,6 +24,7 @@ export class MunicipioEntity {
   })
   @JoinColumn({ name: 'provincia_id' })
   provincia: ProvinciaEntity;
+
   @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: true })
   createdAt: Date;
   @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })

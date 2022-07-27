@@ -20,6 +20,7 @@ import {
   ApiNotFoundResponse,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -66,9 +67,9 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
-  @ApiParam({ required: false, name: 'sinPaginacion', example: false })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'sinPaginacion', example: false })
   @Roles(RolType.ADMINISTRADOR)
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
   @ApiBearerAuth()
@@ -78,8 +79,9 @@ export class MenuController extends GenericController<MenuEntity> {
     @Query('sinPaginacion') sinPaginacion = false,
   ): Promise<any> {
     const data = await super.findAll(page, limit, sinPaginacion);
-    const header: string[] = ['id', 'Label', 'Icon', 'To', 'Dimension', 'Menu'];
-    return new ListadoDto(header, data);
+    const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
+    const key: string[] = ['id', 'label', 'icon', 'to', 'menu'];
+    return new ListadoDto(header, key, data);
   }
 
   @Get('/:id')
@@ -104,14 +106,13 @@ export class MenuController extends GenericController<MenuEntity> {
     return await super.findById(id);
   }
 
-  @Get('/:tipo/')
+  @Get('/tipo/:tipo')
   @ApiOperation({
-    summary: 'Obtener un elemento del conjunto por tipo y dimensión',
+    summary: 'Obtener un elemento del conjunto por tipo',
   })
   @ApiResponse({
     status: 200,
-    description:
-      'Muestra la información de un elemento del conjunto tipo y dimensión',
+    description: 'Muestra la información de un elemento del conjunto tipo',
     type: ReadMenuDto,
   })
   @ApiNotFoundResponse({
@@ -122,10 +123,7 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
   @ApiParam({ required: true, name: 'tipo', example: 'reporte' })
-  @ApiParam({ required: true, name: 'dimension', example: 1 })
-  async findByTipoAndDimension(
-    @Param('tipo') tipo: string,
-  ): Promise<ReadMenuDto[]> {
+  async findByTipo(@Param('tipo') tipo: string): Promise<ReadMenuDto[]> {
     return await this.menuService.findByTipo(tipo);
   }
 
@@ -358,8 +356,8 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   @Roles(RolType.ADMINISTRADOR)
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
   @ApiBearerAuth()
@@ -369,8 +367,9 @@ export class MenuController extends GenericController<MenuEntity> {
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<any> {
     const data = await super.filter(page, limit, filtroGenericoDto);
-    const header: string[] = ['id', 'Label', 'Icon', 'To', 'Dimension', 'Menu'];
-    return new ListadoDto(header, data);
+    const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
+    const key: string[] = ['id', 'label', 'icon', 'to', 'menu'];
+    return new ListadoDto(header, key, data);
   }
   @Post('/buscar')
   @ApiOperation({
@@ -388,8 +387,8 @@ export class MenuController extends GenericController<MenuEntity> {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @ApiParam({ required: false, name: 'page', example: '1' })
-  @ApiParam({ required: false, name: 'limit', example: '10' })
+  @ApiQuery({ required: false, name: 'page', example: '1' })
+  @ApiQuery({ required: false, name: 'limit', example: '10' })
   @Roles(RolType.ADMINISTRADOR)
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
   @ApiBearerAuth()
@@ -399,7 +398,8 @@ export class MenuController extends GenericController<MenuEntity> {
     @Body() buscarDto: BuscarDto,
   ): Promise<any> {
     const data = await super.search(page, limit, buscarDto);
-    const header: string[] = ['id', 'Label', 'Icon', 'To', 'Dimension', 'Menu'];
-    return new ListadoDto(header, data);
+    const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
+    const key: string[] = ['id', 'label', 'icon', 'to', 'menu'];
+    return new ListadoDto(header, key, data);
   }
 }

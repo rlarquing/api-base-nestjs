@@ -5,6 +5,7 @@ import * as request from 'request';
 // import { firstValueFrom } from 'rxjs';
 // import * as needle from 'needle';
 // import { HttpsProxyAgent } from 'hpagent';
+import { get } from 'simple-get';
 
 @Injectable()
 export class SocketService {
@@ -96,7 +97,11 @@ export class SocketService {
       url: 'https://am.transnet.cu',
       rejectUnauthorized: false,
     };
-
+    get(opts, function (err, res) {
+      if (err) throw err;
+      console.log(res.statusCode); // 200
+      res.pipe(process.stdout); // `res` is a stream
+    });
     return null;
     // const result = await this.axios.get('https://am.transnet.cu/', {
     //   httpsAgent: new https.Agent({

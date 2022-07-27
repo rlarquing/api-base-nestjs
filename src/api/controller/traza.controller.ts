@@ -20,6 +20,7 @@ import {
   ApiBody,
   ApiNotFoundResponse,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -54,6 +55,8 @@ export class TrazaController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servicor.' })
+  @ApiQuery({ required: false, name: 'page', example: 1 })
+  @ApiQuery({ required: false, name: 'limit', example: 10 })
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,

@@ -1,5 +1,4 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DeleteResult, ILike, Repository } from 'typeorm';
+import { Between, DeleteResult, ILike } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import {
   IPaginationOptions,
@@ -14,8 +13,7 @@ import {
   isString,
 } from 'class-validator';
 export class GenericNomencladorRepository {
-  constructor(
-  ) {}
+  constructor() {}
   async findById(name: string, id: number): Promise<any> {
     if (!this[`${name}Repository`])
       throw new NotFoundException(

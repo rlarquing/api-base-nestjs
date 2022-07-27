@@ -480,3 +480,14 @@ export const zNegativa = (x: number, xMin, xMax): number => {
   }
   return z;
 };
+
+export const generarNuevoColor = () => {
+  var simbolos, color;
+  simbolos = "0123456789ABCDEF";
+  color = "#";
+
+  for(var i = 0; i < 6; i++){
+    color = color + simbolos[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};

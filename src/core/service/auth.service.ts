@@ -21,6 +21,7 @@ import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import { eliminarDuplicado } from '../../../lib';
 import { IJwtPayload } from '../../shared/interface';
 import { FuncionMapper, MenuMapper } from '../mapper';
+import {MailService} from "../../mail/mail.service";
 
 @Injectable()
 export class AuthService {
@@ -32,6 +33,7 @@ export class AuthService {
     private menuRepository: MenuRepository,
     private menuMapper: MenuMapper,
     private jwtService: JwtService,
+    private mailService: MailService
   ) {}
   async signUp(userDto: UserDto): Promise<ResponseDto> {
     const result = new ResponseDto();
@@ -88,6 +90,7 @@ export class AuthService {
     const payload: IJwtPayload = { username };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
+    // await this.mailService.sendUserConfirmation(user);
     return {
       accessToken,
       refreshToken,

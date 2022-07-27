@@ -1,7 +1,4 @@
-import {
-  MunicipioEntity,
-  ProvinciaEntity,
-} from '../entity';
+import { MunicipioEntity, ProvinciaEntity } from '../entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,6 +7,7 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
+import { eliminarDuplicado } from '../../../lib';
 
 @Injectable()
 export class MunicipioRepository {
