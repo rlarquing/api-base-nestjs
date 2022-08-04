@@ -27,8 +27,6 @@ import {
 import { RolType } from '../../shared/enum';
 import { ResponseDto } from '../../shared/dto';
 import {
-  FilterOperator,
-  Paginate,
   PaginateQuery,
   paginate,
   Paginated,
