@@ -2,21 +2,23 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { SecurityModule } from '../src/security/security.module';
 import { TypeORMExceptionFilter } from '../src/shared/filter/typeorm-exception.filter';
+import { ApiModule } from '../src/api/api.module';
+import { PersistenceModule } from '../src/persistence/persistence.module';
+import { CoreModule } from '../src/core/core.module';
 import {
   AuthCredentialsDto,
   ChangePasswordDto,
   CreateUserDto,
   UpdateUserDto,
-} from '../src/security/dto';
+} from '../src/shared/dto';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;
   let currentSize: number;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, SecurityModule],
+      imports: [AppModule, ApiModule, PersistenceModule, CoreModule],
     }).compile();
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
@@ -26,7 +28,7 @@ describe('UserController (e2e)', () => {
     await app.init();
   });
 
-  it('Listar Usuarios', async () => {
+  it('Listar usuarios', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
       username: 'juan',
@@ -46,7 +48,7 @@ describe('UserController (e2e)', () => {
     currentSize = await findAllRequest.body.data.meta.totalItems;
   });
 
-  it('Crear User', async () => {
+  it('Crear user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
       username: 'juan',
@@ -64,6 +66,7 @@ describe('UserController (e2e)', () => {
       password: 'Qwerty1234*',
       confirmPassword: 'Qwerty1234*',
       roles: [1],
+      funcions: [],
     };
 
     const newUserRequest = await server
@@ -79,7 +82,7 @@ describe('UserController (e2e)', () => {
     const postNewSize = postNewRequest.body.data.meta.totalItems;
     expect(postNewSize).toBe(currentSize + 1);
   });
-  it('Editar User', async () => {
+  it('Editar user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
       username: 'juan',
@@ -115,7 +118,7 @@ describe('UserController (e2e)', () => {
       .expect(200);
     expect(updateUserRequest.body.message).toBe('success');
   });
-  it('Cambiar password User', async () => {
+  it('Cambiar password user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
       username: 'juan',
@@ -151,7 +154,7 @@ describe('UserController (e2e)', () => {
       .expect(200);
     expect(changePasswordUserRequest.body.message).toBe('success');
   });
-  it('Eliminar User', async () => {
+  it('Eliminar user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
       username: 'juan',

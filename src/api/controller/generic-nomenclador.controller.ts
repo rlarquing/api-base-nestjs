@@ -126,7 +126,7 @@ export class GenericNomencladorController {
     const data = await this.nomencladorService.findAll(name, {
       page,
       limit,
-      route: url + '/api/nomenclador/' + name,
+      path: url + '/api/nomenclador/' + name,
     });
     const header: string[] = ['id', 'Nombre'];
     const key: string[] = ['id', 'nombre'];
@@ -447,7 +447,7 @@ export class GenericNomencladorController {
       {
         page,
         limit,
-        route: url + '/api/nomenclador' + name + '/filtrar/por',
+        path: url + '/api/nomenclador' + name + '/filtrar/por',
       },
       filtroGenericoDto,
     );
@@ -490,7 +490,7 @@ export class GenericNomencladorController {
       {
         page,
         limit,
-        route: url + '/api/nomenclador/' + name + '/buscar',
+        path: url + '/api/nomenclador/' + name + '/buscar',
       },
       buscarDto,
     );

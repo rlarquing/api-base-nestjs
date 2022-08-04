@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { GeoJsonMapper, MunicipioMapper } from '../mapper';
 import {
   GenericNomencladorRepository,
@@ -14,6 +13,8 @@ import { GeoJsonDto, ReadMunicipioDto, SelectDto } from '../../shared/dto';
 import { MunicipioEntity, ProvinciaEntity } from '../../persistence/entity';
 import { AppConfig } from '../../app.keys';
 import { ConfigService } from '@nestjs/config';
+import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { Column, SortBy } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class MunicipioService {
@@ -26,16 +27,27 @@ export class MunicipioService {
     private geoJsonMapper: GeoJsonMapper,
   ) {}
 
-  async findAll(
-    options: IPaginationOptions,
-  ): Promise<Pagination<ReadMunicipioDto>> {
-    const municipios: Pagination<MunicipioEntity> =
-      await this.municipioRepository.findAll(options);
+  async findAll(query: PaginateQuery): Promise<Paginated<ReadMunicipioDto>> {
+    const municipios: Paginated<MunicipioEntity> =
+      await this.municipioRepository.findAll(query);
     const readMunicipioDto: ReadMunicipioDto[] = [];
-    for (const municipio of municipios.items) {
+    for (const municipio of municipios.data) {
       readMunicipioDto.push(await this.municipioMapper.entityToDto(municipio));
     }
-    return new Pagination(readMunicipioDto, municipios.meta, municipios.links);
+    return {
+      data: readMunicipioDto,
+      meta: {
+        itemsPerPage: municipios.meta.itemsPerPage,
+        totalItems: municipios.meta.totalItems,
+        currentPage: municipios.meta.currentPage,
+        totalPages: municipios.meta.totalPages,
+        sortBy: municipios.meta.sortBy as SortBy<ReadMunicipioDto>,
+        searchBy: municipios.meta.searchBy as Column<ReadMunicipioDto>[],
+        search: municipios.meta.search,
+        filter: municipios.meta.filter,
+      },
+      links: municipios.links,
+    };
   }
 
   async findById(id: number): Promise<ReadMunicipioDto> {

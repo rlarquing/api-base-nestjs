@@ -5,4 +5,5 @@ export enum Configuration {
   DB_HOST = 'DB_HOST',
   DB_PORT = 'DB_PORT',
   DB_SYNC = 'DB_SYNC',
+  DB_MIGRATION_RUN = 'DB_MIGRATION_RUN',
 }

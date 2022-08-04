@@ -6,11 +6,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import { ConfigService } from '@nestjs/config';
 import { ProvinciaService } from '../../core/service';
 import { GeoJsonDto, ReadProvinciaDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
+import {Paginated} from "nestjs-paginate";
 
 @ApiTags('Provincias')
 @Controller('provincia')
@@ -36,13 +36,13 @@ export class ProvinciaController {
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
-  ): Promise<Pagination<ReadProvinciaDto>> {
+  ): Promise<Paginated<ReadProvinciaDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
     return await this.provinciaService.findAll({
       page,
       limit,
-      route: url + '/provincia',
+      path: url + '/provincia',
     });
   }
 

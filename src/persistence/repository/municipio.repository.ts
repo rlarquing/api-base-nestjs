@@ -1,12 +1,13 @@
 import { MunicipioEntity, ProvinciaEntity } from '../entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import {
-  IPaginationOptions,
   paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+  PaginateConfig,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate';
 
 @Injectable()
 export class MunicipioRepository {
@@ -15,30 +16,42 @@ export class MunicipioRepository {
     private municipioRepository: Repository<MunicipioEntity>,
   ) {}
 
-  async findAll(
-    options: IPaginationOptions,
-  ): Promise<Pagination<MunicipioEntity>> {
-    return await paginate<MunicipioEntity>(this.municipioRepository, options);
+  async findAll(query: PaginateQuery): Promise<Paginated<MunicipioEntity>> {
+    const where = {
+      sortableColumns: ['id'],
+    } as PaginateConfig<MunicipioEntity>;
+    return await paginate<MunicipioEntity>(
+      query,
+      this.municipioRepository,
+      where,
+    );
   }
 
   async findById(id: number): Promise<MunicipioEntity> {
-    return await this.municipioRepository.findOne(id, {
-      relations: ['provincia'],
-    });
+    const options = {
+      where: { id },
+      relations: { provincia: true },
+    } as FindOneOptions<MunicipioEntity>;
+    return await this.municipioRepository.findOne(options);
   }
 
   async findByIds(ids: number[]): Promise<MunicipioEntity[]> {
-    return await this.municipioRepository.findByIds(ids, {
-      relations: ['provincia'],
-    });
+    const options = {
+      where: { id: In(ids) },
+      relations: {
+        provincia: true,
+      },
+    } as FindManyOptions<MunicipioEntity>;
+    return await this.municipioRepository.find(options);
   }
 
   async findByProvincia(
     provincia: ProvinciaEntity | number,
   ): Promise<MunicipioEntity[]> {
-    return await this.municipioRepository.find({
-      where: { provincia: provincia },
-    });
+    const options = {
+      where: { provincia },
+    } as FindManyOptions<MunicipioEntity>;
+    return await this.municipioRepository.find(options);
   }
 
   async geoJson(): Promise<any> {

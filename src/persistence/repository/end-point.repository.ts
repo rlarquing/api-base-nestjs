@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import {
+  DeleteResult,
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Repository,
+} from 'typeorm';
 import { EndPointEntity } from '../entity';
 
 @Injectable()
@@ -15,15 +21,20 @@ export class EndPointRepository {
   }
 
   async findById(id: number): Promise<EndPointEntity> {
-    return await this.endPointRepository.findOne(id);
+    const options = { id } as FindOptionsWhere<EndPointEntity>;
+    return await this.endPointRepository.findOneBy(options);
   }
 
   async findByNombre(nombre: string): Promise<EndPointEntity> {
-    return await this.endPointRepository.findOne({ nombre: nombre });
+    const options = { nombre: nombre } as FindOptionsWhere<EndPointEntity>;
+    return await this.endPointRepository.findOneBy(options);
   }
 
   async findByIds(ids: number[]): Promise<EndPointEntity[]> {
-    return await this.endPointRepository.findByIds(ids);
+    const options = {
+      where: { id: In(ids) },
+    } as FindManyOptions;
+    return await this.endPointRepository.find(options);
   }
 
   async create(endPointEntity: EndPointEntity): Promise<void> {

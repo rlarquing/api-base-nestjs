@@ -8,11 +8,11 @@ import { PersistenceModule } from '../src/persistence/persistence.module';
 import { CoreModule } from '../src/core/core.module';
 import {
   AuthCredentialsDto,
-  CreateRolDto,
-  UpdateRolDto,
+  CreateFuncionDto,
+  UpdateFuncionDto,
 } from '../src/shared/dto';
 
-describe('RolController (e2e)', () => {
+describe('FuncionController (e2e)', () => {
   let app: INestApplication;
   let currentSize: number;
   beforeAll(async () => {
@@ -27,10 +27,10 @@ describe('RolController (e2e)', () => {
     await app.init();
   });
 
-  it('Listar roles', async () => {
+  it('Listar función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -40,21 +40,17 @@ describe('RolController (e2e)', () => {
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
     const findAllRequest = await server
-      .get('/api/rol')
+      .get('/api/funcion')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
     expect(findAllRequest.status).toBe(200);
-    if (findAllRequest.body.data.meta === undefined) {
-      currentSize = await findAllRequest.body.data.length;
-    } else {
-      currentSize = await findAllRequest.body.data.meta.totalItems;
-    }
+    currentSize = await findAllRequest.body.data.meta.totalItems;
   });
 
-  it('Crear rol', async () => {
+  it('Crear función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -64,37 +60,58 @@ describe('RolController (e2e)', () => {
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
 
-    const rolDto: CreateRolDto = {
-      nombre: 'Especialista principal economia',
-      descripcion: 'Se encarga de toda la dimension economica',
-      users: [],
-      funcions: [1],
-    };
+    let funcionDto: CreateFuncionDto = new CreateFuncionDto();
 
-    const newRolRequest = await server
-      .post('/api/rol')
-      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .send(rolDto)
-      .expect(201);
-    expect(newRolRequest.body.message).toBe('success');
-    const postNewRequest = await server
-      .get('/api/rol')
+    const listMenuRequest = await server
+      .get('/api/menu')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    let postNewSize = 0;
-    if (postNewRequest.body.data.meta === undefined) {
-      postNewSize = postNewRequest.body.data.length;
+    if (listMenuRequest.body.data.items.length > 0) {
+      const menu_id: number =
+        listMenuRequest.body.data.items[
+          listMenuRequest.body.data.items.length - 1
+        ].id;
+
+      funcionDto = {
+        nombre: 'Crear dimensión',
+        descripcion: 'Funcion para crear las dimensiones',
+        endPoints: [299],
+        menu: menu_id,
+      };
     } else {
-      postNewSize = postNewRequest.body.data.meta.totalItems;
+      funcionDto = {
+        nombre: 'Crear dimensión',
+        descripcion: 'Funcion para crear las dimensiones',
+        endPoints: [299],
+      };
     }
 
+    const newFuncionRequest = await server
+      .post('/api/funcion')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .send(funcionDto)
+      .expect(201);
+    expect(newFuncionRequest.body.message).toBe('success');
+
+    const listFuncionRequest = await server
+      .get('/api/funcion')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(listFuncionRequest.status).toBe(200);
+
+    const postNewRequest = await server
+      .get('/api/funcion')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(postNewRequest.status).toBe(200);
+    const postNewSize = postNewRequest.body.data.meta.totalItems;
     expect(postNewSize).toBe(currentSize + 1);
   });
 
-  it('Editar rol', async () => {
+  it('Editar función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -103,42 +120,40 @@ describe('RolController (e2e)', () => {
       .send(authCredentialsDto)
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
-    const updateRolDto: UpdateRolDto = {
-      nombre: 'this_is_not_a_real_rol',
-      descripcion: 'Este rol es de prueba',
+
+    const listFuncionRequest = await server
+      .get('/api/funcion')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+
+    const id: number =
+      listFuncionRequest.body.data.items[
+        listFuncionRequest.body.data.items.length - 1
+      ].id;
+
+    const updateFuncionDto: UpdateFuncionDto = {
+      nombre: 'Crear las dimensiones',
+      descripcion: 'Funcion para crear las dimensiones',
+      endPoints: [299],
     };
-    const listRolRequest = await server
-      .get('/api/rol')
-      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .expect(200);
-    let id = 0;
-    if (listRolRequest.body.data.meta === undefined) {
-      id = listRolRequest.body.data[listRolRequest.body.data.length - 1].id;
-    } else {
-      id =
-        listRolRequest.body.data.data[listRolRequest.body.data.data.length - 1]
-          .id;
-    }
 
-    listRolRequest.body.data.data[listRolRequest.body.data.data.length - 1].id;
-
-    const getRolRequest = await server
-      .get(`/api/rol/${id}`)
+    const getFuncionRequest = await server
+      .get(`/api/funcion/${id}`)
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
 
-    const updateRolRequest = await server
-      .patch(`/api/rol/${getRolRequest.body.id}`)
+    const updateFuncionRequest = await server
+      .patch(`/api/funcion/${getFuncionRequest.body.id}`)
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .send(updateRolDto)
+      .send(updateFuncionDto)
       .expect(200);
-    expect(updateRolRequest.body.message).toBe('success');
+    expect(updateFuncionRequest.body.message).toBe('success');
   });
 
-  it('Eliminar rol', async () => {
+  it('Eliminar función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -148,31 +163,30 @@ describe('RolController (e2e)', () => {
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
 
-    const listRolRequest = await server
-      .get('/api/rol')
+    let listFuncionRequest = await server
+      .get('/api/funcion')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    expect(listRolRequest.status).toBe(200);
-
-    let id = 0;
-    if (listRolRequest.body.data.meta === undefined) {
-      id = listRolRequest.body.data[listRolRequest.body.data.length - 1].id;
-    } else {
-      id =
-        listRolRequest.body.data.data[listRolRequest.body.data.data.length - 1]
-          .id;
-    }
-
-    const getRolRequest = await server
-      .get(`/api/rol/${id}`)
+    expect(listFuncionRequest.status).toBe(200);
+    const id: number =
+      listFuncionRequest.body.data.items[
+        listFuncionRequest.body.data.items.length - 1
+      ].id;
+    const getFuncionRequest = await server
+      .get(`/api/funcion/${id}`)
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    expect(getRolRequest.status).toBe(200);
-    const deleteRolRequest = await server
-      .delete(`/api/rol/${getRolRequest.body.id}`)
+    expect(getFuncionRequest.status).toBe(200);
+    const deleteFuncionRequest = await server
+      .delete(`/api/funcion/${getFuncionRequest.body.id}`)
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    expect(deleteRolRequest.body.message).toBe('success');
+    expect(deleteFuncionRequest.body.message).toBe('success');
+    listFuncionRequest = await server
+      .get('/api/funcion')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(listFuncionRequest.status).toBe(200);
   });
 
   afterAll(async () => {

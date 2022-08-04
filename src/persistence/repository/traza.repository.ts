@@ -4,14 +4,15 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, DeleteResult, Repository } from 'typeorm';
+import { Between, DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
 import { TrazaEntity, UserEntity } from '../entity';
 import { UserRepository } from './user.repository';
 import {
   paginate,
-  IPaginationOptions,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+  PaginateConfig,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate';
 
 @Injectable()
 export class TrazaRepository {
@@ -22,15 +23,19 @@ export class TrazaRepository {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>> {
-    return await paginate<TrazaEntity>(this.trazaRepository, options);
+  async findAll(query: PaginateQuery): Promise<Paginated<TrazaEntity>> {
+    const where = {
+      sortableColumns: ['id'],
+    } as PaginateConfig<TrazaEntity>;
+    return await paginate<TrazaEntity>(query, this.trazaRepository, where);
   }
 
   async findById(id: number): Promise<TrazaEntity> {
     if (!id) {
       throw new BadRequestException('id must be sent');
     }
-    const traza: TrazaEntity = await this.trazaRepository.findOne(id);
+    const options = { id } as FindOptionsWhere<TrazaEntity>;
+    const traza: TrazaEntity = await this.trazaRepository.findOneBy(options);
     if (!traza) {
       throw new NotFoundException('this trazas does not found');
     }
@@ -42,7 +47,8 @@ export class TrazaRepository {
   }
 
   async delete(id: number): Promise<DeleteResult> {
-    const trazaExist = await this.trazaRepository.findOne(id);
+    const options = { id } as FindOptionsWhere<TrazaEntity>;
+    const trazaExist = await this.trazaRepository.findOneBy(options);
     if (!trazaExist) {
       throw new NotFoundException('trazas does not exist');
     }

@@ -6,12 +6,16 @@ import {
 } from '@nestjs/common';
 import { RolEntity, UserEntity } from '../entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, ILike, MoreThanOrEqual, Repository } from 'typeorm';
 import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+  Between,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  ILike,
+  In,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import * as moment from 'moment';
 import {
   isBoolean,
@@ -22,6 +26,14 @@ import {
 } from 'class-validator';
 import { RolType } from '../../shared/enum';
 import { ResponseDto } from '../../shared/dto';
+import {
+  FilterOperator,
+  Paginate,
+  PaginateQuery,
+  paginate,
+  Paginated,
+  PaginateConfig,
+} from 'nestjs-paginate';
 
 @Injectable()
 export class UserRepository {
@@ -33,9 +45,11 @@ export class UserRepository {
   ) {}
 
   async signUp(userEntity: UserEntity): Promise<UserEntity> {
-    const rol: RolEntity = await this.rolRepository.findOne({
-      where: { activo: true, nombre: RolType.USUARIO },
-    });
+    const wheres = {
+      activo: true,
+      nombre: RolType.USUARIO,
+    } as FindOptionsWhere<RolEntity>;
+    const rol: RolEntity = await this.rolRepository.findOneBy(wheres);
 
     if (!rol) {
       throw new NotFoundException('No existe el rol');
@@ -54,30 +68,37 @@ export class UserRepository {
     }
   }
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+  async findAll(query: PaginateQuery): Promise<Paginated<UserEntity>> {
     // Ejemplo funcional de como trabajar con queryBuilder
     // const queryBuilder = this.userRepository.createQueryBuilder('u');
     // queryBuilder.leftJoinAndSelect('u.roles', 'roles')
     // queryBuilder.where('u.status = :status', { activo: true });
     // return await paginate<UserEntity>(queryBuilder, options);
-    return await paginate<UserEntity>(this.userRepository, options, {
+    const where = {
+      sortableColumns: ['id'],
       where: { activo: true },
       relations: ['roles', 'funcions'],
-    });
+    } as PaginateConfig<UserEntity>;
+    return await paginate<UserEntity>(query, this.userRepository, where);
   }
 
   async findById(id: number): Promise<UserEntity> {
-    return await this.userRepository.findOne(id, {
-      where: { activo: true },
+    const options = {
+      where: { id: id, activo: true },
       relations: ['roles', 'funcions'],
-    });
+    } as FindOneOptions<UserEntity>;
+    return await this.userRepository.findOne(options);
   }
 
   async findByIds(ids: number[]): Promise<UserEntity[]> {
-    return await this.userRepository.findByIds(ids, {
-      where: { activo: true },
-      relations: ['roles', 'funcions'],
-    });
+    const options = {
+      where: { id: In(ids), activo: true },
+      relations: {
+        roles: true,
+        funcions: true,
+      },
+    } as FindManyOptions<UserEntity>;
+    return await this.userRepository.find(options);
   }
 
   async create(userEntity: UserEntity): Promise<UserEntity> {
@@ -100,9 +121,8 @@ export class UserRepository {
 
   async delete(id: number): Promise<ResponseDto> {
     const result = new ResponseDto();
-    const user = await this.userRepository.findOne(id, {
-      where: { activo: true },
-    });
+    const options = { id, activo: true } as FindOptionsWhere<UserEntity>;
+    const user = await this.userRepository.findOneBy(options);
     if (!user) {
       throw new NotFoundException('No existe el usuario');
     }
@@ -122,7 +142,8 @@ export class UserRepository {
     username: string,
     password: string,
   ): Promise<string> {
-    const user = await this.userRepository.findOne({ username });
+    const options = { username } as FindOptionsWhere<UserEntity>;
+    const user = await this.userRepository.findOneBy(options);
     if (user && (await user.validatePassword(password))) {
       return user.username;
     } else {
@@ -131,10 +152,11 @@ export class UserRepository {
   }
 
   async findByName(username: string): Promise<UserEntity> {
-    return await this.userRepository.findOne({
+    const options = {
       where: { activo: true, username: username },
-      relations: ['roles', 'funcions'],
-    });
+      relations: { roles: true, funcions: true },
+    } as FindOneOptions<UserEntity>;
+    return await this.userRepository.findOne(options);
   }
 
   public async validateRefreshToken(
@@ -142,14 +164,13 @@ export class UserRepository {
     refreshToken: string,
   ): Promise<UserEntity> {
     const currentDate = moment().format('YYYY/MM/DD');
-    const user = await this.userRepository.findOne({
-      where: {
-        activo: true,
-        username: username,
-        refreshToken: refreshToken,
-        refreshTokenExp: MoreThanOrEqual(currentDate),
-      },
-    });
+    const options = {
+      activo: true,
+      username: username,
+      refreshToken: refreshToken,
+      refreshTokenExp: MoreThanOrEqual(currentDate),
+    } as FindOptionsWhere<UserEntity>;
+    const user = await this.userRepository.findOneBy(options);
     if (!user) {
       return null;
     }
@@ -157,11 +178,11 @@ export class UserRepository {
   }
 
   async filter(
-    options: IPaginationOptions,
+    query: PaginateQuery,
     claves: string[],
     valores: any[],
-  ): Promise<Pagination<UserEntity>> {
-    const wheres = { activo: true };
+  ): Promise<Paginated<UserEntity>> {
+    const wheres = { activo: true } as FindOptionsWhere<UserEntity>;
     for (let i = 0; i < claves.length; i++) {
       if (isNumber(valores[i])) {
         wheres[claves[i]] = valores[i];
@@ -177,20 +198,24 @@ export class UserRepository {
         wheres[claves[i]] = ILike(`%${valores[i]}%`);
       }
     }
-    return await paginate<UserEntity>(this.userRepository, options, {
+
+    return await paginate<UserEntity>(query, this.userRepository, {
+      sortableColumns: ['id'],
       where: wheres,
       relations: ['roles', 'funcions'],
     });
   }
 
   async search(
-    options: IPaginationOptions,
+    query: PaginateQuery,
     search: any,
-  ): Promise<Pagination<UserEntity>> {
+  ): Promise<Paginated<UserEntity>> {
     if (!isEmpty(search)) {
-      const result = await this.userRepository.find({
-        where: { activo: true },
-      });
+      const config: PaginateConfig<UserEntity> = {
+        sortableColumns: ['id'],
+      };
+      const where = { activo: true } as FindManyOptions<UserEntity>;
+      const result = await this.userRepository.find(where);
       const objs = new Map<string, string>();
       let keys: string[];
       if (result.length > 0) {
@@ -252,7 +277,7 @@ export class UserRepository {
           search: search,
         });
       }
-      return await paginate<UserEntity>(queryBuilder, options);
+      return await paginate<UserEntity>(query, queryBuilder, config);
     }
   }
 }

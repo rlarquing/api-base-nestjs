@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { UserMapper } from '../mapper';
 import { TrazaService } from './traza.service';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { genSalt, hash } from 'bcryptjs';
 import {
   FuncionRepository,
@@ -24,6 +23,8 @@ import {
 import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import { eliminarDuplicado, removeFromArr } from '../../../lib';
 import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
+import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { Column, SortBy } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class UserService {
@@ -34,15 +35,28 @@ export class UserService {
     private trazaService: TrazaService,
     private userMapper: UserMapper,
   ) {}
-  async findAll(options: IPaginationOptions): Promise<Pagination<ReadUserDto>> {
-    const users: Pagination<UserEntity> = await this.userRepository.findAll(
-      options,
+  async findAll(query: PaginateQuery): Promise<Paginated<ReadUserDto>> {
+    const users: Paginated<UserEntity> = await this.userRepository.findAll(
+      query,
     );
     const readUserDto: ReadUserDto[] = [];
-    for (const user of users.items) {
+    for (const user of users.data) {
       readUserDto.push(await this.userMapper.entityToDto(user));
     }
-    return new Pagination(readUserDto, users.meta, users.links);
+    return {
+      data: readUserDto,
+      meta: {
+        itemsPerPage: users.meta.itemsPerPage,
+        totalItems: users.meta.totalItems,
+        currentPage: users.meta.currentPage,
+        totalPages: users.meta.totalPages,
+        sortBy: users.meta.sortBy as SortBy<ReadUserDto>,
+        searchBy: users.meta.searchBy as Column<ReadUserDto>[],
+        search: users.meta.search,
+        filter: users.meta.filter,
+      },
+      links: users.links,
+    };
   }
   async findById(id: number): Promise<ReadUserDto> {
     if (!id) {
@@ -178,33 +192,59 @@ export class UserService {
   }
 
   async filter(
-    options: IPaginationOptions,
+    query: PaginateQuery,
     filtroGenericoDto: FiltroGenericoDto,
-  ): Promise<Pagination<ReadUserDto>> {
-    const items: Pagination<UserEntity> = await this.userRepository.filter(
-      options,
+  ): Promise<Paginated<ReadUserDto>> {
+    const items: Paginated<UserEntity> = await this.userRepository.filter(
+      query,
       filtroGenericoDto.clave,
       filtroGenericoDto.valor,
     );
-    const readDto: any[] = [];
-    for (const item of items.items) {
+    const readDto: ReadUserDto[] = [];
+    for (const item of items.data) {
       readDto.push(await this.userMapper.entityToDto(item));
     }
-    return new Pagination(readDto, items.meta, items.links);
+    return {
+      data: readDto,
+      meta: {
+        itemsPerPage: items.meta.itemsPerPage,
+        totalItems: items.meta.totalItems,
+        currentPage: items.meta.currentPage,
+        totalPages: items.meta.totalPages,
+        sortBy: items.meta.sortBy as SortBy<ReadUserDto>,
+        searchBy: items.meta.searchBy as Column<ReadUserDto>[],
+        search: items.meta.search,
+        filter: items.meta.filter,
+      },
+      links: items.links,
+    };
   }
   async search(
-    options: IPaginationOptions,
+    query: PaginateQuery,
     buscarDto: BuscarDto,
-  ): Promise<Pagination<ReadUserDto>> {
-    const items: Pagination<UserEntity> = await this.userRepository.search(
-      options,
+  ): Promise<Paginated<ReadUserDto>> {
+    const items: Paginated<UserEntity> = await this.userRepository.search(
+      query,
       buscarDto.search,
     );
-    const readDto: any[] = [];
-    for (const item of items.items) {
+    const readDto: ReadUserDto[] = [];
+    for (const item of items.data) {
       readDto.push(await this.userMapper.entityToDto(item));
     }
-    return new Pagination(readDto, items.meta, items.links);
+    return {
+      data: readDto,
+      meta: {
+        itemsPerPage: items.meta.itemsPerPage,
+        totalItems: items.meta.totalItems,
+        currentPage: items.meta.currentPage,
+        totalPages: items.meta.totalPages,
+        sortBy: items.meta.sortBy as SortBy<ReadUserDto>,
+        searchBy: items.meta.searchBy as Column<ReadUserDto>[],
+        search: items.meta.search,
+        filter: items.meta.filter,
+      },
+      links: items.links,
+    };
   }
 
   async changePassword(

@@ -8,11 +8,11 @@ import { PersistenceModule } from '../src/persistence/persistence.module';
 import { CoreModule } from '../src/core/core.module';
 import {
   AuthCredentialsDto,
-  CreateRolDto,
-  UpdateRolDto,
+  CreateMenuDto,
+  UpdateMenuDto,
 } from '../src/shared/dto';
 
-describe('RolController (e2e)', () => {
+describe('MenuController (e2e)', () => {
   let app: INestApplication;
   let currentSize: number;
   beforeAll(async () => {
@@ -27,10 +27,10 @@ describe('RolController (e2e)', () => {
     await app.init();
   });
 
-  it('Listar roles', async () => {
+  it('Listar menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -40,21 +40,17 @@ describe('RolController (e2e)', () => {
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
     const findAllRequest = await server
-      .get('/api/rol')
+      .get('/api/menu')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
     expect(findAllRequest.status).toBe(200);
-    if (findAllRequest.body.data.meta === undefined) {
-      currentSize = await findAllRequest.body.data.length;
-    } else {
-      currentSize = await findAllRequest.body.data.meta.totalItems;
-    }
+    currentSize = await findAllRequest.body.data.meta.totalItems;
   });
 
-  it('Crear rol', async () => {
+  it('Crear menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -64,81 +60,58 @@ describe('RolController (e2e)', () => {
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
 
-    const rolDto: CreateRolDto = {
-      nombre: 'Especialista principal economia',
-      descripcion: 'Se encarga de toda la dimension economica',
-      users: [],
-      funcions: [1],
+    const menuDto: CreateMenuDto = {
+      label: 'Reportes',
+      icon: 'files',
+      to: '/reporte',
+      dimension: 1,
     };
 
-    const newRolRequest = await server
-      .post('/api/rol')
+    const newMenuRequest = await server
+      .post('/api/menu')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .send(rolDto)
+      .send(menuDto)
       .expect(201);
-    expect(newRolRequest.body.message).toBe('success');
+    expect(newMenuRequest.body.message).toBe('success');
+
+    const listMenuRequest = await server
+      .get('/api/menu')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(listMenuRequest.status).toBe(200);
+    const id: number =
+      listMenuRequest.body.data.items[
+        listMenuRequest.body.data.items.length - 1
+      ].id;
+
+    const menuHijoDto: CreateMenuDto = {
+      label: 'Exportar tablero de comando económico',
+      icon: 'pdf',
+      to: '/reporte/tablero/economico',
+      dimension: 1,
+      menu: id,
+    };
+
+    const newMenuHijoRequest = await server
+      .post('/api/menu')
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .send(menuHijoDto)
+      .expect(201);
+    expect(newMenuHijoRequest.body.message).toBe('success');
+
     const postNewRequest = await server
-      .get('/api/rol')
+      .get('/api/menu')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    let postNewSize = 0;
-    if (postNewRequest.body.data.meta === undefined) {
-      postNewSize = postNewRequest.body.data.length;
-    } else {
-      postNewSize = postNewRequest.body.data.meta.totalItems;
-    }
-
-    expect(postNewSize).toBe(currentSize + 1);
+    expect(postNewRequest.status).toBe(200);
+    const postNewSize = postNewRequest.body.data.meta.totalItems;
+    expect(postNewSize).toBe(currentSize + 2);
   });
 
-  it('Editar rol', async () => {
+  it('Editar menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
-      password: 'Qwerty1234*',
-    };
-    const loginUserRequest = await server
-      .post('/api/auth/signin')
-      .type('form')
-      .send(authCredentialsDto)
-      .expect(201);
-    expect(loginUserRequest.status).toBe(201);
-    const updateRolDto: UpdateRolDto = {
-      nombre: 'this_is_not_a_real_rol',
-      descripcion: 'Este rol es de prueba',
-    };
-    const listRolRequest = await server
-      .get('/api/rol')
-      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .expect(200);
-    let id = 0;
-    if (listRolRequest.body.data.meta === undefined) {
-      id = listRolRequest.body.data[listRolRequest.body.data.length - 1].id;
-    } else {
-      id =
-        listRolRequest.body.data.data[listRolRequest.body.data.data.length - 1]
-          .id;
-    }
-
-    listRolRequest.body.data.data[listRolRequest.body.data.data.length - 1].id;
-
-    const getRolRequest = await server
-      .get(`/api/rol/${id}`)
-      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .expect(200);
-
-    const updateRolRequest = await server
-      .patch(`/api/rol/${getRolRequest.body.id}`)
-      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
-      .send(updateRolDto)
-      .expect(200);
-    expect(updateRolRequest.body.message).toBe('success');
-  });
-
-  it('Eliminar rol', async () => {
-    const server = request(app.getHttpServer());
-    const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      username: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -148,31 +121,74 @@ describe('RolController (e2e)', () => {
       .expect(201);
     expect(loginUserRequest.status).toBe(201);
 
-    const listRolRequest = await server
-      .get('/api/rol')
+    const listMenuRequest = await server
+      .get('/api/menu')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    expect(listRolRequest.status).toBe(200);
 
-    let id = 0;
-    if (listRolRequest.body.data.meta === undefined) {
-      id = listRolRequest.body.data[listRolRequest.body.data.length - 1].id;
-    } else {
-      id =
-        listRolRequest.body.data.data[listRolRequest.body.data.data.length - 1]
-          .id;
-    }
+    const menu_padre_id: number =
+      listMenuRequest.body.data.items[
+        listMenuRequest.body.data.items.length - 2
+      ].id;
 
-    const getRolRequest = await server
-      .get(`/api/rol/${id}`)
+    const updateMenuDto: UpdateMenuDto = {
+      label: 'Exportar tablero comando económico',
+      icon: 'pdf',
+      to: '/reporte/tablero/economico',
+      dimension: 1,
+      menu: menu_padre_id,
+    };
+
+    const id: number =
+      listMenuRequest.body.data.items[
+        listMenuRequest.body.data.items.length - 1
+      ].id;
+
+    const getMenuRequest = await server
+      .get(`/api/menu/${id}`)
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    expect(getRolRequest.status).toBe(200);
-    const deleteRolRequest = await server
-      .delete(`/api/rol/${getRolRequest.body.id}`)
+
+    const updateMenuRequest = await server
+      .patch(`/api/menu/${getMenuRequest.body.id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .send(updateMenuDto)
+      .expect(200);
+    expect(updateMenuRequest.body.message).toBe('success');
+  });
+
+  it('Eliminar menu', async () => {
+    const server = request(app.getHttpServer());
+    const authCredentialsDto: AuthCredentialsDto = {
+      username: 'juan',
+      password: 'Qwerty1234*',
+    };
+    const loginUserRequest = await server
+      .post('/api/auth/signin')
+      .type('form')
+      .send(authCredentialsDto)
+      .expect(201);
+    expect(loginUserRequest.status).toBe(201);
+
+    const listMenuRequest = await server
+      .get('/api/menu')
       .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
       .expect(200);
-    expect(deleteRolRequest.body.message).toBe('success');
+    expect(listMenuRequest.status).toBe(200);
+    const id: number =
+      listMenuRequest.body.data.items[
+        listMenuRequest.body.data.items.length - 1
+      ].id;
+    const getMenuRequest = await server
+      .get(`/api/menu/${id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(getMenuRequest.status).toBe(200);
+    const deleteMenuRequest = await server
+      .delete(`/api/menu/${getMenuRequest.body.id}`)
+      .set('Authorization', 'Bearer ' + loginUserRequest.body.accessToken)
+      .expect(200);
+    expect(deleteMenuRequest.body.message).toBe('success');
   });
 
   afterAll(async () => {

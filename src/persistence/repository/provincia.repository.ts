@@ -1,12 +1,13 @@
 import { ProvinciaEntity } from '../entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import {
-  IPaginationOptions,
   paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
-import { Repository } from 'typeorm';
+  PaginateConfig,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate';
 
 @Injectable()
 export class ProvinciaRepository {
@@ -15,20 +16,27 @@ export class ProvinciaRepository {
     private provinciaRepository: Repository<ProvinciaEntity>,
   ) {}
 
-  async findAll(
-    options: IPaginationOptions,
-  ): Promise<Pagination<ProvinciaEntity>> {
-    return await paginate<ProvinciaEntity>(this.provinciaRepository, options);
+  async findAll(query: PaginateQuery): Promise<Paginated<ProvinciaEntity>> {
+    const where = {
+      sortableColumns: ['id'],
+    } as PaginateConfig<ProvinciaEntity>;
+    return await paginate<ProvinciaEntity>(
+      query,
+      this.provinciaRepository,
+      where,
+    );
   }
 
   async findById(id: number): Promise<ProvinciaEntity> {
-    return await this.provinciaRepository.findOne(id);
+    const options = { id } as FindOptionsWhere<ProvinciaEntity>;
+    return await this.provinciaRepository.findOneBy(options);
   }
 
   async findByNombreCorto(nombreCorto: string): Promise<ProvinciaEntity> {
-    return await this.provinciaRepository.findOne({
-      where: { nombreCorto: nombreCorto },
-    });
+    const options = {
+      nombreCorto: nombreCorto,
+    } as FindOptionsWhere<ProvinciaEntity>;
+    return await this.provinciaRepository.findOneBy(options);
   }
 
   async geoJson(): Promise<any> {

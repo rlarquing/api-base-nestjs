@@ -1,5 +1,4 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConnectionOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../app.keys';
 
@@ -11,7 +10,7 @@ export const databaseProviders = [
         ...configService.get(AppConfig.DATABASE),
         entities: [__dirname + '/../**/*.entity.{js,ts}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
-      } as ConnectionOptions;
+      };
     },
   }),
 ];

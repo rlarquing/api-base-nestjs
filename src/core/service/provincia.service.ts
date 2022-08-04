@@ -3,13 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { GeoJsonMapper, ProvinciaMapper } from '../mapper';
 import { ProvinciaRepository } from '../../persistence/repository';
 import { GeoJsonDto, ReadProvinciaDto } from '../../shared/dto';
 import { ProvinciaEntity } from '../../persistence/entity';
 import { AppConfig } from '../../app.keys';
 import { ConfigService } from '@nestjs/config';
+import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { Column, SortBy } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class ProvinciaService {
@@ -20,16 +21,27 @@ export class ProvinciaService {
     private geoJsonMapper: GeoJsonMapper,
   ) {}
 
-  async findAll(
-    options: IPaginationOptions,
-  ): Promise<Pagination<ReadProvinciaDto>> {
-    const provincias: Pagination<ProvinciaEntity> =
-      await this.provinciaRepository.findAll(options);
-    const readProvinciaDto: ReadProvinciaDto[] = provincias.items.map(
+  async findAll(query: PaginateQuery): Promise<Paginated<ReadProvinciaDto>> {
+    const provincias: Paginated<ProvinciaEntity> =
+      await this.provinciaRepository.findAll(query);
+    const readProvinciaDto: ReadProvinciaDto[] = provincias.data.map(
       (provincia: ProvinciaEntity) =>
         this.provinciaMapper.entityToDto(provincia),
     );
-    return new Pagination(readProvinciaDto, provincias.meta, provincias.links);
+    return {
+      data: readProvinciaDto,
+      meta: {
+        itemsPerPage: provincias.meta.itemsPerPage,
+        totalItems: provincias.meta.totalItems,
+        currentPage: provincias.meta.currentPage,
+        totalPages: provincias.meta.totalPages,
+        sortBy: provincias.meta.sortBy as SortBy<ReadProvinciaDto>,
+        searchBy: provincias.meta.searchBy as Column<ReadProvinciaDto>[],
+        search: provincias.meta.search,
+        filter: provincias.meta.filter,
+      },
+      links: provincias.links,
+    };
   }
 
   async findById(id: number): Promise<ReadProvinciaDto> {

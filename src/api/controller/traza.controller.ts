@@ -14,7 +14,6 @@ import { GetUser } from '../decorator';
 import { Roles } from '../decorator';
 import { RolGuard } from '../guard';
 import { DeleteResult } from 'typeorm';
-import { Pagination } from 'nestjs-typeorm-paginate';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -30,6 +29,7 @@ import { TrazaService } from '../../core/service';
 import { FiltroDto, TrazaDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
+import {Paginated} from "nestjs-paginate";
 
 @ApiTags('Trazas')
 @Controller('traza')
@@ -60,13 +60,13 @@ export class TrazaController {
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
-  ): Promise<Pagination<TrazaDto>> {
+  ): Promise<Paginated<TrazaDto>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
     return await this.trazaService.findAll({
       page,
       limit,
-      route: url + '/trazas',
+      path: url + '/trazas',
     });
   }
   @Get('/:id')

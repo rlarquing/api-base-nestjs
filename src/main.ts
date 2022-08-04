@@ -18,10 +18,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   const options = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('API-SIGDT-ODET-CO')
-    .setDescription(
-      'Api del Sistema Informático para la Gestión del Desarrollo Territorial del Observatorio para el Desarrollo Territorial Region Centro Oriental.',
-    )
+    .setTitle('API-BASE')
+    .setDescription('Api básica con Nestjs.')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);

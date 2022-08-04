@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { GenericNomencladorMapper } from '../mapper';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { DeleteResult } from 'typeorm';
 import { GenericNomencladorRepository } from '../../persistence/repository';
 import { TrazaService } from './traza.service';
@@ -13,6 +12,8 @@ import {
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
 import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
+import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { Column, SortBy } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class GenericNomencladorService {
@@ -24,13 +25,26 @@ export class GenericNomencladorService {
 
   async findAll(
     name: string,
-    options: IPaginationOptions,
-  ): Promise<Pagination<ReadNomencladorDto>> {
-    const items: Pagination<any> = await this.repository.findAll(name, options);
-    const readNomencladorDto: ReadNomencladorDto[] = items.items.map(
+    query: PaginateQuery,
+  ): Promise<Paginated<ReadNomencladorDto>> {
+    const items: Paginated<any> = await this.repository.findAll(name, query);
+    const readNomencladorDto: ReadNomencladorDto[] = items.data.map(
       (item: any) => this.mapper.entityToDto(item),
     );
-    return new Pagination(readNomencladorDto, items.meta, items.links);
+    return {
+      data: readNomencladorDto,
+      meta: {
+        itemsPerPage: items.meta.itemsPerPage,
+        totalItems: items.meta.totalItems,
+        currentPage: items.meta.currentPage,
+        totalPages: items.meta.totalPages,
+        sortBy: items.meta.sortBy as SortBy<ReadNomencladorDto>,
+        searchBy: items.meta.searchBy as Column<ReadNomencladorDto>[],
+        search: items.meta.search,
+        filter: items.meta.filter,
+      },
+      links: items.links,
+    };
   }
 
   async findById(name: string, id: number): Promise<ReadNomencladorDto> {
@@ -103,7 +117,7 @@ export class GenericNomencladorService {
         {
           page: 1,
           limit: 10,
-          route: '',
+          path: '',
         },
         filtroGenericoDto,
       );
@@ -194,35 +208,61 @@ export class GenericNomencladorService {
 
   async filter(
     name: string,
-    options: IPaginationOptions,
+    query: PaginateQuery,
     filtroGenericoDto: FiltroGenericoDto,
-  ): Promise<Pagination<ReadNomencladorDto>> {
-    const items: Pagination<any> = await this.repository.filter(
+  ): Promise<Paginated<ReadNomencladorDto>> {
+    const items: Paginated<any> = await this.repository.filter(
       name,
-      options,
+      query,
       filtroGenericoDto.clave,
       filtroGenericoDto.valor,
     );
-    const readNomencladorDto: ReadNomencladorDto[] = items.items.map(
+    const readNomencladorDto: ReadNomencladorDto[] = items.data.map(
       (item: any) => this.mapper.entityToDto(item),
     );
-    return new Pagination(readNomencladorDto, items.meta, items.links);
+    return {
+      data: readNomencladorDto,
+      meta: {
+        itemsPerPage: items.meta.itemsPerPage,
+        totalItems: items.meta.totalItems,
+        currentPage: items.meta.currentPage,
+        totalPages: items.meta.totalPages,
+        sortBy: items.meta.sortBy as SortBy<ReadNomencladorDto>,
+        searchBy: items.meta.searchBy as Column<ReadNomencladorDto>[],
+        search: items.meta.search,
+        filter: items.meta.filter,
+      },
+      links: items.links,
+    };
   }
 
   async search(
     name: string,
-    options: IPaginationOptions,
+    query: PaginateQuery,
     buscarDto: BuscarDto,
-  ): Promise<Pagination<ReadNomencladorDto>> {
-    const items: Pagination<any> = await this.repository.search(
+  ): Promise<Paginated<ReadNomencladorDto>> {
+    const items: Paginated<any> = await this.repository.search(
       name,
-      options,
+      query,
       buscarDto.search,
     );
-    const readNomencladorDto: ReadNomencladorDto[] = items.items.map(
+    const readNomencladorDto: ReadNomencladorDto[] = items.data.map(
       (item: any) => this.mapper.entityToDto(item),
     );
-    return new Pagination(readNomencladorDto, items.meta, items.links);
+    return {
+      data: readNomencladorDto,
+      meta: {
+        itemsPerPage: items.meta.itemsPerPage,
+        totalItems: items.meta.totalItems,
+        currentPage: items.meta.currentPage,
+        totalPages: items.meta.totalPages,
+        sortBy: items.meta.sortBy as SortBy<ReadNomencladorDto>,
+        searchBy: items.meta.searchBy as Column<ReadNomencladorDto>[],
+        search: items.meta.search,
+        filter: items.meta.filter,
+      },
+      links: items.links,
+    };
   }
 
   async createSelectDependiente(

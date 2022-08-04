@@ -1,5 +1,5 @@
 import { GenericRepository } from './generic.repository';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { isBoolean, isDate, isObject, isArray } from 'class-validator';
 
 export abstract class GeometricRepository<
@@ -15,10 +15,11 @@ export abstract class GeometricRepository<
   async geoJson(exclude?: string[], reproyectar?: any): Promise<any> {
     let data: any[] = [];
     if (!reproyectar) {
-      data = await this.repository.find({
+      const options = {
         where: { activo: true },
         relations: this.relations,
-      });
+      } as FindManyOptions;
+      data = await this.repository.find(options);
     } else {
       const queryBuilder = this.repository.createQueryBuilder('q');
       if (this.relations) {

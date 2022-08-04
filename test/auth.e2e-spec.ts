@@ -2,15 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
-import { SecurityModule } from '../src/security/security.module';
 import { TypeORMExceptionFilter } from '../src/shared/filter/typeorm-exception.filter';
-import { AuthCredentialsDto, UserDto } from '../src/security/dto';
+import { AuthCredentialsDto, UserDto } from '../src/shared/dto';
+import { ApiModule } from '../src/api/api.module';
+import { PersistenceModule } from '../src/persistence/persistence.module';
+import { CoreModule } from '../src/core/core.module';
 
 describe('AuthController (e2e)', () => {
   let app: INestApplication;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, SecurityModule],
+      imports: [AppModule, ApiModule, PersistenceModule, CoreModule],
     }).compile();
     app = moduleFixture.createNestApplication();
     app.useGlobalFilters(new TypeORMExceptionFilter());
