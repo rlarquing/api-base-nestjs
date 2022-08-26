@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MenuRepository } from '../../persistence/repository';
-import { CreateMenuDto, ReadMenuDto, UpdateMenuDto } from '../../shared/dto';
+import { CreateMenuDto, ReadMenuDto, SelectDto, UpdateMenuDto } from '../../shared/dto';
 import { MenuEntity } from '../../persistence/entity';
 
 @Injectable()
@@ -37,6 +37,8 @@ export class MenuMapper {
 
   async entityToDto(menuEntity: MenuEntity): Promise<ReadMenuDto> {
     const menu: MenuEntity = await this.menuRepository.findById(menuEntity.id);
+    let menuPadre = '';
+    let menuSelectDto: SelectDto;
     const menuDto: ReadMenuDto[] = [];
     if (menu.menu === null) {
       for (const menuHijo of menu.menus) {
@@ -44,6 +46,9 @@ export class MenuMapper {
           menuDto.push(await this.entityToDto(menuHijo));
         }
       }
+    } else {
+      menuPadre = menu.menu.toString();
+      menuSelectDto = new SelectDto(menu.menu.id, menu.menu.toString());
     }
 
     const dtoToString: string = menuEntity.toString();
@@ -55,6 +60,8 @@ export class MenuMapper {
       menuEntity.to,
       menuDto,
       menuEntity.tipo,
+      menuPadre,
+      menuSelectDto,
     );
   }
 }

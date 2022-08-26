@@ -49,7 +49,14 @@ export class MunicipioRepository {
     provincia: ProvinciaEntity | number,
   ): Promise<MunicipioEntity[]> {
     const options = {
-      where: { provincia },
+      where: {
+        provincia: {
+          id: provincia instanceof ProvinciaEntity ? provincia.id : provincia,
+        },
+      },
+      relations: {
+        provincia: true,
+      },
     } as FindManyOptions<MunicipioEntity>;
     return await this.municipioRepository.find(options);
   }

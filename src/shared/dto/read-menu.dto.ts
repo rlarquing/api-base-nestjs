@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {SelectDto} from "./select.dto";
 
 export class ReadMenuDto {
   @ApiProperty({ description: 'Nombre del objeto', example: 'Objeto 1' })
@@ -26,6 +27,18 @@ export class ReadMenuDto {
   to: string;
 
   @ApiProperty({
+    description: 'Menu padre que tiene',
+    example: 'Administración',
+  })
+  menuPadre: string;
+
+  @ApiProperty({
+    description: 'Objeto para cargar el select',
+    example: SelectDto,
+  })
+  menu: SelectDto;
+
+  @ApiProperty({
     description: 'Menu hijos que tiene',
     example: [ReadMenuDto],
   })
@@ -44,6 +57,8 @@ export class ReadMenuDto {
     to: string,
     menus: ReadMenuDto[],
     tipo: string,
+    menuPadre: string,
+    menu: SelectDto,
   ) {
     this.dtoToString = dtoToString;
     this.id = id;
@@ -52,5 +67,7 @@ export class ReadMenuDto {
     this.to = to;
     this.menus = menus;
     this.tipo = tipo;
+    this.menuPadre = menuPadre;
+    this.menu = menu;
   }
 }

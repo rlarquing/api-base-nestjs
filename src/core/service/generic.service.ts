@@ -36,7 +36,7 @@ export abstract class GenericService<ENTITY> implements IService {
     const items: Paginated<ENTITY> | ENTITY[] =
       await this.genericRepository.findAll(query, sinPaginacion);
     const readDto: any[] = [];
-    if (sinPaginacion) {
+    if (sinPaginacion === true) {
       for (const item of items as ENTITY[]) {
         readDto.push(await this.mapper.entityToDto(item));
       }

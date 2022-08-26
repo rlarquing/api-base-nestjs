@@ -80,7 +80,7 @@ export class MenuController extends GenericController<MenuEntity> {
   ): Promise<any> {
     const data = await super.findAll(page, limit, sinPaginacion);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
-    const key: string[] = ['id', 'label', 'icon', 'to', 'menu'];
+    const key: string[] = ['id', 'label', 'icon', 'to', 'menuPadre'];
     return new ListadoDto(header, key, data);
   }
 
@@ -368,7 +368,7 @@ export class MenuController extends GenericController<MenuEntity> {
   ): Promise<any> {
     const data = await super.filter(page, limit, filtroGenericoDto);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
-    const key: string[] = ['id', 'label', 'icon', 'to', 'menu'];
+    const key: string[] = ['id', 'label', 'icon', 'to', 'menuPadre'];
     return new ListadoDto(header, key, data);
   }
   @Post('/buscar')
@@ -399,7 +399,7 @@ export class MenuController extends GenericController<MenuEntity> {
   ): Promise<any> {
     const data = await super.search(page, limit, buscarDto);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
-    const key: string[] = ['id', 'label', 'icon', 'to', 'menu'];
+    const key: string[] = ['id', 'label', 'icon', 'to', 'menuPadre'];
     return new ListadoDto(header, key, data);
   }
 }

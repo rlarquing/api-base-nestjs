@@ -33,7 +33,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     query: PaginateQuery,
     sinPaginacion?: boolean,
   ): Promise<Paginated<ENTITY> | ENTITY[]> {
-    if (sinPaginacion) {
+    if (sinPaginacion === true) {
       const options = {
         where: { activo: true },
         relations: this.relations,
