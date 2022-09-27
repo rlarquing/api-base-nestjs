@@ -26,7 +26,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { RolType } from '../../shared/enum';
 import { TrazaService } from '../../core/service';
-import { FiltroDto, TrazaDto } from '../../shared/dto';
+import { FiltroDto, ListadoDto, TrazaDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
 import { Paginated } from 'nestjs-paginate';
@@ -60,14 +60,32 @@ export class TrazaController {
   async findAll(
     @Query('page') page = 1,
     @Query('limit') limit = 10,
-  ): Promise<Paginated<TrazaDto>> {
+  ): Promise<any> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    return await this.trazaService.findAll({
+    const data = await this.trazaService.findAll({
       page,
       limit,
-      path: url + '/trazas',
+      path: url + '/api/' + '/trazas',
     });
+    const header: string[] = [
+      'id',
+      'Usuario',
+      'Fecha',
+      'Model',
+      'Acción',
+      'Registro'
+
+    ];
+    const key: string[] = [
+      'id',
+      'user',
+      'date',
+      'model',
+      'action',
+      'record'
+    ];
+    return new ListadoDto(header, key, data);
   }
   @Get('/:id')
   @ApiOperation({ summary: 'Obtener una traza' })
