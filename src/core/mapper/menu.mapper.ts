@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { MenuRepository } from '../../persistence/repository';
-import { CreateMenuDto, ReadMenuDto, SelectDto, UpdateMenuDto } from '../../shared/dto';
+import {
+  CreateMenuDto,
+  ReadMenuDto,
+  SelectDto,
+  UpdateMenuDto,
+} from '../../shared/dto';
 import { MenuEntity } from '../../persistence/entity';
 
 @Injectable()

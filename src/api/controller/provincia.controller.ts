@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { ProvinciaService } from '../../core/service';
 import { GeoJsonDto, ReadProvinciaDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
-import {Paginated} from "nestjs-paginate";
+import { Paginated } from 'nestjs-paginate';
 
 @ApiTags('Provincias')
 @Controller('provincia')

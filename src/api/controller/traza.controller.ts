@@ -29,7 +29,7 @@ import { TrazaService } from '../../core/service';
 import { FiltroDto, TrazaDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
-import {Paginated} from "nestjs-paginate";
+import { Paginated } from 'nestjs-paginate';
 
 @ApiTags('Trazas')
 @Controller('traza')

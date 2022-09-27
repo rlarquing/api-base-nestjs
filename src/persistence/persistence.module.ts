@@ -12,7 +12,6 @@ import {
   UserEntity,
 } from './entity';
 import { repository } from './persistence.service';
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([

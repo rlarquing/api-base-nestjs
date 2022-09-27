@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {SelectDto} from "./select.dto";
+import { SelectDto } from './select.dto';
 
 export class ReadMenuDto {
   @ApiProperty({ description: 'Nombre del objeto', example: 'Objeto 1' })

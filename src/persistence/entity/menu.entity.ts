@@ -1,4 +1,13 @@
-import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { PruebaEntity } from './prueba.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { GenericEntity } from './generic.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
 import { TipoMenuTypeEnum } from '../../shared/enum';
@@ -36,7 +45,6 @@ export class MenuEntity extends GenericEntity {
   menu: MenuEntity;
   @OneToMany(() => MenuEntity, (menu) => menu.menu)
   menus: MenuEntity[];
-
   @Column({
     type: 'varchar',
     length: 255,
