@@ -354,7 +354,7 @@ export async function parseController(endPointService: EndPointService) {
     }
     for (const registrado of serviciosRegistrados) {
       if (!serviciosEncontrados.has(registrado)) {
-        // el elemento está en la bd y no está en la lista
+        // el elemento está en la bd y no está en la lista        
         await endPointService.remove(registrado);
       }
     }
