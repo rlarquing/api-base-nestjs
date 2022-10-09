@@ -32,7 +32,7 @@ export class FuncionEntity extends GenericEntity {
   })
   descripcion: string;
   @ManyToMany(() => EndPointEntity, (end_point) => end_point.funcions, {
-    eager: false,
+    eager: false, onDelete: 'CASCADE',
   })
   @JoinTable({
     name: 'funcion_end_point',

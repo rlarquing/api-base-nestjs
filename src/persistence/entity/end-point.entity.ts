@@ -52,7 +52,7 @@ export class EndPointEntity {
     name: 'metodo',
   })
   metodo: string;
-  @ManyToMany(() => FuncionEntity, (funcion) => funcion.endPoints)
+  @ManyToMany(() => FuncionEntity, (funcion) => funcion.endPoints,{ onDelete: 'CASCADE'})
   @JoinColumn()
   funcions: FuncionEntity[];
   constructor(
