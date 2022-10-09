@@ -14,18 +14,17 @@ export class ListadoDto {
   @ApiProperty({
     description: 'Datos que se mostrarán.',
     example: {
-      data: [{}],
+      items: [{}],
       meta: {
-        itemsPerPage: 1,
         totalItems: 1,
-        currentPage: 10,
+        itemCount: 1,
+        itemsPerPage: 10,
         totalPages: 1,
-        sortBy: [['id', 'ASC']],
+        currentPage: 1,
       },
       links: {
         first: '',
         previous: '',
-        current: '',
         next: '',
         last: '',
       },

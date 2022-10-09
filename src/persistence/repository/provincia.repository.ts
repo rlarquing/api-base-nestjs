@@ -3,11 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import {
+  IPaginationOptions,
   paginate,
-  PaginateConfig,
-  Paginated,
-  PaginateQuery,
-} from 'nestjs-paginate';
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProvinciaRepository {
@@ -16,15 +15,10 @@ export class ProvinciaRepository {
     private provinciaRepository: Repository<ProvinciaEntity>,
   ) {}
 
-  async findAll(query: PaginateQuery): Promise<Paginated<ProvinciaEntity>> {
-    const where = {
-      sortableColumns: ['id'],
-    } as PaginateConfig<ProvinciaEntity>;
-    return await paginate<ProvinciaEntity>(
-      query,
-      this.provinciaRepository,
-      where,
-    );
+  async findAll(
+    options: IPaginationOptions,
+  ): Promise<Pagination<ProvinciaEntity>> {
+    return await paginate<ProvinciaEntity>(this.provinciaRepository, options);
   }
 
   async findById(id: number): Promise<ProvinciaEntity> {

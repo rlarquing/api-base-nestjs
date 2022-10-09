@@ -75,7 +75,7 @@ export class UserController {
     const data = await this.userService.findAll({
       page,
       limit,
-      path: url + '/user',
+      route: url + '/user',
     });
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     const key: string[] = ['id', 'username', 'email', 'roles', 'funcions'];
@@ -206,7 +206,7 @@ export class UserController {
       {
         page,
         limit,
-        path: url + '/user',
+        route: url + '/user',
       },
       filtroGenericoDto,
     );
@@ -244,7 +244,7 @@ export class UserController {
       {
         page,
         limit,
-        path: url + '/user',
+        route: url + '/user',
       },
       buscarDto,
     );

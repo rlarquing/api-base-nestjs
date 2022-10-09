@@ -1,12 +1,12 @@
 import { DeleteResult } from 'typeorm';
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 export interface IService {
   findAll(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     sinPaginacion?: boolean,
-  ): Promise<Paginated<any> | any[]>;
+  ): Promise<Pagination<any> | any[]>;
 
   findById(id: any): Promise<any>;
 
@@ -25,9 +25,12 @@ export interface IService {
   count(): Promise<number>;
 
   filter(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     filtroGenericoDto: FiltroGenericoDto,
-  ): Promise<Paginated<any>>;
+  ): Promise<Pagination<any>>;
 
-  search(query: PaginateQuery, buscarDto: BuscarDto): Promise<Paginated<any>>;
+  search(
+    options: IPaginationOptions,
+    buscarDto: BuscarDto,
+  ): Promise<Pagination<any>>;
 }

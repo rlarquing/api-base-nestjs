@@ -1,5 +1,5 @@
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import {Pagination} from "nestjs-typeorm-paginate";
 
 export interface IController {
   findAll(
@@ -7,7 +7,7 @@ export interface IController {
     limit?: number,
     sinPaginacion?: boolean,
     user?: any,
-  ): Promise<Paginated<any> | any[]>;
+  ): Promise<Pagination<any> | any[]>;
 
   findById(id: any): Promise<any>;
 
@@ -27,10 +27,10 @@ export interface IController {
     page?: number,
     limit?: number,
     filtroGenericoDto?: FiltroGenericoDto,
-  ): Promise<Paginated<any>>;
+  ): Promise<Pagination<any>>;
   search(
     page?: number,
     limit?: number,
     buscarDto?: BuscarDto,
-  ): Promise<Paginated<any>>;
+  ): Promise<Pagination<any>>;
 }

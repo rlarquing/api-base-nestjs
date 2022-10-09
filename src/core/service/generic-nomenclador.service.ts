@@ -12,8 +12,7 @@ import {
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
 import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Column, SortBy } from 'nestjs-paginate/lib/helper';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class GenericNomencladorService {
@@ -25,26 +24,13 @@ export class GenericNomencladorService {
 
   async findAll(
     name: string,
-    query: PaginateQuery,
-  ): Promise<Paginated<ReadNomencladorDto>> {
-    const items: Paginated<any> = await this.repository.findAll(name, query);
-    const readNomencladorDto: ReadNomencladorDto[] = items.data.map(
+    options: IPaginationOptions,
+  ): Promise<Pagination<ReadNomencladorDto>> {
+    const items: Pagination<any> = await this.repository.findAll(name, options);
+    const readNomencladorDto: ReadNomencladorDto[] = items.items.map(
       (item: any) => this.mapper.entityToDto(item),
     );
-    return {
-      data: readNomencladorDto,
-      meta: {
-        itemsPerPage: items.meta.itemsPerPage,
-        totalItems: items.meta.totalItems,
-        currentPage: items.meta.currentPage,
-        totalPages: items.meta.totalPages,
-        sortBy: items.meta.sortBy as SortBy<ReadNomencladorDto>,
-        searchBy: items.meta.searchBy as Column<ReadNomencladorDto>[],
-        search: items.meta.search,
-        filter: items.meta.filter,
-      },
-      links: items.links,
-    };
+    return new Pagination(readNomencladorDto, items.meta, items.links);
   }
 
   async findById(name: string, id: number): Promise<ReadNomencladorDto> {
@@ -117,7 +103,7 @@ export class GenericNomencladorService {
         {
           page: 1,
           limit: 10,
-          path: '',
+          route: '',
         },
         filtroGenericoDto,
       );
@@ -208,61 +194,35 @@ export class GenericNomencladorService {
 
   async filter(
     name: string,
-    query: PaginateQuery,
+    options: IPaginationOptions,
     filtroGenericoDto: FiltroGenericoDto,
-  ): Promise<Paginated<ReadNomencladorDto>> {
-    const items: Paginated<any> = await this.repository.filter(
+  ): Promise<Pagination<ReadNomencladorDto>> {
+    const items: Pagination<any> = await this.repository.filter(
       name,
-      query,
+      options,
       filtroGenericoDto.clave,
       filtroGenericoDto.valor,
     );
-    const readNomencladorDto: ReadNomencladorDto[] = items.data.map(
+    const readNomencladorDto: ReadNomencladorDto[] = items.items.map(
       (item: any) => this.mapper.entityToDto(item),
     );
-    return {
-      data: readNomencladorDto,
-      meta: {
-        itemsPerPage: items.meta.itemsPerPage,
-        totalItems: items.meta.totalItems,
-        currentPage: items.meta.currentPage,
-        totalPages: items.meta.totalPages,
-        sortBy: items.meta.sortBy as SortBy<ReadNomencladorDto>,
-        searchBy: items.meta.searchBy as Column<ReadNomencladorDto>[],
-        search: items.meta.search,
-        filter: items.meta.filter,
-      },
-      links: items.links,
-    };
+    return new Pagination(readNomencladorDto, items.meta, items.links);
   }
 
   async search(
     name: string,
-    query: PaginateQuery,
+    options: IPaginationOptions,
     buscarDto: BuscarDto,
-  ): Promise<Paginated<ReadNomencladorDto>> {
-    const items: Paginated<any> = await this.repository.search(
+  ): Promise<Pagination<ReadNomencladorDto>> {
+    const items: Pagination<any> = await this.repository.search(
       name,
-      query,
+      options,
       buscarDto.search,
     );
-    const readNomencladorDto: ReadNomencladorDto[] = items.data.map(
+    const readNomencladorDto: ReadNomencladorDto[] = items.items.map(
       (item: any) => this.mapper.entityToDto(item),
     );
-    return {
-      data: readNomencladorDto,
-      meta: {
-        itemsPerPage: items.meta.itemsPerPage,
-        totalItems: items.meta.totalItems,
-        currentPage: items.meta.currentPage,
-        totalPages: items.meta.totalPages,
-        sortBy: items.meta.sortBy as SortBy<ReadNomencladorDto>,
-        searchBy: items.meta.searchBy as Column<ReadNomencladorDto>[],
-        search: items.meta.search,
-        filter: items.meta.filter,
-      },
-      links: items.links,
-    };
+    return new Pagination(readNomencladorDto, items.meta, items.links);
   }
 
   async createSelectDependiente(

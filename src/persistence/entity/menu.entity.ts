@@ -1,12 +1,9 @@
-import { PruebaEntity } from './prueba.entity';
 import {
   Column,
   Entity,
   ManyToOne,
   JoinColumn,
   OneToMany,
-  ManyToMany,
-  JoinTable,
 } from 'typeorm';
 import { GenericEntity } from './generic.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';

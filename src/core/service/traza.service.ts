@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { TrazaMapper } from '../mapper';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { TrazaRepository } from '../../persistence/repository';
 import { TrazaDto } from '../../shared/dto';
 import { TrazaEntity, UserEntity } from '../../persistence/entity';
 import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Column, SortBy } from 'nestjs-paginate/lib/helper';
 
 @Injectable()
 export class TrazaService {
@@ -15,27 +14,14 @@ export class TrazaService {
     private trazaMapper: TrazaMapper,
   ) {}
 
-  async findAll(query: PaginateQuery): Promise<Paginated<TrazaDto>> {
-    const trazas: Paginated<TrazaEntity> = await this.trazaRepository.findAll(
-      query,
+  async findAll(options: IPaginationOptions): Promise<Pagination<TrazaDto>> {
+    const trazas: Pagination<TrazaEntity> = await this.trazaRepository.findAll(
+      options,
     );
-    const trazaDto: TrazaDto[] = trazas.data.map((traza: TrazaEntity) =>
+    const trazaDto: TrazaDto[] = trazas.items.map((traza: TrazaEntity) =>
       this.trazaMapper.entityToDto(traza),
     );
-    return {
-      data: trazaDto,
-      meta: {
-        itemsPerPage: trazas.meta.itemsPerPage,
-        totalItems: trazas.meta.totalItems,
-        currentPage: trazas.meta.currentPage,
-        totalPages: trazas.meta.totalPages,
-        sortBy: trazas.meta.sortBy as SortBy<TrazaDto>,
-        searchBy: trazas.meta.searchBy as Column<TrazaDto>[],
-        search: trazas.meta.search,
-        filter: trazas.meta.filter,
-      },
-      links: trazas.links,
-    };
+    return new Pagination(trazaDto, trazas.meta, trazas.links);
   }
 
   async findById(id: number): Promise<TrazaDto> {

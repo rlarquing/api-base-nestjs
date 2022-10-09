@@ -1,4 +1,4 @@
-import { Between, DeleteResult, ILike } from 'typeorm';
+import { Between, DeleteResult, FindManyOptions, ILike } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import {
   isBoolean,
@@ -7,7 +7,11 @@ import {
   isNumber,
   isString,
 } from 'class-validator';
-import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 export class GenericNomencladorRepository {
   constructor() {}
   async findById(name: string, id: number): Promise<any> {
@@ -36,16 +40,19 @@ export class GenericNomencladorRepository {
       );
     return obj;
   }
-  async findAll(name: string, query: PaginateQuery): Promise<Paginated<any>> {
+  async findAll(
+    name: string,
+    options: IPaginationOptions,
+  ): Promise<Pagination<any>> {
     if (!this[`${name}Repository`])
       throw new NotFoundException(
         `No existe un nomenclador con nombre ${name}`,
       );
     const repo = this[`${name}Repository`];
-    return await paginate<any>(query, repo, {
-      sortableColumns: ['id'],
+    const findOptions = {
       where: { activo: true },
-    });
+    } as FindManyOptions;
+    return await paginate<any>(repo, options, findOptions);
   }
   async findOne(name: string, id: number): Promise<any> {
     if (!this[`${name}Repository`])
@@ -125,10 +132,10 @@ export class GenericNomencladorRepository {
   }
   async filter(
     name: string,
-    query: PaginateQuery,
+    options: IPaginationOptions,
     claves: string[],
     valores: any[],
-  ): Promise<Paginated<any>> {
+  ): Promise<Pagination<any>> {
     if (!this[`${name}Repository`])
       throw new NotFoundException(
         `No existe un nomenclador con nombre ${name}`,
@@ -150,16 +157,16 @@ export class GenericNomencladorRepository {
         wheres[claves[i]] = ILike(`%${valores[i]}%`);
       }
     }
-    return await paginate<any>(query, repo, {
-      sortableColumns: ['id'],
+    const where = {
       where: wheres,
-    });
+    } as FindManyOptions;
+    return await paginate<any>(repo, options, where);
   }
   async search(
     name: string,
-    query: PaginateQuery,
+    options: IPaginationOptions,
     search: any,
-  ): Promise<Paginated<any>> {
+  ): Promise<Pagination<any>> {
     if (!this[`${name}Repository`])
       throw new NotFoundException(
         `No existe un nomenclador con nombre ${name}`,
@@ -212,10 +219,10 @@ export class GenericNomencladorRepository {
         wheres.activo = null;
       }
     }
-    return await paginate<any>(query, repo, {
-      sortableColumns: ['id'],
+    const where = {
       where: wheres,
-    });
+    } as FindManyOptions;
+    return await paginate<any>(repo, options, where);
   }
 
   async findBy(name: string, claves: string[], valores: any[]): Promise<any[]> {

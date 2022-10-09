@@ -13,8 +13,7 @@ import { UserEntity } from '../../persistence/entity';
 import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../../app.keys';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Column, SortBy } from 'nestjs-paginate/lib/helper';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 export abstract class GenericService<ENTITY> implements IService {
   private isProductionEnv;
@@ -30,11 +29,11 @@ export abstract class GenericService<ENTITY> implements IService {
   }
 
   async findAll(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     sinPaginacion?: boolean,
-  ): Promise<Paginated<any> | any[]> {
-    const items: Paginated<ENTITY> | ENTITY[] =
-      await this.genericRepository.findAll(query, sinPaginacion);
+  ): Promise<Pagination<any> | any[]> {
+    const items: Pagination<ENTITY> | ENTITY[] =
+      await this.genericRepository.findAll(options, sinPaginacion);
     const readDto: any[] = [];
     if (sinPaginacion === true) {
       for (const item of items as ENTITY[]) {
@@ -42,23 +41,14 @@ export abstract class GenericService<ENTITY> implements IService {
       }
       return readDto;
     } else {
-      for (const item of (items as Paginated<ENTITY>).data) {
+      for (const item of (items as Pagination<ENTITY>).items) {
         readDto.push(await this.mapper.entityToDto(item));
       }
-      return {
-        data: readDto,
-        meta: {
-          itemsPerPage: (items as Paginated<ENTITY>).meta.itemsPerPage,
-          totalItems: (items as Paginated<ENTITY>).meta.totalItems,
-          currentPage: (items as Paginated<ENTITY>).meta.currentPage,
-          totalPages: (items as Paginated<ENTITY>).meta.totalPages,
-          sortBy: (items as Paginated<ENTITY>).meta.sortBy as SortBy<any>,
-          searchBy: (items as Paginated<ENTITY>).meta.searchBy as Column<any>[],
-          search: (items as Paginated<ENTITY>).meta.search,
-          filter: (items as Paginated<ENTITY>).meta.filter,
-        },
-        links: (items as Paginated<ENTITY>).links,
-      };
+      return new Pagination(
+        readDto,
+        (items as Pagination<ENTITY>).meta,
+        (items as Pagination<ENTITY>).links,
+      );
     }
   }
 
@@ -135,7 +125,7 @@ export abstract class GenericService<ENTITY> implements IService {
         {
           page: 1,
           limit: 10,
-          path: '',
+          route: '',
         },
         filtroGenericoDto,
       );
@@ -219,59 +209,33 @@ export abstract class GenericService<ENTITY> implements IService {
   }
 
   async filter(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     filtroGenericoDto: FiltroGenericoDto,
-  ): Promise<Paginated<any>> {
-    const items: Paginated<ENTITY> = await this.genericRepository.filter(
-      query,
+  ): Promise<Pagination<any>> {
+    const items: Pagination<ENTITY> = await this.genericRepository.filter(
+      options,
       filtroGenericoDto.clave,
       filtroGenericoDto.valor,
     );
     const readDto: any[] = [];
-    for (const item of items.data) {
+    for (const item of items.items) {
       readDto.push(await this.mapper.entityToDto(item));
     }
-    return {
-      data: readDto,
-      meta: {
-        itemsPerPage: items.meta.itemsPerPage,
-        totalItems: items.meta.totalItems,
-        currentPage: items.meta.currentPage,
-        totalPages: items.meta.totalPages,
-        sortBy: items.meta.sortBy as SortBy<any>,
-        searchBy: items.meta.searchBy as Column<any>[],
-        search: items.meta.search,
-        filter: items.meta.filter,
-      },
-      links: items.links,
-    };
+    return new Pagination(readDto, items.meta, items.links);
   }
 
   async search(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     buscarDto: BuscarDto,
-  ): Promise<Paginated<any>> {
-    const items: Paginated<ENTITY> = await this.genericRepository.search(
-      query,
+  ): Promise<Pagination<any>> {
+    const items: Pagination<ENTITY> = await this.genericRepository.search(
+      options,
       buscarDto.search,
     );
     const readDto: any[] = [];
-    for (const item of items.data) {
+    for (const item of items.items) {
       readDto.push(await this.mapper.entityToDto(item));
     }
-    return {
-      data: readDto,
-      meta: {
-        itemsPerPage: items.meta.itemsPerPage,
-        totalItems: items.meta.totalItems,
-        currentPage: items.meta.currentPage,
-        totalPages: items.meta.totalPages,
-        sortBy: items.meta.sortBy as SortBy<any>,
-        searchBy: items.meta.searchBy as Column<any>[],
-        search: items.meta.search,
-        filter: items.meta.filter,
-      },
-      links: items.links,
-    };
+    return new Pagination(readDto, items.meta, items.links);
   }
 }

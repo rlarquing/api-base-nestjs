@@ -17,11 +17,10 @@ import {
   isString,
 } from 'class-validator';
 import {
+  IPaginationOptions,
   paginate,
-  PaginateConfig,
-  Paginated,
-  PaginateQuery,
-} from 'nestjs-paginate';
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   protected constructor(
@@ -30,22 +29,17 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   ) {}
 
   async findAll(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     sinPaginacion?: boolean,
-  ): Promise<Paginated<ENTITY> | ENTITY[]> {
+  ): Promise<Pagination<ENTITY> | ENTITY[]> {
+    const findOptions = {
+      where: { activo: true },
+      relations: this.relations,
+    } as FindManyOptions;
     if (sinPaginacion === true) {
-      const options = {
-        where: { activo: true },
-        relations: this.relations,
-      } as FindManyOptions;
-      return await this.repository.find(options);
+      return await this.repository.find(findOptions);
     } else {
-      const where = {
-        sortableColumns: ['id'],
-        where: { activo: true },
-        relations: this.relations,
-      } as unknown as PaginateConfig<ENTITY>;
-      return await paginate<ENTITY>(query, this.repository, where);
+      return await paginate<ENTITY>(this.repository, options, findOptions);
     }
   }
 
@@ -110,10 +104,10 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   }
 
   async filter(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     claves: string[],
     valores: any[],
-  ): Promise<Paginated<ENTITY>> {
+  ): Promise<Pagination<ENTITY>> {
     const wheres = { activo: true };
     for (let i = 0; i < claves.length; i++) {
       if (isNumber(valores[i])) {
@@ -132,17 +126,21 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       }
     }
     const where = {
-      sortableColumns: ['id'],
       where: wheres,
       relations: this.relations,
-    } as unknown as PaginateConfig<ENTITY>;
-    return await paginate<ENTITY>(query, this.repository, where);
+    } as FindManyOptions;
+    return await paginate<ENTITY>(this.repository, options, where);
   }
 
-  async search(query: PaginateQuery, search: any): Promise<Paginated<ENTITY>> {
+  async search(
+    options: IPaginationOptions,
+    search: any,
+  ): Promise<Pagination<ENTITY>> {
     if (!isEmpty(search)) {
-      const options = { where: { activo: true } } as FindManyOptions;
-      const result = await this.repository.find(options);
+      const findOptions = {
+        where: { activo: true },
+      } as FindManyOptions;
+      const result = await this.repository.find(findOptions);
       const objs = new Map<string, string>();
       const keys = new Map<string, string>();
       if (result.length > 0) {
@@ -213,10 +211,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
           search: search,
         });
       }
-      const where = {
-        sortableColumns: ['id'],
-      } as unknown as PaginateConfig<ENTITY>;
-      return await paginate<ENTITY>(query, queryBuilder, where);
+      return await paginate<ENTITY>(queryBuilder, options);
     }
   }
 

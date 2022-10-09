@@ -29,7 +29,6 @@ import { TrazaService } from '../../core/service';
 import { FiltroDto, ListadoDto, TrazaDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
-import { Paginated } from 'nestjs-paginate';
 
 @ApiTags('Trazas')
 @Controller('traza')
@@ -66,7 +65,7 @@ export class TrazaController {
     const data = await this.trazaService.findAll({
       page,
       limit,
-      path: url + '/api/' + '/trazas',
+      route: url + '/api/' + '/trazas',
     });
     const header: string[] = [
       'id',
@@ -74,17 +73,9 @@ export class TrazaController {
       'Fecha',
       'Model',
       'Acción',
-      'Registro'
-
+      'Registro',
     ];
-    const key: string[] = [
-      'id',
-      'user',
-      'date',
-      'model',
-      'action',
-      'record'
-    ];
+    const key: string[] = ['id', 'user', 'date', 'model', 'action', 'record'];
     return new ListadoDto(header, key, data);
   }
   @Get('/:id')

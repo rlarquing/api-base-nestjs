@@ -27,11 +27,10 @@ import {
 import { RolType } from '../../shared/enum';
 import { ResponseDto } from '../../shared/dto';
 import {
-  PaginateQuery,
+  IPaginationOptions,
   paginate,
-  Paginated,
-  PaginateConfig,
-} from 'nestjs-paginate';
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class UserRepository {
@@ -66,18 +65,17 @@ export class UserRepository {
     }
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<UserEntity>> {
+  async findAll(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
     // Ejemplo funcional de como trabajar con queryBuilder
     // const queryBuilder = this.userRepository.createQueryBuilder('u');
     // queryBuilder.leftJoinAndSelect('u.roles', 'roles')
     // queryBuilder.where('u.status = :status', { activo: true });
     // return await paginate<UserEntity>(queryBuilder, options);
     const where = {
-      sortableColumns: ['id'],
       where: { activo: true },
       relations: ['roles', 'funcions'],
-    } as PaginateConfig<UserEntity>;
-    return await paginate<UserEntity>(query, this.userRepository, where);
+    } as FindManyOptions;
+    return await paginate<UserEntity>(this.userRepository, options, where);
   }
 
   async findById(id: number): Promise<UserEntity> {
@@ -176,10 +174,10 @@ export class UserRepository {
   }
 
   async filter(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     claves: string[],
     valores: any[],
-  ): Promise<Paginated<UserEntity>> {
+  ): Promise<Pagination<UserEntity>> {
     const wheres = { activo: true } as FindOptionsWhere<UserEntity>;
     for (let i = 0; i < claves.length; i++) {
       if (isNumber(valores[i])) {
@@ -196,22 +194,18 @@ export class UserRepository {
         wheres[claves[i]] = ILike(`%${valores[i]}%`);
       }
     }
-
-    return await paginate<UserEntity>(query, this.userRepository, {
-      sortableColumns: ['id'],
+    const where = {
       where: wheres,
       relations: ['roles', 'funcions'],
-    });
+    } as FindManyOptions;
+    return await paginate<UserEntity>(this.userRepository, options, where);
   }
 
   async search(
-    query: PaginateQuery,
+    options: IPaginationOptions,
     search: any,
-  ): Promise<Paginated<UserEntity>> {
+  ): Promise<Pagination<UserEntity>> {
     if (!isEmpty(search)) {
-      const config: PaginateConfig<UserEntity> = {
-        sortableColumns: ['id'],
-      };
       const where = { activo: true } as FindManyOptions<UserEntity>;
       const result = await this.userRepository.find(where);
       const objs = new Map<string, string>();
@@ -275,7 +269,7 @@ export class UserRepository {
           search: search,
         });
       }
-      return await paginate<UserEntity>(query, queryBuilder, config);
+      return await paginate<UserEntity>(queryBuilder, options);
     }
   }
 }

@@ -8,11 +8,10 @@ import { Between, DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
 import { TrazaEntity, UserEntity } from '../entity';
 import { UserRepository } from './user.repository';
 import {
+  IPaginationOptions,
   paginate,
-  PaginateConfig,
-  Paginated,
-  PaginateQuery,
-} from 'nestjs-paginate';
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class TrazaRepository {
@@ -23,11 +22,8 @@ export class TrazaRepository {
     private readonly userRepository: UserRepository,
   ) {}
 
-  async findAll(query: PaginateQuery): Promise<Paginated<TrazaEntity>> {
-    const where = {
-      sortableColumns: ['id'],
-    } as PaginateConfig<TrazaEntity>;
-    return await paginate<TrazaEntity>(query, this.trazaRepository, where);
+  async findAll(options: IPaginationOptions): Promise<Pagination<TrazaEntity>> {
+    return await paginate<TrazaEntity>(this.trazaRepository, options);
   }
 
   async findById(id: number): Promise<TrazaEntity> {

@@ -13,8 +13,7 @@ import { GeoJsonDto, ReadMunicipioDto, SelectDto } from '../../shared/dto';
 import { MunicipioEntity, ProvinciaEntity } from '../../persistence/entity';
 import { AppConfig } from '../../app.keys';
 import { ConfigService } from '@nestjs/config';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
-import { Column, SortBy } from 'nestjs-paginate/lib/helper';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class MunicipioService {
@@ -27,27 +26,16 @@ export class MunicipioService {
     private geoJsonMapper: GeoJsonMapper,
   ) {}
 
-  async findAll(query: PaginateQuery): Promise<Paginated<ReadMunicipioDto>> {
-    const municipios: Paginated<MunicipioEntity> =
-      await this.municipioRepository.findAll(query);
+  async findAll(
+    options: IPaginationOptions,
+  ): Promise<Pagination<ReadMunicipioDto>> {
+    const municipios: Pagination<MunicipioEntity> =
+      await this.municipioRepository.findAll(options);
     const readMunicipioDto: ReadMunicipioDto[] = [];
-    for (const municipio of municipios.data) {
+    for (const municipio of municipios.items) {
       readMunicipioDto.push(await this.municipioMapper.entityToDto(municipio));
     }
-    return {
-      data: readMunicipioDto,
-      meta: {
-        itemsPerPage: municipios.meta.itemsPerPage,
-        totalItems: municipios.meta.totalItems,
-        currentPage: municipios.meta.currentPage,
-        totalPages: municipios.meta.totalPages,
-        sortBy: municipios.meta.sortBy as SortBy<ReadMunicipioDto>,
-        searchBy: municipios.meta.searchBy as Column<ReadMunicipioDto>[],
-        search: municipios.meta.search,
-        filter: municipios.meta.filter,
-      },
-      links: municipios.links,
-    };
+    return new Pagination(readMunicipioDto, municipios.meta, municipios.links);
   }
 
   async findById(id: number): Promise<ReadMunicipioDto> {

@@ -31,7 +31,7 @@ import {
 import { GetUser, Servicio } from '../decorator';
 import { PermissionGuard, RolGuard } from '../guard';
 import { UserEntity } from '../../persistence/entity';
-import { Paginated } from 'nestjs-paginate';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 export abstract class GenericController<ENTITY> implements IController {
   protected constructor(
@@ -44,14 +44,14 @@ export abstract class GenericController<ENTITY> implements IController {
     page?: number,
     limit?: number,
     sinPaginacion?: boolean,
-  ): Promise<Paginated<any> | any[]> {
+  ): Promise<Pagination<any> | any[]> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
     return await this.service.findAll(
       {
         page,
         limit,
-        path: url + '/api/' + this.ruta,
+        route: url + '/api/' + this.ruta,
       },
       sinPaginacion,
     );
@@ -226,14 +226,14 @@ export abstract class GenericController<ENTITY> implements IController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Body() filtroGenericoDto: FiltroGenericoDto,
-  ): Promise<Paginated<any>> {
+  ): Promise<Pagination<any>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
     return await this.service.filter(
       {
         page,
         limit,
-        path: url + '/api/' + this.ruta + '/filtro/por',
+        route: url + '/api/' + this.ruta + '/filtro/por',
       },
       filtroGenericoDto,
     );
@@ -243,14 +243,14 @@ export abstract class GenericController<ENTITY> implements IController {
     @Query('page') page = 1,
     @Query('limit') limit = 10,
     @Body() buscarDto: BuscarDto,
-  ): Promise<Paginated<any>> {
+  ): Promise<Pagination<any>> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
     return await this.service.search(
       {
         page,
         limit,
-        path: url + '/api/' + this.ruta + '/buscar',
+        route: url + '/api/' + this.ruta + '/buscar',
       },
       buscarDto,
     );
