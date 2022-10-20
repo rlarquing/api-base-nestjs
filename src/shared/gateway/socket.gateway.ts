@@ -58,6 +58,11 @@ export class SocketGateway
     this.server.emit('message', message);
   }
 
+  @SubscribeMessage('saludo')
+  saludar(): void {
+    this.server.emit('message', this.socketService.getHello());
+  }
+
   //para enviar las alertas
   // @SubscribeMessage('events')
   // findAll(@MessageBody() data: any): Observable<WsResponse<string>> {

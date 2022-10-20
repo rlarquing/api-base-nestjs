@@ -39,7 +39,7 @@ export const config = () => ({
     password: env(Configuration.DB_PASS, 'postgres'),
     database: env(Configuration.DB_NAME),
     synchronize: env(Configuration.DB_SYNC, false),
-    migrationsRun: env(Configuration.DB_MIGRATION_RUN, true),
+    migrationsRun: env(Configuration.DB_MIGRATIONS_RUN, true),
   },
   loggerLevels: env(AppConfig.LOGGER_LEVELS).split(',') || [],
 });
