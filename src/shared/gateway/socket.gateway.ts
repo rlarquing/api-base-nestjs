@@ -1,4 +1,4 @@
-// import { Interval } from '@nestjs/schedule';
+import { Interval } from '@nestjs/schedule';
 import {
   MessageBody,
   SubscribeMessage,
@@ -59,8 +59,8 @@ export class SocketGateway
   }
 
   @SubscribeMessage('saludo')
-  saludar(): void {
-    this.server.emit('message', this.socketService.getHello());
+  saludo(): void {
+    this.server.emit('saludo', this.socketService.getHello());
   }
 
   //para enviar las alertas
@@ -82,7 +82,7 @@ export class SocketGateway
   @SubscribeMessage('registro')
   registro(@MessageBody() data: any): void {
     this.clientes.push(data);
-
+    console.log(data);
     //esto es para salgan los mensajes
     // let pos = 0;
     // let alertas: ReadAlertaDto[];

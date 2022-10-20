@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SocketService } from '../../core/service';
 
@@ -7,10 +7,10 @@ import { SocketService } from '../../core/service';
 export class SocketController {
   constructor(private readonly socketService: SocketService) {}
 
-  // @Get()
-  // getHello(): string {
-  //   return this.socketService.getHello();
-  // }
+  @Get()
+  getHello(): string {
+    return this.socketService.getHello();
+  }
   // @Get('/:id')
   // async gpsTren(@Param('id') id: string): Promise<any> {
   //   return await this.socketService.gpsTren(id);
