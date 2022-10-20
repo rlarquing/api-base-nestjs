@@ -14,5 +14,6 @@ const config: DataSourceOptions = {
   migrations: ['src/database/migrations/*{.ts,.js}'],
   entities: ['src/**/**/*.entity.{ts,js}'],
   synchronize: dataSource()[Configuration.DB_SYNC] === 'true',
+  migrationsRun: dataSource()[Configuration.DB_MIGRATIONS_RUN],
 };
 export default new DataSource(config);
