@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, Unique } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { hash } from 'bcryptjs';
 import { RolEntity } from './rol.entity';
 import { FuncionEntity } from './funcion.entity';
@@ -6,7 +6,6 @@ import { SchemaEnum } from '../../database/schema/schema.enum';
 import { GenericEntity } from './generic.entity';
 
 @Entity('user', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
-@Unique(['username'])
 export class UserEntity extends GenericEntity {
   @Column({ type: 'varchar', unique: true, length: 25, nullable: false })
   username: string;

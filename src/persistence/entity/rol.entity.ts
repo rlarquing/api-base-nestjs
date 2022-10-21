@@ -3,7 +3,6 @@ import {
   ManyToMany,
   JoinColumn,
   JoinTable,
-  Unique,
   Column,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
@@ -12,7 +11,6 @@ import { SchemaEnum } from '../../database/schema/schema.enum';
 import { GenericEntity } from './generic.entity';
 
 @Entity('rol', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
-@Unique(['nombre'])
 export class RolEntity extends GenericEntity {
   @Column({ type: 'varchar', unique: true, length: 255, nullable: false })
   nombre: string;
