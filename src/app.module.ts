@@ -32,8 +32,8 @@ export class AppModule {
 
   constructor(private configService: ConfigService) {
     AppModule.port = parseInt(this.configService.get(AppConfig.PORT));
-    AppModule.cors = this.configService.get(AppConfig.CORS);
-    AppModule.logger = this.configService.get(AppConfig.LOGGER);
+    AppModule.cors = this.configService.get(AppConfig.CORS) === 'true';
+    AppModule.logger = this.configService.get(AppConfig.LOGGER) === 'true';
     AppModule.loggerProvider = new LoggerProvider(configService);
   }
 }

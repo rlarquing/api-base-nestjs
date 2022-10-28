@@ -8,8 +8,9 @@ import { EndPointService } from './core/service';
 import { parseController } from '../lib';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    cors: AppModule.cors,
+  const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: AppModule.cors,
   });
   app.useGlobalFilters(new TypeORMExceptionFilter());
   if (AppModule.logger) {
