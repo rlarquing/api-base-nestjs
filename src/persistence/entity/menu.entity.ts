@@ -51,12 +51,21 @@ export class MenuEntity extends GenericEntity {
     default: 'interno',
   })
   tipo: TipoMenuTypeEnum;
+  @Column({
+    type: 'varchar',
+    length: 255,
+    unique: true,
+    nullable: true,
+    name: 'nomemclador',
+  })
+  nomemclador: string;
   constructor(
     label: string,
     icon: string,
     to: string,
     menu: MenuEntity,
     tipo: TipoMenuTypeEnum,
+    nomemclador?: string,
   ) {
     super();
     this.label = label;
@@ -64,6 +73,7 @@ export class MenuEntity extends GenericEntity {
     this.to = to;
     this.menu = menu;
     this.tipo = tipo;
+    this.nomemclador = nomemclador;
   }
   public toString(): string {
     return this.label;

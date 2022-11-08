@@ -116,6 +116,25 @@ export const aInicialMinuscula = (str: string): string => {
   }
   return result;
 };
+export const esMayuscula = (char: string) => {
+  return char === char.toLocaleUpperCase();
+};
+export const formatearNombre = (str: string, separador: string) => {
+  if (str.length === 0) {
+    return '';
+  }
+  if (str.indexOf('_') !== -1) {
+    separador = '_';
+  }
+  let resultado = str[0].toLocaleLowerCase();
+  for (let i = 1; i < str.length; i++) {
+    if (esMayuscula(str[i])) {
+      resultado += separador;
+    }
+    resultado += str[i].toLocaleLowerCase();
+  }
+  return resultado;
+};
 export const quitarSeparador = (str: string, separador: string): string => {
   if (str.length === 0) {
     return '';
@@ -482,25 +501,25 @@ export const zNegativa = (x: number, xMin, xMax): number => {
 };
 
 export const generarNuevoColor = () => {
-  var simbolos, color;
-  simbolos = "0123456789ABCDEF";
-  color = "#";
+  let simbolos, color;
+  simbolos = '0123456789ABCDEF';
+  color = '#';
 
-  for(var i = 0; i < 6; i++){
+  for (let i = 0; i < 6; i++) {
     color = color + simbolos[Math.floor(Math.random() * 16)];
   }
   return color;
 };
 export const groupBy = (list: any, keyGetter: any) => {
-    const map: any = new Map();
-    list.forEach((item) => {
-        const key: any = keyGetter(item);
-        const collection = map.get(key);
-        if (!collection) {
-            map.set(key, [item]);
-        } else {
-            collection.push(item);
-        }
-    });
-    return map;
+  const map: any = new Map();
+  list.forEach((item) => {
+    const key: any = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
 };

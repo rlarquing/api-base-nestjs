@@ -6,6 +6,8 @@ import { GenericService } from './generic.service';
 import { TrazaService } from './traza.service';
 import { ReadMenuDto } from '../../shared/dto';
 import { ConfigService } from '@nestjs/config';
+import { TipoMenuTypeEnum } from '../../shared/enum';
+import { formatearNombre } from '../../../lib';
 
 @Injectable()
 export class MenuService extends GenericService<MenuEntity> {
@@ -27,5 +29,41 @@ export class MenuService extends GenericService<MenuEntity> {
       readMenusDto.push(await this.menuMapper.entityToDto(menu));
     }
     return readMenusDto;
+  }
+  async crearMenuNomenclador(nomencladores: string[]): Promise<void> {
+    const menu: MenuEntity = new MenuEntity(
+      'Nomencladores',
+      '',
+      '/administration/nomenclator',
+      null,
+      null,
+      TipoMenuTypeEnum.ADMINISTRACION,
+    );
+    const existeMenu: MenuEntity[] = await this.menuRepository.findBy(
+      ['label'],
+      [menu.label],
+    );
+    let menuPadre: MenuEntity = null;
+    if (existeMenu.length > 0) {
+      menuPadre = existeMenu[0];
+    } else {
+      menuPadre = await this.menuRepository.create(menu);
+    }
+    for (const element of nomencladores) {
+      const existe: boolean = await this.menuRepository.existeNomenclador(
+        element,
+      );
+      if (!existe) {
+        const nomMenu: MenuEntity = new MenuEntity(
+          formatearNombre(element, ' '),
+          'menu',
+          `/administration/nomenclator/${formatearNombre(element, '/')}`,
+          menuPadre,
+          TipoMenuTypeEnum.ADMINISTRACION,
+          element,
+        );
+        await this.menuRepository.create(nomMenu);
+      }
+    }
   }
 }
