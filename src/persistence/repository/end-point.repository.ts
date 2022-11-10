@@ -30,6 +30,13 @@ export class EndPointRepository {
     return await this.endPointRepository.findOneBy(options);
   }
 
+  async findByController(controller: string): Promise<EndPointEntity[]> {
+    const options = {
+      controller: controller,
+    } as FindOptionsWhere<EndPointEntity>;
+    return await this.endPointRepository.findBy(options);
+  }
+
   async findByIds(ids: number[]): Promise<EndPointEntity[]> {
     const options = {
       where: { id: In(ids) },

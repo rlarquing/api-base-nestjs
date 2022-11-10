@@ -1,7 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { MenuMapper } from '../mapper';
-import { MenuEntity } from '../../persistence/entity';
-import { MenuRepository } from '../../persistence/repository';
+import {
+  EndPointEntity,
+  FuncionEntity,
+  MenuEntity,
+  RolEntity,
+} from '../../persistence/entity';
+import {
+  EndPointRepository,
+  FuncionRepository,
+  MenuRepository,
+  RolRepository,
+} from '../../persistence/repository';
 import { GenericService } from './generic.service';
 import { TrazaService } from './traza.service';
 import { ReadMenuDto } from '../../shared/dto';
@@ -14,6 +24,9 @@ export class MenuService extends GenericService<MenuEntity> {
   constructor(
     protected configService: ConfigService,
     protected menuRepository: MenuRepository,
+    protected endPointRepository: EndPointRepository,
+    protected funcionRepository: FuncionRepository,
+    protected rolRepository: RolRepository,
     protected menuMapper: MenuMapper,
     protected trazaService: TrazaService,
   ) {
@@ -49,6 +62,8 @@ export class MenuService extends GenericService<MenuEntity> {
     } else {
       menuPadre = await this.menuRepository.create(menu);
     }
+    const endPoints: EndPointEntity[] =
+    await this.endPointRepository.findByController('nomenclador');
     for (const element of nomencladores) {
       const existe: boolean = await this.menuRepository.existeNomenclador(
         element,
@@ -62,7 +77,19 @@ export class MenuService extends GenericService<MenuEntity> {
           TipoMenuTypeEnum.ADMINISTRACION,
           element,
         );
-        await this.menuRepository.create(nomMenu);
+        const newMenu: MenuEntity = await this.menuRepository.create(nomMenu);
+        const funcion: FuncionEntity = new FuncionEntity(
+          `Gestión del nomenclador ${formatearNombre(element, ' ')}`,
+          `Gestión del nomenclador ${formatearNombre(element, ' ')}`,
+          endPoints,
+          newMenu,
+        );
+        const newFuncion: FuncionEntity = await this.funcionRepository.create(
+          funcion,
+        );
+        const rol: RolEntity = await this.rolRepository.findById(1);
+        rol.funcions.push(newFuncion);
+        await this.rolRepository.update(rol);
       }
     }
   }
