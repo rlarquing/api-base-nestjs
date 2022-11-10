@@ -22,6 +22,6 @@ export class MenuRepository
       nomemclador: nomenclador,
     } as FindOptionsWhere<MenuEntity>;
     const menu: MenuEntity = await this.menuRepository.findOneBy(wheres);
-    return menu !== undefined;
+    return menu !== undefined && menu !== null;
   }
 }
