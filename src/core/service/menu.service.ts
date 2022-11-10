@@ -34,7 +34,7 @@ export class MenuService extends GenericService<MenuEntity> {
     const menu: MenuEntity = new MenuEntity(
       'Nomencladores',
       '',
-      '/administration/nomenclator',
+      '/administration/nomenclators',
       null,
       null,
       TipoMenuTypeEnum.ADMINISTRACION,
@@ -57,7 +57,7 @@ export class MenuService extends GenericService<MenuEntity> {
         const nomMenu: MenuEntity = new MenuEntity(
           formatearNombre(element, ' '),
           'menu',
-          `/administration/nomenclator/${formatearNombre(element, '/')}`,
+          `/administration/nomenclators/${formatearNombre(element, '/')}`,
           menuPadre,
           TipoMenuTypeEnum.ADMINISTRACION,
           element,
