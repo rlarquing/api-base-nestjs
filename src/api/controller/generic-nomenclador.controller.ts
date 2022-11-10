@@ -128,8 +128,8 @@ export class GenericNomencladorController {
       limit,
       route: url + '/api/nomenclador/' + name,
     });
-    const header: string[] = ['id', 'Nombre'];
-    const key: string[] = ['id', 'nombre'];
+    const header: string[] = ['id', 'Nombre', 'Descripción'];
+    const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);
   }
   @Post('/:name/elementos/multiples')
@@ -451,8 +451,8 @@ export class GenericNomencladorController {
       },
       filtroGenericoDto,
     );
-    const header: string[] = ['id', 'Nombre'];
-    const key: string[] = ['id', 'nombre'];
+    const header: string[] = ['id', 'Nombre', 'Descripción'];
+    const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);
   }
   @Post('/:name/buscar')
@@ -494,8 +494,8 @@ export class GenericNomencladorController {
       },
       buscarDto,
     );
-    const header: string[] = ['id', 'Nombre'];
-    const key: string[] = ['id', 'nombre'];
+    const header: string[] = ['id', 'Nombre', 'Descripción'];
+    const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);
   }
   @Get()
@@ -508,7 +508,6 @@ export class GenericNomencladorController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  @Servicio('nomenclador', 'nombreNomencladores')
   nombreNomencladores(): string[] {
     const array: string[] = [];
     for (const [, propertyValue] of Object.entries(NomencladorTypeEnum)) {
