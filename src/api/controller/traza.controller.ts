@@ -45,7 +45,7 @@ export class TrazaController {
   @ApiResponse({
     status: 200,
     description: 'Listado de las trazas',
-    type: TrazaDto,
+    type: ListadoDto,
   })
   @ApiNotFoundResponse({
     status: 404,
