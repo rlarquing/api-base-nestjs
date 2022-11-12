@@ -1,4 +1,4 @@
-import { Between, DeleteResult, FindManyOptions, ILike } from 'typeorm';
+import { Between, DeleteResult, FindManyOptions, ILike, FindOneOptions, } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
 import {
   isBoolean,
@@ -20,7 +20,10 @@ export class GenericNomencladorRepository {
         `No existe un nomenclador con nombre ${name}`,
       );
     const repo = this[`${name}Repository`];
-    const obj = await repo.findOne(id, { where: { activo: true } });
+    const options = {
+      where: { id, activo: true },
+    } as FindOneOptions;
+    const obj = await repo.findOne(options);
     if (!obj)
       throw new NotFoundException(
         `No existe un nomenclador con nombre ${name} y id ${id}`,
@@ -33,7 +36,10 @@ export class GenericNomencladorRepository {
         `No existe un nomenclador con nombre ${name}`,
       );
     const repo = this[`${name}Repository`];
-    const obj = await repo.find({ where: { activo: true } });
+    const options = {
+      where: { activo: true },
+    } as FindManyOptions;
+    const obj = await repo.find(options);
     if (!obj)
       throw new NotFoundException(
         `No existe un nomenclador con nombre ${name}`,
@@ -49,9 +55,7 @@ export class GenericNomencladorRepository {
         `No existe un nomenclador con nombre ${name}`,
       );
     const repo = this[`${name}Repository`];
-    const findOptions = {
-      where: { activo: true },
-    } as FindManyOptions;
+    const findOptions = { where: { activo: true } } as FindManyOptions;
     return await paginate<any>(repo, options, findOptions);
   }
   async findOne(name: string, id: number): Promise<any> {
@@ -73,7 +77,10 @@ export class GenericNomencladorRepository {
         `No existe un nomenclador con nombre ${name}`,
       );
     const repo = this[`${name}Repository`];
-    return await repo.findByIds(ids, { where: { activo: true } });
+    const options = {
+      where: { activo: true },
+    } as FindManyOptions;
+    return await repo.findByIds(ids, options);
   }
   async create(name: string, newObj: any): Promise<any> {
     if (!this[`${name}Repository`])
@@ -89,9 +96,10 @@ export class GenericNomencladorRepository {
         `No existe un nomenclador con nombre ${name}`,
       );
     const repo = this[`${name}Repository`];
-    return await repo.find({
+    const options = {
       where: { activo: true },
-    });
+    } as FindManyOptions;
+    return await repo.find(options);
   }
   async update(name: string, updateObj: any): Promise<any> {
     if (!this[`${name}Repository`])
@@ -157,9 +165,7 @@ export class GenericNomencladorRepository {
         wheres[claves[i]] = ILike(`%${valores[i]}%`);
       }
     }
-    const where = {
-      where: wheres,
-    } as FindManyOptions;
+    const where = { where: wheres } as FindManyOptions;
     return await paginate<any>(repo, options, where);
   }
   async search(
@@ -219,12 +225,9 @@ export class GenericNomencladorRepository {
         wheres.activo = null;
       }
     }
-    const where = {
-      where: wheres,
-    } as FindManyOptions;
+    const where = { where: wheres } as FindManyOptions;
     return await paginate<any>(repo, options, where);
   }
-
   async findBy(name: string, claves: string[], valores: any[]): Promise<any[]> {
     if (!this[`${name}Repository`])
       throw new NotFoundException(
@@ -247,8 +250,44 @@ export class GenericNomencladorRepository {
         wheres[claves[i]] = ILike(`%${valores[i]}%`);
       }
     }
-    return await repo.find({
+    const options = {
       where: wheres,
-    });
+    } as FindManyOptions;
+    return await repo.find(options);
+  }
+
+  async findOneBy(
+    name: string,
+    claves: string[],
+    valores: any[],
+    order?: any,
+  ): Promise<any> {
+    if (!this[`${name}Repository`])
+      throw new NotFoundException(
+        `No existe un nomenclador con nombre ${name}`,
+      );
+    const repo = this[`${name}Repository`];
+    const wheres = { activo: true };
+    for (let i = 0; i < claves.length; i++) {
+      if (isNumber(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else if (isDate(valores[i])) {
+        const datep = valores[i];
+        const start = new Date(datep.setHours(0, 0, 0, 0));
+        const end = new Date(datep.setHours(23, 59, 59, 999));
+        wheres[claves[i]] = {
+          date: Between(start.toISOString(), end.toISOString()),
+        };
+      } else if (isBoolean(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else {
+        wheres[claves[i]] = ILike(`%${valores[i]}%`);
+      }
+    }
+    const options = {
+      where: wheres,
+      order: order,
+    } as FindOneOptions;
+    return await repo.findOne(options);
   }
 }
