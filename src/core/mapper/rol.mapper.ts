@@ -10,6 +10,8 @@ import {
   CreateRolDto,
   ReadFuncionDto,
   ReadRolDto,
+  ReadUserDto,
+  SelectDto,
   UpdateRolDto,
 } from '../../shared/dto';
 
@@ -62,6 +64,10 @@ export class RolMapper {
   }
   async entityToDto(rolEntity: RolEntity): Promise<ReadRolDto> {
     const rol: RolEntity = await this.rolRepository.findById(rolEntity.id);
+    const selectUserDto: SelectDto[] = [];
+    for (const user of rol.users) {
+      selectUserDto.push({ label: user.username, value: user.id });
+    }
     const readFuncionDto: ReadFuncionDto[] = [];
     for (const funcion of rol.funcions) {
       readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
@@ -72,6 +78,7 @@ export class RolMapper {
       rolEntity.id,
       rolEntity.nombre,
       rolEntity.descripcion,
+      selectUserDto,
       readFuncionDto,
     );
   }
