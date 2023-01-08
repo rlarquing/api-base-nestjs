@@ -65,7 +65,7 @@ export class TrazaController {
     const data = await this.trazaService.findAll({
       page,
       limit,
-      route: url + '/api/' + '/trazas',
+      route: url + '/api/traza',
     });
     const header: string[] = [
       'id',

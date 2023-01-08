@@ -117,7 +117,7 @@ export class AuthService {
     const funcionsIndiv: FuncionEntity[] = userEntity.funcions;
     let funcions: FuncionEntity[] = [];
     let item: RolEntity;
-    for (const rol of user.roles) {
+    for (const rol of userEntity.roles) {
       item = await this.rolRepository.findById(rol.id);
       item.funcions.forEach((funcion: FuncionEntity) =>
         funcion.activo ? funcions.push(funcion) : null,
