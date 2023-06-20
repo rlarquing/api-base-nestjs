@@ -49,7 +49,6 @@ export class MenuService extends GenericService<MenuEntity> {
       '',
       '/administration/nomenclators',
       null,
-      null,
       TipoMenuTypeEnum.ADMINISTRACION,
     );
     const existeMenu: MenuEntity[] = await this.menuRepository.findBy(

@@ -16,4 +16,18 @@ export class RolService extends GenericService<RolEntity> {
   ) {
     super(configService, rolRepository, rolMapper, trazaService, true);
   }
+  async crearRolAdministrador(): Promise<void> {
+    const rol: RolEntity = new RolEntity(
+      'ADMINISTRADOR',
+      'Tiene todos los permisos de la administración',
+      [],
+    );
+    const existe = await this.rolRepository.findOneBy(
+      ['nombre'],
+      ['ADMINISTRADOR'],
+    );
+    if (!existe) {
+      await this.rolRepository.create(rol);
+    }
+  }
 }
