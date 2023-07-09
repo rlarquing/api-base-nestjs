@@ -9,6 +9,7 @@ import {
   UserDto,
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserMapper {
@@ -17,33 +18,32 @@ export class UserMapper {
     protected funcionMapper: FuncionMapper,
   ) {}
   dtoToEntity(userDto: UserDto): UserEntity {
-    return new UserEntity(userDto.username, userDto.email);
+    return plainToInstance(UserEntity, userDto);
   }
   dtoToUpdateEntity(
     updateUserDto: UpdateUserDto,
     updateUserEntity: UserEntity,
   ): UserEntity {
-    updateUserEntity.username = updateUserDto.username;
-    updateUserEntity.email = updateUserDto.email;
-    return updateUserEntity;
+    return plainToInstance(UserEntity, {
+      ...updateUserEntity,
+      ...updateUserDto,
+    });
   }
-  async entityToDto(userEntity: UserEntity): Promise<ReadUserDto> {
+  entityToDto(userEntity: UserEntity): ReadUserDto {
+    const readUserDto: ReadUserDto = plainToInstance(ReadUserDto, userEntity);
+    readUserDto.dtoToString = userEntity.toString();
+
     const readRolDto: ReadRolDto[] = [];
     for (const rol of userEntity.roles) {
-      readRolDto.push(await this.rolMapper.entityToDto(rol));
+      readRolDto.push(this.rolMapper.entityToDto(rol));
     }
     const readFuncionDto: ReadFuncionDto[] = [];
     for (const funcion of userEntity.funcions) {
-      readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
+      readFuncionDto.push(this.funcionMapper.entityToDto(funcion));
     }
-    const dtoToString: string = userEntity.toString();
-    return new ReadUserDto(
-      dtoToString,
-      userEntity.id,
-      userEntity.username,
-      userEntity.email,
-      readRolDto,
-      readFuncionDto,
-    );
+    readUserDto.roles = readRolDto;
+    readUserDto.funcions = readFuncionDto;
+
+    return readUserDto;
   }
 }

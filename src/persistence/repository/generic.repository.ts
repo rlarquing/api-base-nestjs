@@ -76,7 +76,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   }
 
   async create(newObj: ENTITY): Promise<ENTITY> {
-    return await this.repository.save(newObj);
+    return await this.repository.save(newObj);    
   }
 
   async update(updateObj: ENTITY): Promise<ENTITY> {

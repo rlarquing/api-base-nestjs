@@ -20,7 +20,7 @@ import {
 import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import { eliminarDuplicado } from '../../../lib';
 import { IJwtPayload } from '../../shared/interface';
-import { FuncionMapper, MenuMapper } from '../mapper';
+import { FuncionMapper, MenuMapper, UserMapper } from '../mapper';
 import { MailService } from '../../mail/mail.service';
 
 @Injectable()
@@ -38,7 +38,10 @@ export class AuthService {
   async signUp(userDto: UserDto): Promise<ResponseDto> {
     const result = new ResponseDto();
     const { username, password, email } = userDto;
-    const userEntity: UserEntity = new UserEntity(username, email);
+    const userEntity: UserEntity = new UserEntity({
+      username,
+      email,
+    } as Partial<UserEntity>);
     userEntity.salt = await genSalt();
     userEntity.password = await AuthService.hashPassword(
       password,
@@ -76,10 +79,9 @@ export class AuthService {
     }
     funcions = funcions.concat(funcionsIndiv);
     funcions = eliminarDuplicado(funcions);
-
     const readFuncionDtos: ReadFuncionDto[] = [];
     for (const funcion of funcions) {
-      readFuncionDtos.push(await this.funcionMapper.entityToDto(funcion));
+      readFuncionDtos.push(this.funcionMapper.entityToDto(funcion));
     }
     const readMenuDtos: ReadMenuDto[] = [];
     for (const readFuncionDto of readFuncionDtos) {

@@ -34,19 +34,4 @@ export class ReadFuncionDto {
     example: 'Aquí una muestra para ese atributo',
   })
   menu?: ReadMenuDto;
-  constructor(
-    dtoToString: string,
-    id: number,
-    nombre: string,
-    descripcion: string,
-    endPoints: ReadEndPointDto[],
-    menu?: ReadMenuDto,
-  ) {
-    this.dtoToString = dtoToString;
-    this.id = id;
-    this.nombre = nombre;
-    this.descripcion = descripcion;
-    this.endPoints = endPoints;
-    this.menu = menu;
-  }
 }

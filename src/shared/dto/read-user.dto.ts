@@ -25,20 +25,4 @@ export class ReadUserDto {
     type: [ReadFuncionDto],
   })
   funcions: ReadFuncionDto[];
-
-  constructor(
-    dtoToString: string,
-    id: number,
-    username: string,
-    email: string,
-    roles: ReadRolDto[],
-    funcions: ReadFuncionDto[],
-  ) {
-    this.dtoToString = dtoToString;
-    this.id = id;
-    this.username = username;
-    this.email = email;
-    this.roles = roles;
-    this.funcions = funcions;
-  }
 }

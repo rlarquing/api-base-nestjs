@@ -19,16 +19,4 @@ export class ReadNomencladorDto {
     example: 'Descripción del nom',
   })
   descripcion: string;
-
-  constructor(
-    id: number,
-    nombre: string,
-    descripcion: string,
-    dtoToString: string,
-  ) {
-    this.id = id;
-    this.nombre = nombre;
-    this.descripcion = descripcion;
-    this.dtoToString = dtoToString;
-  }
 }

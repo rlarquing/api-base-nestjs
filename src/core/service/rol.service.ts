@@ -5,6 +5,7 @@ import { GenericService } from './generic.service';
 import { RolEntity } from '../../persistence/entity';
 import { RolRepository } from '../../persistence/repository';
 import { ConfigService } from '@nestjs/config';
+import { CreateRolDto } from '../../shared/dto';
 
 @Injectable()
 export class RolService extends GenericService<RolEntity> {
@@ -17,11 +18,11 @@ export class RolService extends GenericService<RolEntity> {
     super(configService, rolRepository, rolMapper, trazaService, true);
   }
   async crearRolAdministrador(): Promise<void> {
-    const rol: RolEntity = new RolEntity(
-      'ADMINISTRADOR',
-      'Tiene todos los permisos de la administración',
-      [],
-    );
+    const newRol: CreateRolDto = {
+      nombre: 'ADMINISTRADOR',
+      descripcion: 'Tiene todos los permisos de la administración',
+    };
+    const rol: RolEntity = this.rolMapper.dtoToEntity(newRol);
     const existe = await this.rolRepository.findOneBy(
       ['nombre'],
       ['ADMINISTRADOR'],

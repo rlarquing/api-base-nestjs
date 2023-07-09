@@ -60,8 +60,9 @@ function servicioHeredado(dirs: string[], className: string): string[] {
         classDecl.heritageClauses[0].types[0].expression.escapedText;
       if (padre === 'IController') {
         classDecl.members.forEach((member) => {
-          if (member.decorators) {
-            member.decorators.forEach((decorator) => {
+          if (member.modifiers) {
+            member.modifiers.forEach((decorator) => {
+              if (decorator.expression){
               decoradores.push(decorator.expression.expression.escapedText);
               decorator.expression.arguments.forEach((arg) => {
                 const temporal = rutaController.substring(
@@ -114,15 +115,15 @@ function servicioHeredado(dirs: string[], className: string): string[] {
                     break;
                 }
               });
-            });
+            }});
           }
         });
         resultado = resultado.concat(metodos);
         return resultado;
       } else {
         classDecl.members.forEach((member) => {
-          if (member.decorators) {
-            member.decorators.forEach((decorator) => {
+          if (member.modifiers) {
+            member.modifiers.forEach((decorator) => {
               decoradores.push(decorator.expression.expression.escapedText);
               decorator.expression.arguments.forEach((arg) => {
                 const temporal = rutaController.substring(
@@ -205,6 +206,7 @@ async function buscarServicios(): Promise<Map<string, CreateEndPointDto>> {
       fs.readFileSync(controlador, 'utf8'), // sourceText
       ts.ScriptTarget.Latest, // langugeVersion
     );
+
     let classDecl;
     if (node.text.includes('@Controller(')) {
       rutaController = node.text.substring(
@@ -212,6 +214,7 @@ async function buscarServicios(): Promise<Map<string, CreateEndPointDto>> {
         node.text.indexOf('export class'),
       );
     }
+
     node.forEachChild((child) => {
       if (ts.SyntaxKind[child.kind] === 'ClassDeclaration') {
         classDecl = child;
@@ -226,8 +229,9 @@ async function buscarServicios(): Promise<Map<string, CreateEndPointDto>> {
       metodos = servicioHeredado(controladores, padre);
     }
     classDecl.members.forEach((member) => {
-      if (member.decorators) {
-        member.decorators.forEach((decorator) => {
+      if (member.modifiers) {
+        member.modifiers.forEach((decorator) => {
+        if(decorator.expression){
           decoradores.push(decorator.expression.expression.escapedText);
           decorator.expression.arguments.forEach((arg) => {
             const temporal = rutaController.substring(
@@ -281,7 +285,7 @@ async function buscarServicios(): Promise<Map<string, CreateEndPointDto>> {
                 break;
             }
           });
-        });
+        }});
       }
       decoradores = [];
     });
@@ -337,7 +341,7 @@ export async function parseController(endPointService: EndPointService) {
   // let a=importDecl.importClause.namedBindings.elements.map(
   //     el => el.name.escapedText
   // );
-  //let decorador=classDecl.decorators[0].expression.expression.escapedText;
+  //let decorador=classDecl.modifiers[0].expression.expression.escapedText;
   //console.log(metodos);
   const serviciosEncontrados: Map<string, CreateEndPointDto> =
     await buscarServicios();
@@ -354,7 +358,7 @@ export async function parseController(endPointService: EndPointService) {
     }
     for (const registrado of serviciosRegistrados) {
       if (!serviciosEncontrados.has(registrado)) {
-        // el elemento está en la bd y no está en la lista        
+        // el elemento está en la bd y no está en la lista
         await endPointService.remove(registrado);
       }
     }
