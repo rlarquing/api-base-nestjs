@@ -18,4 +18,18 @@ export class ReadMunicipioDto {
     example: ReadProvinciaDto,
   })
   provincia: ReadProvinciaDto;
+
+  constructor(
+    dtoToString: string,
+    id: number,
+    nombre: string,
+    codigo: number,
+    provincia: ReadProvinciaDto,
+  ) {
+    this.dtoToString = dtoToString;
+    this.id = id;
+    this.nombre = nombre;
+    this.codigo = codigo;
+    this.provincia = provincia;
+  }
 }

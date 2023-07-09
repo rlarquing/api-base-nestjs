@@ -32,8 +32,7 @@ export class FuncionEntity extends GenericEntity {
   })
   descripcion: string;
   @ManyToMany(() => EndPointEntity, (end_point) => end_point.funcions, {
-    eager: false,
-    onDelete: 'CASCADE',
+    eager: false, onDelete: 'CASCADE',
   })
   @JoinTable({
     name: 'funcion_end_point',
@@ -50,9 +49,17 @@ export class FuncionEntity extends GenericEntity {
   @ManyToMany(() => UserEntity, (user) => user.funcions)
   @JoinColumn()
   users: UserEntity[];
-  constructor(partial: Partial<FuncionEntity>) {
+  constructor(
+    nombre: string,
+    descripcion: string,
+    endPoints: EndPointEntity[],
+    menu?: MenuEntity,
+  ) {
     super();
-    Object.assign(this, partial);
+    this.nombre = nombre;
+    this.descripcion = descripcion;
+    this.endPoints = endPoints;
+    this.menu = menu;
   }
   public toString(): string {
     return this.nombre;

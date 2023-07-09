@@ -5,32 +5,31 @@ import {
   UpdateNomencladorDto,
 } from '../../shared/dto';
 import { GenericNomencladorEntity } from '../../persistence/entity';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class GenericNomencladorMapper {
-  dtoToEntity(
-    createNomencladorDto: CreateNomencladorDto,
-  ): GenericNomencladorEntity {
-    return plainToInstance(GenericNomencladorEntity, createNomencladorDto);
+  dtoToEntity(createNomencladorDto: CreateNomencladorDto): any {
+    return new GenericNomencladorEntity(
+      createNomencladorDto.nombre,
+      createNomencladorDto.descripcion,
+    );
   }
 
   dtoToUpdateEntity(
     updateNomencladorDto: UpdateNomencladorDto,
-    updateEntity: GenericNomencladorEntity,
+    updateEntity: any,
   ): any {
-    return plainToInstance(GenericNomencladorEntity, {
-      ...updateEntity,
-      ...updateNomencladorDto,
-    });
+    updateEntity.nombre = updateNomencladorDto.nombre;
+    updateEntity.descripcion = updateNomencladorDto.descripcion;
+    return updateEntity;
   }
 
   entityToDto(nomencladorEntity: GenericNomencladorEntity): ReadNomencladorDto {
-    const readNomencladorDto: ReadNomencladorDto = plainToInstance(
-      ReadNomencladorDto,
-      nomencladorEntity,
+    return new ReadNomencladorDto(
+      nomencladorEntity.id,
+      nomencladorEntity.nombre,
+      nomencladorEntity.descripcion,
+      nomencladorEntity.toString(),
     );
-    readNomencladorDto.dtoToString = nomencladorEntity.toString();
-    return readNomencladorDto
   }
 }

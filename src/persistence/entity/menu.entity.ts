@@ -59,9 +59,21 @@ export class MenuEntity extends GenericEntity {
     name: 'nomemclador',
   })
   nomemclador: string;
-  constructor(partial: Partial<MenuEntity>) {
+  constructor(
+    label: string,
+    icon: string,
+    to: string,
+    menu: MenuEntity,
+    tipo: TipoMenuTypeEnum,
+    nomemclador?: string,
+  ) {
     super();
-    Object.assign(this, partial);
+    this.label = label;
+    this.icon = icon;
+    this.to = to;
+    this.menu = menu;
+    this.tipo = tipo;
+    this.nomemclador = nomemclador;
   }
   public toString(): string {
     return this.label;

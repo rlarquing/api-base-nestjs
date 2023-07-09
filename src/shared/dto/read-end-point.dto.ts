@@ -36,4 +36,22 @@ export class ReadEndPointDto {
     example: 'Crear objeto',
   })
   metodo: string;
+
+  constructor(
+    dtoToString: string,
+    id: number,
+    controller: string,
+    servicio: string,
+    ruta: string,
+    nombre: string,
+    metodo: string,
+  ) {
+    this.dtoToString = dtoToString;
+    this.id = id;
+    this.controller = controller;
+    this.servicio = servicio;
+    this.ruta = ruta;
+    this.nombre = nombre;
+    this.metodo = metodo;
+  }
 }

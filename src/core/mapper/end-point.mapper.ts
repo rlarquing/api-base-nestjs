@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { EndPointEntity } from '../../persistence/entity';
 import { ReadEndPointDto } from '../../shared/dto';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class EndPointMapper {
   entityToDto(endPointEntity: EndPointEntity): ReadEndPointDto {
-    const readEndPointDto: ReadEndPointDto = plainToInstance(
-      ReadEndPointDto,
-      endPointEntity,
+    const dtoToString: string = endPointEntity.toString();
+    return new ReadEndPointDto(
+      dtoToString,
+      endPointEntity.id,
+      endPointEntity.controller,
+      endPointEntity.servicio,
+      endPointEntity.ruta,
+      endPointEntity.nombre,
+      endPointEntity.metodo,
     );
-    readEndPointDto.dtoToString = endPointEntity.toString();
-    return readEndPointDto;
   }
 }

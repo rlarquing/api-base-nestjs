@@ -40,9 +40,11 @@ export class UserEntity extends GenericEntity {
   })
   funcions?: FuncionEntity[];
 
-  constructor(partial: Partial<UserEntity>) {
+  constructor(username: string, email: string, funcions?: FuncionEntity[]) {
     super();
-    Object.assign(this, partial);
+    this.username = username;
+    this.email = email;
+    this.funcions = funcions;
   }
   public async validatePassword(password: string): Promise<boolean> {
     return this.password === (await hash(password, this.salt));

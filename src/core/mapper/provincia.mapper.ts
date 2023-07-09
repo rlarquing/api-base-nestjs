@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { ProvinciaEntity } from '../../persistence/entity';
 import { ReadProvinciaDto } from '../../shared/dto';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ProvinciaMapper {
   entityToDto(provinciaEntity: ProvinciaEntity): ReadProvinciaDto {
-    const readProvinciaDto: ReadProvinciaDto = plainToInstance(
-      ReadProvinciaDto,
-      provinciaEntity,
+    const dtoToString: string = provinciaEntity.toString();
+    return new ReadProvinciaDto(
+      dtoToString,
+      provinciaEntity.id,
+      provinciaEntity.nombre,
+      provinciaEntity.codigo,
+      provinciaEntity.nombreCorto,
     );
-    readProvinciaDto.dtoToString = provinciaEntity.toString();
-    return readProvinciaDto;
   }
 }

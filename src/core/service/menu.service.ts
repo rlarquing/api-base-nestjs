@@ -31,7 +31,7 @@ export class MenuService extends GenericService<MenuEntity> {
         );
         const readMenusDto: ReadMenuDto[] = [];
         for (const menu of menus) {
-            readMenusDto.push(this.menuMapper.entityToDto(menu));
+            readMenusDto.push(await this.menuMapper.entityToDto(menu));
         }
         return readMenusDto;
     }
@@ -44,7 +44,7 @@ export class MenuService extends GenericService<MenuEntity> {
             menu: null,
             tipo: TipoMenuTypeEnum.ADMINISTRACION,
         };
-        const menu: MenuEntity = this.menuMapper.dtoToEntity(newMenu);
+        const menu: MenuEntity = await this.menuMapper.dtoToEntity(newMenu);
         const existeMenu: MenuEntity[] = await this.menuRepository.findBy(
             ['label'],
             [menu.label],
@@ -69,7 +69,7 @@ export class MenuService extends GenericService<MenuEntity> {
                     menu: menuPadre.id,
                     tipo: TipoMenuTypeEnum.ADMINISTRACION,
                 };
-                const nomMenu: MenuEntity = this.menuMapper.dtoToEntity(createMenuDto);
+                const nomMenu: MenuEntity = await this.menuMapper.dtoToEntity(createMenuDto);
                 nomMenu.nomemclador = element;
                 const newMenu: MenuEntity = await this.menuRepository.create(nomMenu);
                 const createFuncionDto: CreateFuncionDto = {
@@ -81,8 +81,7 @@ export class MenuService extends GenericService<MenuEntity> {
                     endPoints: endPoints.map((item: EndPointEntity) => item.id),
                     menu: newMenu.id,
                 };
-                const funcion: FuncionEntity =
-                    this.funcionMapper.dtoToEntity(createFuncionDto);
+                const funcion: FuncionEntity = await this.funcionMapper.dtoToEntity(createFuncionDto);
                 const newFuncion: FuncionEntity = await this.funcionRepository.create(
                     funcion,
                 );
@@ -108,7 +107,7 @@ export class MenuService extends GenericService<MenuEntity> {
             menu: null,
             tipo: TipoMenuTypeEnum.ADMINISTRACION
         };
-        const menu: MenuEntity = this.menuMapper.dtoToEntity(menuAdministracion);
+        const menu: MenuEntity = await this.menuMapper.dtoToEntity(menuAdministracion);
         const existe = await this.menuRepository.findOneBy(
             ['label'],
             ['Administración'],
@@ -154,7 +153,7 @@ export class MenuService extends GenericService<MenuEntity> {
             ];
             let pos: number = 0;
             for (const hijo of hijos) {
-                const menu = await this.menuRepository.create(this.menuMapper.dtoToEntity(hijo));
+                const menu = await this.menuRepository.create( await this.menuMapper.dtoToEntity(hijo));
                 const endPoints: EndPointEntity[] =
                     await this.endPointRepository.findByController(controllers[pos]);
                 const createFuncionDto: CreateFuncionDto = {
@@ -163,8 +162,7 @@ export class MenuService extends GenericService<MenuEntity> {
                     endPoints: [],
                     menu: menu.id,
                 };
-                const funcion: FuncionEntity =
-                    this.funcionMapper.dtoToEntity(createFuncionDto);
+                const funcion: FuncionEntity = await this.funcionMapper.dtoToEntity(createFuncionDto);
                 funcion.endPoints=endPoints;
                 const newFuncion: FuncionEntity = await this.funcionRepository.create(
                     funcion,

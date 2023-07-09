@@ -14,4 +14,17 @@ export class ReadProvinciaDto {
 
   @ApiProperty({ description: 'Nombre corto de la provincia.', example: 'CM' })
   nombreCorto: string;
+  constructor(
+    dtoToString: string,
+    id: number,
+    nombre: string,
+    codigo: string,
+    nombreCorto: string,
+  ) {
+    this.dtoToString = dtoToString;
+    this.id = id;
+    this.nombre = nombre;
+    this.codigo = codigo;
+    this.nombreCorto = nombreCorto;
+  }
 }

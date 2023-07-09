@@ -112,7 +112,6 @@ export class UserService {
             result.successStatus = true;
             result.message = 'success';
         } catch (error) {
-            console.log(error)
             result.message = error.response;
             result.successStatus = false;
             return result;

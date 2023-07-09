@@ -49,4 +49,25 @@ export class ReadMenuDto {
     example: 'reporte',
   })
   tipo: string;
+  constructor(
+    dtoToString: string,
+    id: number,
+    label: string,
+    icon: string,
+    to: string,
+    menus: ReadMenuDto[],
+    tipo: string,
+    menuPadre: string,
+    menu: SelectDto,
+  ) {
+    this.dtoToString = dtoToString;
+    this.id = id;
+    this.label = label;
+    this.icon = icon;
+    this.to = to;
+    this.menus = menus;
+    this.tipo = tipo;
+    this.menuPadre = menuPadre;
+    this.menu = menu;
+  }
 }

@@ -38,10 +38,7 @@ export class AuthService {
   async signUp(userDto: UserDto): Promise<ResponseDto> {
     const result = new ResponseDto();
     const { username, password, email } = userDto;
-    const userEntity: UserEntity = new UserEntity({
-      username,
-      email,
-    } as Partial<UserEntity>);
+    const userEntity: UserEntity = new UserEntity(username, email);
     userEntity.salt = await genSalt();
     userEntity.password = await AuthService.hashPassword(
       password,

@@ -26,4 +26,20 @@ export class ReadRolDto {
 
   @ApiProperty({ description: 'Funciones del rol.', type: [ReadEndPointDto] })
   funcions: ReadFuncionDto[];
+
+  constructor(
+    dtoToString: string,
+    id: number,
+    nombre: string,
+    descripcion: string,
+    users: SelectDto[],
+    funcions: ReadFuncionDto[],
+  ) {
+    this.dtoToString = dtoToString;
+    this.id = id;
+    this.nombre = nombre;
+    this.descripcion = descripcion;
+    this.users = users;
+    this.funcions = funcions;
+  }
 }

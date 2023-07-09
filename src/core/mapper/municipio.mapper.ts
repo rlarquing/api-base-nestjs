@@ -1,22 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { MunicipioEntity } from '../../persistence/entity';
 import { ReadMunicipioDto, ReadProvinciaDto } from '../../shared/dto';
+import { MunicipioRepository } from '../../persistence/repository';
 import { ProvinciaMapper } from './provincia.mapper';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class MunicipioMapper {
-  constructor(protected provinciaMapper: ProvinciaMapper) {}
-  entityToDto(municipioEntity: MunicipioEntity): ReadMunicipioDto {
-    const readMunicipioDto: ReadMunicipioDto = plainToInstance(
-      ReadMunicipioDto,
-      municipioEntity,
+  constructor(
+    protected municipioRepository: MunicipioRepository,
+    protected provinciaMapper: ProvinciaMapper,
+  ) {}
+  async entityToDto(
+    municipioEntity: MunicipioEntity,
+  ): Promise<ReadMunicipioDto> {
+    const municipio: MunicipioEntity = await this.municipioRepository.findById(
+      municipioEntity.id,
     );
-    readMunicipioDto.dtoToString = municipioEntity.toString();
     const readProvinciaDto: ReadProvinciaDto = this.provinciaMapper.entityToDto(
-      municipioEntity.provincia,
+      municipio.provincia,
     );
-    readMunicipioDto.provincia = readProvinciaDto;
-    return readMunicipioDto;
+    const dtoToString: string = municipioEntity.toString();
+    return new ReadMunicipioDto(
+      dtoToString,
+      municipioEntity.id,
+      municipioEntity.nombre,
+      municipioEntity.codigo,
+      readProvinciaDto,
+    );
   }
 }

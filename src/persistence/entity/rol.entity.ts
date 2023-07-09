@@ -33,9 +33,17 @@ export class RolEntity extends GenericEntity {
     },
   })
   funcions: FuncionEntity[];
-  constructor(partial: Partial<RolEntity>) {
+  constructor(
+    nombre: string,
+    descripcion: string,
+    funcions: FuncionEntity[],
+    users?: UserEntity[],
+  ) {
     super();
-    Object.assign(this, partial);
+    this.nombre = nombre;
+    this.descripcion = descripcion;
+    this.users = users;
+    this.funcions = funcions;
   }
   public toString(): string {
     return this.nombre;

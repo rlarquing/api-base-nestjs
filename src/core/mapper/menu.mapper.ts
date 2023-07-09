@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { MenuRepository } from '../../persistence/repository';
 import {
   CreateMenuDto,
   ReadMenuDto,
@@ -6,46 +7,66 @@ import {
   UpdateMenuDto,
 } from '../../shared/dto';
 import { MenuEntity } from '../../persistence/entity';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class MenuMapper {
-  dtoToEntity(createMenuDto: CreateMenuDto): MenuEntity {
-    return plainToInstance(MenuEntity, createMenuDto);
+  constructor(protected menuRepository: MenuRepository) {}
+
+  async dtoToEntity(createMenuDto: CreateMenuDto): Promise<MenuEntity> {
+    const menu: MenuEntity = await this.menuRepository.findById(
+      createMenuDto.menu,
+    );
+    return new MenuEntity(
+      createMenuDto.label,
+      createMenuDto.icon,
+      createMenuDto.to,
+      menu,
+      createMenuDto.tipo,
+    );
   }
 
-  dtoToUpdateEntity(
+  async dtoToUpdateEntity(
     updateMenuDto: UpdateMenuDto,
     updateMenuEntity: MenuEntity,
-  ): MenuEntity {
-    return plainToInstance(MenuEntity, {
-      ...updateMenuEntity,
-      ...updateMenuDto,
-    });
+  ): Promise<MenuEntity> {
+    const menu: MenuEntity = await this.menuRepository.findById(
+      updateMenuDto.menu,
+    );
+    updateMenuEntity.label = updateMenuDto.label;
+    updateMenuEntity.icon = updateMenuDto.icon;
+    updateMenuEntity.tipo = updateMenuDto.tipo;
+    updateMenuEntity.to = updateMenuDto.to;
+    updateMenuEntity.menu = menu;
+    return updateMenuEntity;
   }
 
-  entityToDto(menuEntity: MenuEntity): ReadMenuDto {
-    const readMenuDto: ReadMenuDto = plainToInstance(ReadMenuDto, menuEntity);
-    readMenuDto.dtoToString = menuEntity.toString();
+  async entityToDto(menuEntity: MenuEntity): Promise<ReadMenuDto> {
+    const menu: MenuEntity = await this.menuRepository.findById(menuEntity.id);
     let menuPadre = '';
     let menuSelectDto: SelectDto;
     const menuDto: ReadMenuDto[] = [];
-    if (menuEntity.menu === null) {
-      for (const menuHijo of menuEntity.menus) {
+    if (menu.menu === null) {
+      for (const menuHijo of menu.menus) {
         if (menuHijo.activo === true) {
-          menuDto.push(this.entityToDto(menuHijo));
+          menuDto.push(await this.entityToDto(menuHijo));
         }
       }
     } else {
-      menuPadre = menuEntity.menu.toString();
-      menuSelectDto = new SelectDto(
-        menuEntity.menu.id,
-        menuEntity.menu.toString(),
-      );
+      menuPadre = menu.menu.toString();
+      menuSelectDto = new SelectDto(menu.menu.id, menu.menu.toString());
     }
-    readMenuDto.menuPadre = menuPadre;
-    readMenuDto.menu = menuSelectDto;
 
-    return readMenuDto;
+    const dtoToString: string = menuEntity.toString();
+    return new ReadMenuDto(
+      dtoToString,
+      menuEntity.id,
+      menuEntity.label,
+      menuEntity.icon,
+      menuEntity.to,
+      menuDto,
+      menuEntity.tipo,
+      menuPadre,
+      menuSelectDto,
+    );
   }
 }
