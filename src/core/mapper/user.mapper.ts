@@ -29,17 +29,17 @@ export class UserMapper {
       ...updateUserDto,
     });
   }
-  entityToDto(userEntity: UserEntity): ReadUserDto {
+  async entityToDto(userEntity: UserEntity): Promise<ReadUserDto> {
     const readUserDto: ReadUserDto = plainToInstance(ReadUserDto, userEntity);
     readUserDto.dtoToString = userEntity.toString();
 
     const readRolDto: ReadRolDto[] = [];
     for (const rol of userEntity.roles) {
-      readRolDto.push(this.rolMapper.entityToDto(rol));
+      readRolDto.push(await this.rolMapper.entityToDto(rol));
     }
     const readFuncionDto: ReadFuncionDto[] = [];
     for (const funcion of userEntity.funcions) {
-      readFuncionDto.push(this.funcionMapper.entityToDto(funcion));
+      readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
     }
     readUserDto.roles = readRolDto;
     readUserDto.funcions = readFuncionDto;

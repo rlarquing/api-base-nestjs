@@ -79,9 +79,10 @@ export class AuthService {
     }
     funcions = funcions.concat(funcionsIndiv);
     funcions = eliminarDuplicado(funcions);
+    funcions = await this.funcionRepository.findByIds(funcions.map(item=>item.id));
     const readFuncionDtos: ReadFuncionDto[] = [];
     for (const funcion of funcions) {
-      readFuncionDtos.push(this.funcionMapper.entityToDto(funcion));
+      readFuncionDtos.push(await this.funcionMapper.entityToDto(funcion));
     }
     const readMenuDtos: ReadMenuDto[] = [];
     for (const readFuncionDto of readFuncionDtos) {

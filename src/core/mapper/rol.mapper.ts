@@ -67,16 +67,16 @@ export class RolMapper {
     // updateRolEntity.descripcion = updateRolDto.descripcion;
     // return updateRolEntity;
   }
-  entityToDto(rolEntity: RolEntity): ReadRolDto {
+  async entityToDto(rolEntity: RolEntity): Promise<ReadRolDto> {
     const readRolDto: ReadRolDto = plainToInstance(ReadRolDto, rolEntity);
     readRolDto.dtoToString = rolEntity.toString();
     const selectUserDto: SelectDto[] = [];
     for (const user of rolEntity.users) {
-      selectUserDto.push({ label: user.username, value: user.id });
+      selectUserDto.push({label: user.username, value: user.id});
     }
     const readFuncionDto: ReadFuncionDto[] = [];
     for (const funcion of rolEntity.funcions) {
-      readFuncionDto.push(this.funcionMapper.entityToDto(funcion));
+      readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
     }
     readRolDto.users = selectUserDto;
     readRolDto.funcions = readFuncionDto;

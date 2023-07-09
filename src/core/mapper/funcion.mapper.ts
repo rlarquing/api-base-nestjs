@@ -10,12 +10,14 @@ import {
 } from '../../shared/dto';
 import { FuncionEntity } from '../../persistence/entity';
 import { plainToInstance } from 'class-transformer';
+import {MenuRepository} from "../../persistence/repository";
 
 @Injectable()
 export class FuncionMapper {
   constructor(
     protected endPointMapper: EndPointMapper,
     protected menuMapper: MenuMapper,
+    protected menuRepository: MenuRepository,
   ) {}
 
   dtoToEntity(createFuncionDto: CreateFuncionDto): FuncionEntity {
@@ -32,10 +34,10 @@ export class FuncionMapper {
     });
   }
 
-  entityToDto(funcionEntity: FuncionEntity): ReadFuncionDto {
+  async entityToDto(funcionEntity: FuncionEntity): Promise<ReadFuncionDto> {
     const readFuncionDto: ReadFuncionDto = plainToInstance(
-      ReadFuncionDto,
-      funcionEntity,
+        ReadFuncionDto,
+        funcionEntity,
     );
 
     readFuncionDto.dtoToString = funcionEntity.toString();
@@ -47,7 +49,8 @@ export class FuncionMapper {
 
     let menu: ReadMenuDto = null;
     if (funcionEntity.menu !== null) {
-      menu = this.menuMapper.entityToDto(funcionEntity.menu);
+      const funcionMenu = await this.menuRepository.findById(funcionEntity.menu.id)
+      menu = this.menuMapper.entityToDto(funcionMenu);
     }
     readFuncionDto.endPoints = endPoints;
     readFuncionDto.menu = menu;

@@ -26,7 +26,6 @@ export class MenuMapper {
 
   entityToDto(menuEntity: MenuEntity): ReadMenuDto {
     const readMenuDto: ReadMenuDto = plainToInstance(ReadMenuDto, menuEntity);
-
     readMenuDto.dtoToString = menuEntity.toString();
     let menuPadre = '';
     let menuSelectDto: SelectDto;
