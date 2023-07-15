@@ -30,4 +30,9 @@ export interface IRepository<ENTITY> {
   ): Promise<Pagination<ENTITY>>;
 
   search(options: IPaginationOptions, search: any): Promise<Pagination<ENTITY>>;
+
+  createSelectFilter(
+      claves: string[],
+      valores: any[],
+  ): Promise<ENTITY[]>;
 }

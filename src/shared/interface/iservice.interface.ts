@@ -12,6 +12,10 @@ export interface IService {
 
   createSelect(): Promise<SelectDto[]>;
 
+  createSelectFilter(
+      filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]>;
+
   create(user: any, object: any): Promise<ResponseDto>;
 
   createMultiple(user: any, object: any[]): Promise<ResponseDto[]>;
