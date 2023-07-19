@@ -281,4 +281,9 @@ export class UserRepository {
         } as FindManyOptions;
         return await this.userRepository.find(options);
     }
+
+    async existe(username:string):Promise<UserEntity>{
+       return await this.userRepository.findOne({where:{username: username}} as FindOneOptions);
+
+    }
 }

@@ -73,10 +73,24 @@ export abstract class GenericService<ENTITY> implements IService {
   }
 
   async createSelect(): Promise<SelectDto[]> {
-    const items: any[] = await this.genericRepository.createSelect();
+    const items: ENTITY[] = await this.genericRepository.createSelect();
     const selectDto: SelectDto[] = [];
     for (const item of items) {
-      selectDto.push(new SelectDto(item.id, item.toString()));
+      selectDto.push(new SelectDto(item['id'], item.toString()));
+    }
+    return selectDto;
+  }
+
+  async createSelectFilter(
+      filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]> {
+    const items: ENTITY[] = await this.genericRepository.createSelectFilter(
+        filtroGenericoDto.clave,
+        filtroGenericoDto.valor,
+    );
+    const selectDto: SelectDto[] = [];
+    for (const item  of items) {
+      selectDto.push(new SelectDto(item['id'], item.toString()));
     }
     return selectDto;
   }

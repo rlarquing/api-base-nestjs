@@ -67,7 +67,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     return await this.repository.find(options);
   }
 
-  async createSelect(): Promise<any[]> {
+  async createSelect(): Promise<ENTITY[]> {
     const options = {
       where: { activo: true },
       relations: this.relations,
@@ -76,7 +76,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   }
 
   async create(newObj: ENTITY): Promise<ENTITY> {
-    return await this.repository.save(newObj);
+    return await this.repository.save(newObj);    
   }
 
   async update(updateObj: ENTITY): Promise<ENTITY> {
@@ -275,5 +275,33 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       order: order,
     } as FindOneOptions;
     return await this.repository.findOne(options);
+  }
+
+  async createSelectFilter(
+      claves: string[],
+      valores: any[],
+  ): Promise<ENTITY[]> {
+    const wheres = { activo: true };
+    for (let i = 0; i < claves.length; i++) {
+      if (isNumber(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else if (isDate(valores[i])) {
+        const datep = valores[i];
+        const start = new Date(datep.setHours(0, 0, 0, 0));
+        const end = new Date(datep.setHours(23, 59, 59, 999));
+        wheres[claves[i]] = {
+          date: Between(start.toISOString(), end.toISOString()),
+        };
+      } else if (isBoolean(valores[i])) {
+        wheres[claves[i]] = valores[i];
+      } else {
+        wheres[claves[i]] = ILike(`%${valores[i]}%`);
+      }
+    }
+    const options = {
+      where: wheres,
+      relations: this.relations,
+    } as FindManyOptions;
+    return await this.repository.find(options);
   }
 }

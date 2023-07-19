@@ -147,6 +147,31 @@ export class RolController extends GenericController<RolEntity> {
   async createSelect(): Promise<SelectDto[]> {
     return await super.createSelect();
   }
+  @Post('/crear/select/dependiente')
+  @Roles(RolType.ADMINISTRADOR)
+  @ApiOperation({
+    summary: 'Obtener los elementos del conjunto para crear un select dependiente',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+        'Muestra la información de los elementos del conjunto para crear un select dependiente',
+    type: [SelectDto],
+  })
+  @ApiBody({
+    description: 'Estructura para crear el filtrado que brinda información para el select.',
+    type: FiltroGenericoDto,
+  })
+  @ApiNotFoundResponse({
+    status: 404,
+    description: 'Elemento del conjunto no encontrado.',
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async createSelectFilter( @Body() filtroGenericoDto: FiltroGenericoDto): Promise<SelectDto[]> {
+    return await this.service.createSelectFilter(filtroGenericoDto);
+  }
 
   @Post('/')
   @Roles(RolType.ADMINISTRADOR)

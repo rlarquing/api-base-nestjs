@@ -17,7 +17,8 @@ import {
     CreateUserDto,
     FiltroGenericoDto,
     ReadUserDto,
-    ResponseDto, SelectDto,
+    ResponseDto,
+    SelectDto,
     UpdateUserDto,
 } from '../../shared/dto';
 import {FuncionEntity, RolEntity, UserEntity} from '../../persistence/entity';
@@ -94,7 +95,17 @@ export class UserService {
                 );
                 newUser.funcions = await this.funcionRepository.findByIds(funcions);
             }
-            const userEntity: UserEntity = await this.userRepository.create(newUser);
+            let userEntity: UserEntity=null;
+            const existe:UserEntity = await this.userRepository.existe(newUser.username);
+            if (!existe){
+                userEntity = await this.userRepository.create(newUser);
+            }else{
+                newUser.id=existe.id;
+                newUser.activo=true,
+                await this.userRepository.update(newUser);
+                userEntity=newUser;
+            }
+
             delete userEntity.salt;
             delete userEntity.password;
             await this.trazaService.create(user, userEntity, HISTORY_ACTION.ADD);
@@ -211,7 +222,8 @@ export class UserService {
         );
         const readDto: any[] = [];
         for (const item of items.items) {
-            readDto.push(await this.userMapper.entityToDto(item));
+            const user = await this.userRepository.findById(item.id);
+            readDto.push(await this.userMapper.entityToDto(user));
         }
         return new Pagination(readDto, items.meta, items.links);
     }

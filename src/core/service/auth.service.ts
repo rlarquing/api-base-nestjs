@@ -20,7 +20,7 @@ import {
 import { FuncionEntity, RolEntity, UserEntity } from '../../persistence/entity';
 import { eliminarDuplicado } from '../../../lib';
 import { IJwtPayload } from '../../shared/interface';
-import { FuncionMapper, MenuMapper } from '../mapper';
+import { FuncionMapper, MenuMapper, UserMapper } from '../mapper';
 import { MailService } from '../../mail/mail.service';
 
 @Injectable()
@@ -76,7 +76,7 @@ export class AuthService {
     }
     funcions = funcions.concat(funcionsIndiv);
     funcions = eliminarDuplicado(funcions);
-
+    funcions = await this.funcionRepository.findByIds(funcions.map(item=>item.id));
     const readFuncionDtos: ReadFuncionDto[] = [];
     for (const funcion of funcions) {
       readFuncionDtos.push(await this.funcionMapper.entityToDto(funcion));
