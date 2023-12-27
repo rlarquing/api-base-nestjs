@@ -7,7 +7,7 @@ export class TrazaMapper {
   entityToDto(trazaEntity: TrazaEntity): TrazaDto {
     return new TrazaDto(
       trazaEntity.id,
-      trazaEntity.user.username,
+      trazaEntity.user.userName,
       trazaEntity.date,
       trazaEntity.model,
       trazaEntity.data,

@@ -23,7 +23,7 @@ describe('AuthController (e2e)', () => {
   it('Registrar User', async () => {
     const server = request(app.getHttpServer());
     const userDto: UserDto = {
-      username: 'reynelbis',
+      userName: 'reynelbis',
       password: 'Qwerty1234*',
       confirmPassword: 'Qwerty1234*',
     };
@@ -38,7 +38,7 @@ describe('AuthController (e2e)', () => {
   it('Logear User', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'reynelbis',
+      userName: 'reynelbis',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -51,7 +51,7 @@ describe('AuthController (e2e)', () => {
   it('Refresh-tokens User', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'reynelbis',
+      userName: 'reynelbis',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -71,7 +71,7 @@ describe('AuthController (e2e)', () => {
   it('Deslogear User', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'reynelbis',
+      userName: 'reynelbis',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server

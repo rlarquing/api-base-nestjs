@@ -45,7 +45,7 @@ export class SocketGateway
     this.clientes = removeItemFromArr(
       this.clientes,
       this.clientes[pos],
-      'username',
+      'userName',
     );
   }
 
@@ -87,10 +87,10 @@ export class SocketGateway
     // let pos = 0;
     // let alertas: ReadAlertaDto[];
     // for (const elem of this.clientes) {
-    //     alertas = await this.socketService.findAlerta(elem.username);
+    //     alertas = await this.socketService.findAlerta(elem.userName);
     //     this.server.to(this.canales[pos].id).emit('alerta',{cantidad: alertas.length, data: alertas});
-    //     this.server.to(this.canales[pos].id).emit('notificacion', await this.socketService.findNotificaion(elem.username));
-    //     this.server.to(this.canales[pos].id).emit('mensaje', await this.socketService.findMensaje(elem.username));
+    //     this.server.to(this.canales[pos].id).emit('notificacion', await this.socketService.findNotificaion(elem.userName));
+    //     this.server.to(this.canales[pos].id).emit('mensaje', await this.socketService.findMensaje(elem.userName));
     //     pos = pos + 1;
     // }
   }
@@ -102,7 +102,7 @@ export class SocketGateway
   //   for (const elem of this.clientes) {
   //     this.server
   //       .to(this.canales[pos].id)
-  //       .emit('alerta', this.socketService.saludar(elem.username));
+  //       .emit('alerta', this.socketService.saludar(elem.userName));
   //     pos = pos + 1;
   //   }
   // }

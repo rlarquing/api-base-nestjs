@@ -35,7 +35,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
       throw new BadRequestException('invalid refresh token');
     }
     const user = await this.userRepository.validateRefreshToken(
-      payload.username,
+      payload.userName,
       data.refreshToken,
     );
     if (!user) {

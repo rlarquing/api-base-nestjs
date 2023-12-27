@@ -31,7 +31,7 @@ describe('UserController (e2e)', () => {
   it('Listar usuarios', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -51,7 +51,7 @@ describe('UserController (e2e)', () => {
   it('Crear user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -62,7 +62,7 @@ describe('UserController (e2e)', () => {
     expect(loginUserRequest.status).toBe(201);
 
     const userDto: CreateUserDto = {
-      username: 'especialista',
+      userName: 'especialista',
       password: 'Qwerty1234*',
       confirmPassword: 'Qwerty1234*',
       roles: [1],
@@ -85,7 +85,7 @@ describe('UserController (e2e)', () => {
   it('Editar user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -96,7 +96,7 @@ describe('UserController (e2e)', () => {
     expect(loginUserRequest.status).toBe(201);
 
     const updateUserDto: UpdateUserDto = {
-      username: 'especialistaEconomico',
+      userName: 'especialistaEconomico',
       roles: [1],
     };
     const listUserRequest = await server
@@ -121,7 +121,7 @@ describe('UserController (e2e)', () => {
   it('Cambiar password user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -157,7 +157,7 @@ describe('UserController (e2e)', () => {
   it('Eliminar user', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server

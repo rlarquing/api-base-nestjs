@@ -59,11 +59,11 @@ export class UserService {
         return await this.userMapper.entityToDto(user);
     }
 
-    async findByName(username: string): Promise<ReadUserDto> {
-        if (!username) {
-            throw new BadRequestException('El username no puede ser vacio');
+    async findByName(userName: string): Promise<ReadUserDto> {
+        if (!userName) {
+            throw new BadRequestException('El userName no puede ser vacio');
         }
-        const user: UserEntity = await this.userRepository.findByName(username);
+        const user: UserEntity = await this.userRepository.findByName(userName);
         if (!user) {
             throw new NotFoundException('El usuario no se encuentra.');
         }
@@ -96,7 +96,7 @@ export class UserService {
                 newUser.funcions = await this.funcionRepository.findByIds(funcions);
             }
             let userEntity: UserEntity=null;
-            const existe:UserEntity = await this.userRepository.existe(newUser.username);
+            const existe:UserEntity = await this.userRepository.existe(newUser.userName);
             if (!existe){
                 userEntity = await this.userRepository.create(newUser);
             }else{

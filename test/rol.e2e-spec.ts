@@ -30,7 +30,7 @@ describe('RolController (e2e)', () => {
   it('Listar roles', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      userName: 'admin',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -54,7 +54,7 @@ describe('RolController (e2e)', () => {
   it('Crear rol', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      userName: 'admin',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -94,7 +94,7 @@ describe('RolController (e2e)', () => {
   it('Editar rol', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      userName: 'admin',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -138,7 +138,7 @@ describe('RolController (e2e)', () => {
   it('Eliminar rol', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'admin',
+      userName: 'admin',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server

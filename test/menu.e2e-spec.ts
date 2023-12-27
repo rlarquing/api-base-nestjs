@@ -30,7 +30,7 @@ describe('MenuController (e2e)', () => {
   it('Listar menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -50,7 +50,7 @@ describe('MenuController (e2e)', () => {
   it('Crear menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -111,7 +111,7 @@ describe('MenuController (e2e)', () => {
   it('Editar menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -160,7 +160,7 @@ describe('MenuController (e2e)', () => {
   it('Eliminar menu', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server

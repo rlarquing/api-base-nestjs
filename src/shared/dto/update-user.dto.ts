@@ -26,7 +26,7 @@ export class UpdateUserDto {
     message: 'El nombre debe de tener como máximo 255 carácteres',
   })
   @ApiProperty({ description: 'Nombre del usuario.', example: 'juan' })
-  username: string;
+  userName: string;
 
   @IsNotEmpty()
   @ApiProperty({ description: 'Roles del usuario.', example: [1, 2] })

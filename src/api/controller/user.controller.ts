@@ -80,7 +80,7 @@ export class UserController {
             route: url + '/user',
         });
         const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
-        const key: string[] = ['id', 'username', 'email', 'roles', 'funcions'];
+        const key: string[] = ['id', 'userName', 'email', 'roles', 'funcions'];
         return new ListadoDto(header, key, data);
     }
 
@@ -217,7 +217,7 @@ export class UserController {
             filtroGenericoDto,
         );
         const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
-        const key: string[] = ['id', 'username', 'email', 'roles', 'funcions'];
+        const key: string[] = ['id', 'userName', 'email', 'roles', 'funcions'];
         return new ListadoDto(header, key, data);
     }
 
@@ -256,7 +256,7 @@ export class UserController {
             buscarDto,
         );
         const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
-        const key: string[] = ['id', 'username', 'email', 'rol', 'funcion'];
+        const key: string[] = ['id', 'userName', 'email', 'rol', 'funcion'];
         return new ListadoDto(header, key, data);
     }
 

@@ -37,8 +37,8 @@ export class AuthService {
   ) {}
   async signUp(userDto: UserDto): Promise<ResponseDto> {
     const result = new ResponseDto();
-    const { username, password, email } = userDto;
-    const userEntity: UserEntity = new UserEntity(username, email);
+    const { userName, password, email } = userDto;
+    const userEntity: UserEntity = new UserEntity(userName, email);
     userEntity.salt = await genSalt();
     userEntity.password = await AuthService.hashPassword(
       password,
@@ -56,15 +56,15 @@ export class AuthService {
     return result;
   }
   async signIn(authCredentialsDto: AuthCredentialsDto): Promise<SecretDataDto> {
-    const { username, password } = authCredentialsDto;
+    const { userName, password } = authCredentialsDto;
     const credential = await this.userRepository.validateUserPassword(
-      username,
+      userName,
       password,
     );
     if (!credential) {
       throw new UnauthorizedException('Credenciales inválidas.');
     }
-    const user: UserEntity = await this.userRepository.findByName(username);
+    const user: UserEntity = await this.userRepository.findByName(userName);
     const funcionsIndiv: FuncionEntity[] = user.funcions;
     let funcions: FuncionEntity[] = [];
     let item: RolEntity;
@@ -87,7 +87,7 @@ export class AuthService {
         readMenuDtos.push(readFuncionDto.menu);
       }
     }
-    const payload: IJwtPayload = { username };
+    const payload: IJwtPayload = { userName };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
     // await this.mailService.sendUserConfirmation(user);
@@ -112,7 +112,7 @@ export class AuthService {
     return userEntity.refreshToken;
   }
   async regenerateTokens(user: UserEntity): Promise<SecretDataDto> {
-    const username = user.username;
+    const userName = user.userName;
     const userEntity: UserEntity = await this.userRepository.findById(user.id);
     const funcionsIndiv: FuncionEntity[] = userEntity.funcions;
     let funcions: FuncionEntity[] = [];
@@ -137,7 +137,7 @@ export class AuthService {
         readMenuDtos.push(readFuncionDto.menu);
       }
     }
-    const payload: IJwtPayload = { username };
+    const payload: IJwtPayload = { userName };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
     return {

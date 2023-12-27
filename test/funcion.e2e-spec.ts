@@ -30,7 +30,7 @@ describe('FuncionController (e2e)', () => {
   it('Listar función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -50,7 +50,7 @@ describe('FuncionController (e2e)', () => {
   it('Crear función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -111,7 +111,7 @@ describe('FuncionController (e2e)', () => {
   it('Editar función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server
@@ -153,7 +153,7 @@ describe('FuncionController (e2e)', () => {
   it('Eliminar función', async () => {
     const server = request(app.getHttpServer());
     const authCredentialsDto: AuthCredentialsDto = {
-      username: 'juan',
+      userName: 'juan',
       password: 'Qwerty1234*',
     };
     const loginUserRequest = await server

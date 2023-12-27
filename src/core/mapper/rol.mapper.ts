@@ -66,7 +66,7 @@ export class RolMapper {
     const rol: RolEntity = await this.rolRepository.findById(rolEntity.id);
     const selectUserDto: SelectDto[] = [];
     for (const user of rol.users) {
-      selectUserDto.push({ label: user.username, value: user.id });
+      selectUserDto.push({ label: user.userName, value: user.id });
     }
     const readFuncionDto: ReadFuncionDto[] = [];
     for (const funcion of rol.funcions) {

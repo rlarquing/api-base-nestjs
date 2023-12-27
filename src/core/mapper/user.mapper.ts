@@ -17,13 +17,13 @@ export class UserMapper {
     protected funcionMapper: FuncionMapper,
   ) {}
   dtoToEntity(userDto: UserDto): UserEntity {
-    return new UserEntity(userDto.username, userDto.email);
+    return new UserEntity(userDto.userName, userDto.email);
   }
   dtoToUpdateEntity(
     updateUserDto: UpdateUserDto,
     updateUserEntity: UserEntity,
   ): UserEntity {
-    updateUserEntity.username = updateUserDto.username;
+    updateUserEntity.userName = updateUserDto.userName;
     updateUserEntity.email = updateUserDto.email;
     return updateUserEntity;
   }
@@ -40,7 +40,7 @@ export class UserMapper {
     return new ReadUserDto(
       dtoToString,
       userEntity.id,
-      userEntity.username,
+      userEntity.userName,
       userEntity.email,
       readRolDto,
       readFuncionDto,

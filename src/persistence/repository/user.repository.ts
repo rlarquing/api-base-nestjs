@@ -136,34 +136,34 @@ export class UserRepository {
     }
 
     async validateUserPassword(
-        username: string,
+        userName: string,
         password: string,
     ): Promise<string> {
-        const options = {username} as FindOptionsWhere<UserEntity>;
+        const options = {userName} as FindOptionsWhere<UserEntity>;
         const user = await this.userRepository.findOneBy(options);
         if (user && (await user.validatePassword(password))) {
-            return user.username;
+            return user.userName;
         } else {
             return null;
         }
     }
 
-    async findByName(username: string): Promise<UserEntity> {
+    async findByName(userName: string): Promise<UserEntity> {
         const options = {
-            where: {activo: true, username: username},
+            where: {activo: true, userName: userName},
             relations: {roles: true, funcions: true},
         } as FindOneOptions<UserEntity>;
         return await this.userRepository.findOne(options);
     }
 
     public async validateRefreshToken(
-        username: string,
+        userName: string,
         refreshToken: string,
     ): Promise<UserEntity> {
         const currentDate = moment().format('YYYY/MM/DD');
         const options = {
             activo: true,
-            username: username,
+            userName: userName,
             refreshToken: refreshToken,
             refreshTokenExp: MoreThanOrEqual(currentDate),
         } as FindOptionsWhere<UserEntity>;
@@ -282,8 +282,8 @@ export class UserRepository {
         return await this.userRepository.find(options);
     }
 
-    async existe(username:string):Promise<UserEntity>{
-       return await this.userRepository.findOne({where:{username: username}} as FindOneOptions);
+    async existe(userName:string):Promise<UserEntity>{
+       return await this.userRepository.findOne({where:{userName: userName}} as FindOneOptions);
 
     }
 }

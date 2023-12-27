@@ -8,7 +8,7 @@ import { GenericEntity } from './generic.entity';
 @Entity('user', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class UserEntity extends GenericEntity {
   @Column({ type: 'varchar', unique: true, length: 25, nullable: false })
-  username: string;
+  userName: string;
   @Column({ type: 'varchar', nullable: true })
   email: string;
   @Column({ type: 'varchar', nullable: false })
@@ -40,9 +40,9 @@ export class UserEntity extends GenericEntity {
   })
   funcions?: FuncionEntity[];
 
-  constructor(username: string, email: string, funcions?: FuncionEntity[]) {
+  constructor(userName: string, email: string, funcions?: FuncionEntity[]) {
     super();
-    this.username = username;
+    this.userName = userName;
     this.email = email;
     this.funcions = funcions;
   }
@@ -50,6 +50,6 @@ export class UserEntity extends GenericEntity {
     return this.password === (await hash(password, this.salt));
   }
   public toString(): string {
-    return this.username;
+    return this.userName;
   }
 }

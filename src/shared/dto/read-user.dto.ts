@@ -9,7 +9,7 @@ export class ReadUserDto {
   id: number;
 
   @ApiProperty({ description: 'Nombre del usuario.', example: 'juan' })
-  username: string;
+  userName: string;
 
   @ApiPropertyOptional({
     description: 'Email del usuario.',
@@ -29,14 +29,14 @@ export class ReadUserDto {
   constructor(
     dtoToString: string,
     id: number,
-    username: string,
+    userName: string,
     email: string,
     roles: ReadRolDto[],
     funcions: ReadFuncionDto[],
   ) {
     this.dtoToString = dtoToString;
     this.id = id;
-    this.username = username;
+    this.userName = userName;
     this.email = email;
     this.roles = roles;
     this.funcions = funcions;

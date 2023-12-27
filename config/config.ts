@@ -35,7 +35,7 @@ export const config = () => ({
     type: env(AppConfig.TYPE, 'postgres'),
     host: env(Configuration.DB_HOST, 'localhost'),
     port: Number(env(Configuration.DB_PORT, 5432)),
-    username: env(Configuration.DB_USER, 'postgres'),
+    userName: env(Configuration.DB_USER, 'postgres'),
     password: env(Configuration.DB_PASS, 'postgres'),
     database: env(Configuration.DB_NAME),
     synchronize: env(Configuration.DB_SYNC, false),
