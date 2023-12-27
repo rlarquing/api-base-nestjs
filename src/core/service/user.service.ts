@@ -4,7 +4,7 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import {UserMapper} from '../mapper';
-import {TrazaService} from './traza.service';
+import {LogHistoryService} from './log-history.service';
 import {genSalt, hash} from 'bcryptjs';
 import {
     FuncionRepository,
@@ -23,7 +23,7 @@ import {
 } from '../../shared/dto';
 import {FuncionEntity, RolEntity, UserEntity} from '../../persistence/entity';
 import {eliminarDuplicado, removeFromArr} from '../../../lib';
-import {HISTORY_ACTION} from '../../persistence/entity/traza.entity';
+import {HISTORY_ACTION} from '../../persistence/entity/log-history.entity';
 import {IPaginationOptions, Pagination} from 'nestjs-typeorm-paginate';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class UserService {
         private userRepository: UserRepository,
         private rolRepository: RolRepository,
         private funcionRepository: FuncionRepository,
-        private trazaService: TrazaService,
+        private trazaService: LogHistoryService,
         private userMapper: UserMapper,
     ) {
     }

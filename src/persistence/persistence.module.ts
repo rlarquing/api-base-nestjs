@@ -8,7 +8,7 @@ import {
   MunicipioEntity,
   ProvinciaEntity,
   RolEntity,
-  TrazaEntity,
+  LogHistoryEntity,
   UserEntity,
 } from './entity';
 import { repository } from './persistence.service';
@@ -21,7 +21,7 @@ import { repository } from './persistence.service';
       MunicipioEntity,
       ProvinciaEntity,
       RolEntity,
-      TrazaEntity,
+      LogHistoryEntity,
       UserEntity,
     ]),
     SharedModule,

@@ -2,11 +2,11 @@ import {
   BaseEntity,
   Column,
   CreateDateColumn,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
 
 export abstract class GenericEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int8'})
   id: number;
 
   @Column({ type: 'boolean', default: true })
@@ -15,7 +15,7 @@ export abstract class GenericEntity extends BaseEntity {
   @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: true })
   createdAt: Date;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
+  @UpdateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
   updatedAt: Date;
 
   public abstract toString(): string;

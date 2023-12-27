@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { GenericNomencladorMapper } from '../mapper';
 import { DeleteResult } from 'typeorm';
 import { GenericNomencladorRepository } from '../../persistence/repository';
-import { TrazaService } from './traza.service';
+import { LogHistoryService } from './log-history.service';
 import {
   BuscarDto,
   FiltroGenericoDto,
@@ -11,7 +11,7 @@ import {
   SelectDto,
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
-import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
+import { HISTORY_ACTION } from '../../persistence/entity/log-history.entity';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class GenericNomencladorService {
   constructor(
     protected repository: GenericNomencladorRepository,
     protected mapper: GenericNomencladorMapper,
-    protected trazaService: TrazaService,
+    protected trazaService: LogHistoryService,
   ) {}
 
   async findAll(

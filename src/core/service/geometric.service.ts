@@ -1,7 +1,7 @@
 import { GenericService } from './generic.service';
 import { GeoJsonMapper } from '../mapper';
 import { GeometricRepository } from '../../persistence/repository';
-import { TrazaService } from './traza.service';
+import { LogHistoryService } from './log-history.service';
 import { GeoJsonDto, TypeDto } from '../../shared/dto';
 import { ConfigService } from '@nestjs/config';
 
@@ -11,7 +11,7 @@ export abstract class GeometricService<ENTITY> extends GenericService<ENTITY> {
     protected configService: ConfigService,
     protected geometricRepository: GeometricRepository<ENTITY>,
     protected mapper: any,
-    protected trazaService: TrazaService,
+    protected trazaService: LogHistoryService,
     protected traza?: boolean,
   ) {
     super(configService, geometricRepository, mapper, trazaService, traza);

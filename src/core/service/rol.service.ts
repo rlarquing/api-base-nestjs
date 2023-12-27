@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RolMapper } from '../mapper';
-import { TrazaService } from './traza.service';
+import { LogHistoryService } from './log-history.service';
 import { GenericService } from './generic.service';
 import { RolEntity } from '../../persistence/entity';
 import { RolRepository } from '../../persistence/repository';
@@ -12,7 +12,7 @@ export class RolService extends GenericService<RolEntity> {
     protected configService: ConfigService,
     protected rolRepository: RolRepository,
     protected rolMapper: RolMapper,
-    protected trazaService: TrazaService,
+    protected trazaService: LogHistoryService,
   ) {
     super(configService, rolRepository, rolMapper, trazaService, true);
   }

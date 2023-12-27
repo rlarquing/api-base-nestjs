@@ -7,4 +7,4 @@ export { UserEntity } from './user.entity';
 export { MunicipioEntity } from './municipio.entity';
 export { ProvinciaEntity } from './provincia.entity';
 export { RolEntity } from './rol.entity';
-export { TrazaEntity } from './traza.entity';
+export { LogHistoryEntity } from './log-history.entity';

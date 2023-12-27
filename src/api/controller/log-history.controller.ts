@@ -25,19 +25,19 @@ import {
 } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { RolType } from '../../shared/enum';
-import { TrazaService } from '../../core/service';
-import { FiltroDto, ListadoDto, TrazaDto } from '../../shared/dto';
+import { LogHistoryService } from '../../core/service';
+import { FiltroDto, ListadoDto, LogHistoryDto } from '../../shared/dto';
 import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
 
-@ApiTags('Trazas')
-@Controller('traza')
+@ApiTags('Log-histories')
+@Controller('log-history')
 @Roles(RolType.ADMINISTRADOR)
 @UseGuards(AuthGuard('jwt'), RolGuard)
 @ApiBearerAuth()
-export class TrazaController {
+export class LogHistoryController {
   constructor(
-    private trazaService: TrazaService,
+    private logHistoryService: LogHistoryService,
     private configService: ConfigService,
   ) {}
   @Get('/')
@@ -62,7 +62,7 @@ export class TrazaController {
   ): Promise<any> {
     limit = limit > 100 ? 100 : limit;
     const url = this.configService.get(AppConfig.URL);
-    const data = await this.trazaService.findAll({
+    const data = await this.logHistoryService.findAll({
       page,
       limit,
       route: url + '/api/traza',
@@ -83,7 +83,7 @@ export class TrazaController {
   @ApiResponse({
     status: 200,
     description: 'Muestra la información de una traza',
-    type: TrazaDto,
+    type: LogHistoryDto,
   })
   @ApiNotFoundResponse({
     status: 404,
@@ -92,8 +92,8 @@ export class TrazaController {
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servicor.' })
-  async findById(@Param('id', ParseIntPipe) id: number): Promise<TrazaDto> {
-    return await this.trazaService.findById(id);
+  async findById(@Param('id', ParseIntPipe) id: number): Promise<LogHistoryDto> {
+    return await this.logHistoryService.findById(id);
   }
   @ApiOperation({ summary: 'Eliminar una traza' })
   @ApiResponse({
@@ -105,7 +105,7 @@ export class TrazaController {
   @ApiResponse({ status: 500, description: 'Error interno del servicor.' })
   @Delete('/:id')
   async delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
-    return await this.trazaService.delete(id);
+    return await this.logHistoryService.delete(id);
   }
   @Post('/filtro/por')
   @ApiOperation({
@@ -126,6 +126,6 @@ export class TrazaController {
     @GetUser() user: UserEntity,
     @Body() filtroDto: FiltroDto,
   ): Promise<any> {
-    return await this.trazaService.findByFiltrados(user, filtroDto);
+    return await this.logHistoryService.findByFiltrados(user, filtroDto);
   }
 }

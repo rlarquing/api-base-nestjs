@@ -3,7 +3,7 @@ import {FuncionMapper, MenuMapper} from '../mapper';
 import {EndPointEntity, FuncionEntity, MenuEntity, RolEntity,} from '../../persistence/entity';
 import {EndPointRepository, FuncionRepository, MenuRepository, RolRepository,} from '../../persistence/repository';
 import {GenericService} from './generic.service';
-import {TrazaService} from './traza.service';
+import {LogHistoryService} from './log-history.service';
 import {CreateFuncionDto, CreateMenuDto, ReadMenuDto} from '../../shared/dto';
 import {ConfigService} from '@nestjs/config';
 import {TipoMenuTypeEnum} from '../../shared/enum';
@@ -19,7 +19,7 @@ export class MenuService extends GenericService<MenuEntity> {
         protected rolRepository: RolRepository,
         protected menuMapper: MenuMapper,
         protected funcionMapper: FuncionMapper,
-        protected trazaService: TrazaService,
+        protected trazaService: LogHistoryService,
     ) {
         super(configService, menuRepository, menuMapper, trazaService, true);
     }

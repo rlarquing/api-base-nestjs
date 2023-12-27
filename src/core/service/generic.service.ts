@@ -2,7 +2,7 @@ import { DeleteResult } from 'typeorm';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { IService } from '../../shared/interface';
 import { GenericRepository } from '../../persistence/repository';
-import { TrazaService } from './traza.service';
+import { LogHistoryService } from './log-history.service';
 import {
   BuscarDto,
   FiltroGenericoDto,
@@ -10,7 +10,7 @@ import {
   SelectDto,
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
-import { HISTORY_ACTION } from '../../persistence/entity/traza.entity';
+import { HISTORY_ACTION } from '../../persistence/entity/log-history.entity';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../../app.keys';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
@@ -21,7 +21,7 @@ export abstract class GenericService<ENTITY> implements IService {
     protected configService: ConfigService,
     protected genericRepository: GenericRepository<ENTITY>,
     protected mapper: any,
-    protected trazaService: TrazaService,
+    protected trazaService: LogHistoryService,
     protected traza?: boolean,
   ) {
     this.isProductionEnv =

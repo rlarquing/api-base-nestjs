@@ -9,6 +9,6 @@ export { MenuController } from './menu.controller';
 export { MunicipioController } from './municipio.controller';
 export { ProvinciaController } from './provincia.controller';
 export { RolController } from './rol.controller';
-export { TrazaController } from './traza.controller';
+export { LogHistoryController } from './log-history.controller';
 export { UserController } from './user.controller';
 export { GenericImportacionController } from './generic-importacion.controller';

@@ -7,15 +7,15 @@ import { GenericEntity } from './generic.entity';
 
 @Entity('user', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class UserEntity extends GenericEntity {
-  @Column({ type: 'varchar', unique: true, length: 25, nullable: false })
+  @Column({ type: 'varchar', name: 'user_name', unique: true, length: 25, nullable: false })
   userName: string;
   @Column({ type: 'varchar', nullable: true })
   email: string;
   @Column({ type: 'varchar', nullable: false })
   password: string;
-  @Column({ nullable: true, name: 'refreshtoken' })
+  @Column({ nullable: true, name: 'refresh_token' })
   refreshToken: string;
-  @Column({ type: 'date', nullable: true, name: 'refreshtokenexp' })
+  @Column({ type: 'date', nullable: true, name: 'refresh_token_exp' })
   refreshTokenExp: string;
   @Column({ type: 'varchar', nullable: true })
   salt: string;

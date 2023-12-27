@@ -7,5 +7,5 @@ export { GenericNomencladorRepository } from './generic-nomenclador.repository';
 export { MunicipioRepository } from './municipio.repository';
 export { ProvinciaRepository } from './provincia.repository';
 export { RolRepository } from './rol.repository';
-export { TrazaRepository } from './traza.repository';
+export { LogHistoryRepository } from './log-history.repository';
 export { UserRepository } from './user.repository';

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FuncionMapper } from '../mapper';
-import { TrazaService } from './traza.service';
+import { LogHistoryService } from './log-history.service';
 import { GenericService } from './generic.service';
 import { FuncionEntity } from '../../persistence/entity';
 import { FuncionRepository } from '../../persistence/repository';
@@ -12,7 +12,7 @@ export class FuncionService extends GenericService<FuncionEntity> {
     protected configService: ConfigService,
     protected funcionRepository: FuncionRepository,
     protected funcionMapper: FuncionMapper,
-    protected trazaService: TrazaService,
+    protected trazaService: LogHistoryService,
   ) {
     super(configService, funcionRepository, funcionMapper, trazaService, true);
   }

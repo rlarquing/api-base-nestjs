@@ -6,12 +6,12 @@ import {
   MunicipioRepository,
   ProvinciaRepository,
   RolRepository,
-  TrazaRepository,
+  LogHistoryRepository,
   UserRepository,
 } from './repository';
 
 export const repository = [
-  TrazaRepository,
+  LogHistoryRepository,
   UserRepository,
   RolRepository,
   FuncionRepository,

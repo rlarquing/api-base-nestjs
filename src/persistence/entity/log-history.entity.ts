@@ -16,12 +16,12 @@ export enum HISTORY_ACTION {
   REM = 'Eliminar_completamente',
 }
 
-@Entity('traza', {
+@Entity('log_history', {
   schema: SchemaEnum.MOD_AUTH,
   orderBy: { id: 'ASC' },
 })
-export class TrazaEntity {
-  @PrimaryGeneratedColumn()
+export class LogHistoryEntity {
+  @PrimaryGeneratedColumn({ type: 'int8'})
   id: number;
 
   @ManyToOne(() => UserEntity, { eager: true })

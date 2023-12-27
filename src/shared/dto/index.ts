@@ -31,7 +31,7 @@ export { ReadProvinciaDto } from './read-provincia.dto';
 export { ReproyectarDto } from './reproyectar.dto';
 export { ResponseDto } from './response.dto';
 export { SelectDto } from './select.dto';
-export { TrazaDto } from './traza.dto';
+export { LogHistoryDto } from './log-history.dto';
 export { TypeDto } from './type.dto';
 export { UpdateMenuDto } from './update-menu.dto';
 export { UpdateMultipleMenuDto } from './update-multiple-menu.dto';

@@ -6,5 +6,5 @@ export { MenuMapper } from './menu.mapper';
 export { MunicipioMapper } from './municipio.mapper';
 export { ProvinciaMapper } from './provincia.mapper';
 export { RolMapper } from './rol.mapper';
-export { TrazaMapper } from './traza.mapper';
+export { LogHistoryMapper } from './log-history.mapper';
 export { UserMapper } from './user.mapper';
