@@ -9,6 +9,15 @@ import {
   LogHistoryRepository,
   UserRepository,
 } from './repository';
+import {
+  EndPointEntity,
+  FuncionEntity,
+  LogHistoryEntity,
+  MenuEntity,
+  MunicipioEntity,
+  ProvinciaEntity,
+  RolEntity, UserEntity
+} from "./entity";
 
 export const repository = [
   LogHistoryRepository,
@@ -21,3 +30,13 @@ export const repository = [
   MunicipioRepository,
   ProvinciaRepository,
 ];
+export  const entity = [
+  EndPointEntity,
+  FuncionEntity,
+  MenuEntity,
+  MunicipioEntity,
+  ProvinciaEntity,
+  RolEntity,
+  LogHistoryEntity,
+  UserEntity,
+]

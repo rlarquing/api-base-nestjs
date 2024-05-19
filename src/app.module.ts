@@ -2,12 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppConfig } from './app.keys';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from '../config/config';
-import { CoreModule } from './core/core.module';
-import { DatabaseModule } from './database/database.module';
-import { PersistenceModule } from './persistence/persistence.module';
 import { LoggerProvider } from './core/logger/logger.provider';
-import { ApiModule } from './api/api.module';
-import { MailModule } from './mail/mail.module';
+import {module} from "./app.service";
 
 @Module({
   imports: [
@@ -15,11 +11,7 @@ import { MailModule } from './mail/mail.module';
       isGlobal: true,
       load: [config],
     }),
-    DatabaseModule,
-    PersistenceModule,
-    CoreModule,
-    ApiModule,
-    MailModule,
+      ...module
   ],
   controllers: [],
   providers: [],

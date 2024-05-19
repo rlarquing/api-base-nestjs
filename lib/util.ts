@@ -11,6 +11,20 @@ export const removeFromArr = (arr: any[], item: any): any[] => {
 export const encuentra = (array: any[], elem: any, field: any): boolean => {
   return array.some((item: any) => item[field] === elem[field]);
 };
+export const buscarValor = (objetos: any[], valor: string): any[] => {
+  return objetos.filter((objeto: any) => {
+    return Object.values(objeto).some(
+        (campo) => String(campo).indexOf(valor) !== -1,
+    );
+  });
+};
+export const paginarArreglo = (
+    arreglo: any[],
+    limit: number,
+    offset: number,
+): any[] => {
+  return arreglo.slice(offset, offset + limit);
+};
 const hasPrimitiveType = (x: any): boolean => {
   return (
     typeof x == 'boolean' ||
