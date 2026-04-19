@@ -21,7 +21,7 @@ export abstract class GenericService<ENTITY> implements IService {
     protected configService: ConfigService,
     protected genericRepository: GenericRepository<ENTITY>,
     protected mapper: any,
-    protected trazaService: LogHistoryService,
+    protected logHistoryService: LogHistoryService,
     protected traza?: boolean,
   ) {
     this.isProductionEnv =
@@ -101,7 +101,7 @@ export abstract class GenericService<ENTITY> implements IService {
     try {
       const objEntity: any = await this.genericRepository.create(newEntity);
       if (this.traza && this.isProductionEnv) {
-        await this.trazaService.create(user, objEntity, HISTORY_ACTION.ADD);
+        await this.logHistoryService.create(user, objEntity, HISTORY_ACTION.ADD);
       }
       result.id = objEntity.id;
       result.successStatus = true;
@@ -173,7 +173,7 @@ export abstract class GenericService<ENTITY> implements IService {
     try {
       await this.genericRepository.update(updateEntity);
       if (this.traza && this.isProductionEnv) {
-        await this.trazaService.create(user, updateEntity, HISTORY_ACTION.MOD);
+        await this.logHistoryService.create(user, updateEntity, HISTORY_ACTION.MOD);
       }
       result.successStatus = true;
       result.message = 'success';
@@ -191,7 +191,7 @@ export abstract class GenericService<ENTITY> implements IService {
       for (const id of ids) {
         const objEntity: ENTITY = await this.genericRepository.findById(id);
         if (this.traza && this.isProductionEnv) {
-          await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
+          await this.logHistoryService.create(user, objEntity, HISTORY_ACTION.DEL);
         }
         await this.genericRepository.delete(id);
       }
@@ -212,7 +212,7 @@ export abstract class GenericService<ENTITY> implements IService {
         throw new NotFoundException('No existe');
       }
       if (this.traza && this.isProductionEnv) {
-        await this.trazaService.create(user, objEntity, HISTORY_ACTION.REM);
+        await this.logHistoryService.create(user, objEntity, HISTORY_ACTION.REM);
       }
     }
     return await this.genericRepository.remove(ids);

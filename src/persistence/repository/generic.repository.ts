@@ -1,6 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import {
   Between,
+  Brackets,
   DeleteResult,
   FindManyOptions,
   FindOneOptions,
@@ -140,6 +141,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     options: IPaginationOptions,
     search: any,
   ): Promise<Pagination<ENTITY>> {
+    const queryBuilder = this.repository.createQueryBuilder('q');
     if (!isEmpty(search)) {
       const findOptions = {
         where: { activo: true },
@@ -157,13 +159,11 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       }
       keys.forEach((key) => {
         for (const item of result) {
-          if (
-            isString(item[key]) &&
-            isString(search) &&
-            item[key].toLowerCase().indexOf(search.toLowerCase()) !== -1
-          ) {
-            if (!objs.has(key)) {
-              objs.set(key, `${key} ILIKE '%${search}%'`);
+          if (isString(item[key]) && isString(search)) {
+            if (item[key].toLowerCase().includes(search.toLowerCase())) {
+              if (!objs.has(key)) {
+                objs.set(key, `LOWER(q.${key}) ILIKE LOWER(:search)`);
+              }
             }
           } else if (
             isNumber(item[key]) &&
@@ -198,25 +198,31 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
           }
         }
       });
-      const queryBuilder = this.repository.createQueryBuilder('q');
       if (this.relations) {
         for (const relation of this.relations) {
           queryBuilder.leftJoinAndSelect(`q.${relation}`, relation);
         }
       }
       if (objs.size === 0) {
-        queryBuilder.where(`q.activo = true AND q.id=0`);
+        queryBuilder.where('q.active = :estado', { estado: true });
       } else {
         const where: string[] = [];
         objs.forEach((item) => {
-          where.push(`q.${item}`);
+          where.push(item);
         });
-        queryBuilder.where(`q.activo = true AND ${where.join(' OR ')}`, {
-          search: search,
-        });
+        queryBuilder.where('q.active = :estado', { estado: true });
+        queryBuilder.andWhere(
+          new Brackets((qb) => {
+            where.forEach((condition) => {
+              qb.orWhere(condition, { search: `%${search}%` });
+            });
+          }),
+        );
       }
-      return await paginate<ENTITY>(queryBuilder, options);
+    } else {
+      queryBuilder.where('q.active = :estado', { estado: true });
     }
+    return await paginate<ENTITY>(queryBuilder, options);
   }
 
   async findBy(

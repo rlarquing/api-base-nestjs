@@ -11,10 +11,10 @@ export abstract class GeometricService<ENTITY> extends GenericService<ENTITY> {
     protected configService: ConfigService,
     protected geometricRepository: GeometricRepository<ENTITY>,
     protected mapper: any,
-    protected trazaService: LogHistoryService,
+    protected logHistoryService: LogHistoryService,
     protected traza?: boolean,
   ) {
-    super(configService, geometricRepository, mapper, trazaService, traza);
+    super(configService, geometricRepository, mapper, logHistoryService, traza);
     this.geoJsonMapper = new GeoJsonMapper();
   }
 

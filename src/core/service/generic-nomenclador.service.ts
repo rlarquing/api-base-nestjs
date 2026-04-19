@@ -19,7 +19,7 @@ export class GenericNomencladorService {
   constructor(
     protected repository: GenericNomencladorRepository,
     protected mapper: GenericNomencladorMapper,
-    protected trazaService: LogHistoryService,
+    protected logHistoryService: LogHistoryService,
   ) {}
 
   async findAll(
@@ -52,7 +52,7 @@ export class GenericNomencladorService {
     const newEntity = await this.mapper.dtoToEntity(createDto);
     try {
       const objEntity: any = await this.repository.create(name, newEntity);
-      await this.trazaService.create(user, objEntity, HISTORY_ACTION.ADD);
+      await this.logHistoryService.create(user, objEntity, HISTORY_ACTION.ADD);
       result.successStatus = true;
       result.message = 'success';
     } catch (error) {
@@ -137,7 +137,7 @@ export class GenericNomencladorService {
     );
     try {
       await this.repository.update(name, updateEntity);
-      await this.trazaService.create(user, updateEntity, HISTORY_ACTION.MOD);
+      await this.logHistoryService.create(user, updateEntity, HISTORY_ACTION.MOD);
       result.successStatus = true;
       result.message = 'success';
     } catch (error) {
@@ -160,7 +160,7 @@ export class GenericNomencladorService {
         if (!objEntity) {
           throw new NotFoundException('No existe');
         }
-        await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
+        await this.logHistoryService.create(user, objEntity, HISTORY_ACTION.DEL);
         await this.repository.delete(name, id);
       }
       result.successStatus = true;
@@ -183,7 +183,7 @@ export class GenericNomencladorService {
       if (!objEntity) {
         throw new NotFoundException('No existe');
       }
-      await this.trazaService.create(user, objEntity, HISTORY_ACTION.DEL);
+      await this.logHistoryService.create(user, objEntity, HISTORY_ACTION.DEL);
     }
     return await this.repository.remove(name, ids);
   }

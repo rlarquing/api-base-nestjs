@@ -4,7 +4,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { TypeORMExceptionFilter } from './shared/filter/typeorm-exception.filter';
-import { EndPointService, MenuService, RolService } from './core/service';
+import {
+  EndPointService,
+  MenuService,
+  RolService,
+  UserService,
+} from './core/service';
 import { parseController } from '../lib';
 import { NomencladorTypeEnum } from './shared/enum';
 
@@ -45,6 +50,7 @@ async function bootstrap() {
     const application = await app;
     const endPointService = application.get(EndPointService);
     const rolService: RolService = application.get(RolService);
+    const userService: UserService = application.get(UserService);
     const menuService = application.get(MenuService);
     const nomencladores: string[] = [];
     for (const [, propertyValue] of Object.entries(NomencladorTypeEnum)) {
@@ -56,6 +62,8 @@ async function bootstrap() {
     }
     await parseController(endPointService);
     await menuService.crearMenuAdministracion();
+    await rolService.asignarFuncionesAdmin();
+    await userService.crearUsuarioAdmin();
   }
 }
 bootstrap();

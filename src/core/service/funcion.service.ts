@@ -12,8 +12,8 @@ export class FuncionService extends GenericService<FuncionEntity> {
     protected configService: ConfigService,
     protected funcionRepository: FuncionRepository,
     protected funcionMapper: FuncionMapper,
-    protected trazaService: LogHistoryService,
+    protected logHistoryService: LogHistoryService,
   ) {
-    super(configService, funcionRepository, funcionMapper, trazaService, true);
+    super(configService, funcionRepository, funcionMapper, logHistoryService, true);
   }
 }
