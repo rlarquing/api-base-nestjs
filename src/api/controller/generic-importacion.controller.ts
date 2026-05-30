@@ -1,12 +1,13 @@
 import { Body, Get, Post } from '@nestjs/common';
-import { GetUser } from '../decorator';
+import { GetUser, IpAddress } from '../decorator';
 import { UserEntity } from '../../persistence/entity';
 import {FiltroGenericoDto, ResponseDto, SelectDto} from '../../shared/dto';
 import { GenericService } from '../../core/service';
 import { ConfigService } from '@nestjs/config';
 import {ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse} from "@nestjs/swagger";
+import { ObjectLiteral } from 'typeorm';
 
-export abstract class GenericImportacionController<ENTITY> {
+export abstract class GenericImportacionController<ENTITY extends ObjectLiteral> {
   protected constructor(
     protected service: GenericService<ENTITY>,
     protected configService: ConfigService,
@@ -16,8 +17,9 @@ export abstract class GenericImportacionController<ENTITY> {
   async import(
     @GetUser() user: UserEntity,
     @Body() objects: any[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await this.service.import(user, objects);
+    return await this.service.import(user, objects, ip);
   }
   @Get('/crear/select')
   @ApiOperation({
@@ -26,11 +28,10 @@ export abstract class GenericImportacionController<ENTITY> {
   @ApiResponse({
     status: 200,
     description:
-        'Muestra la información de los elementos del conjunto para crear un select',
+      'Muestra la información de los elementos del conjunto para crear un select',
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -41,26 +42,29 @@ export abstract class GenericImportacionController<ENTITY> {
   }
   @Post('/crear/select/dependiente')
   @ApiOperation({
-    summary: 'Obtener los elementos del conjunto para crear un select dependiente',
+    summary:
+      'Obtener los elementos del conjunto para crear un select dependiente',
   })
   @ApiResponse({
     status: 200,
     description:
-        'Muestra la información de los elementos del conjunto para crear un select dependiente',
+      'Muestra la información de los elementos del conjunto para crear un select dependiente',
     type: [SelectDto],
   })
   @ApiBody({
-    description: 'Estructura para crear el filtrado que brinda información para el select.',
+    description:
+      'Estructura para crear el filtrado que brinda información para el select.',
     type: FiltroGenericoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  async createSelectFilter( @Body() filtroGenericoDto: FiltroGenericoDto): Promise<SelectDto[]> {
+  async createSelectFilter(
+    @Body() filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]> {
     return await this.service.createSelectFilter(filtroGenericoDto);
   }
 }

@@ -19,7 +19,7 @@ export class CreateUserDto {
     message: 'El nombre debe de tener como máximo 20 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del usuario.', example: 'juan' })
-  userName: string;
+  userName!: string;
 
   @IsString()
   @MinLength(8, {
@@ -35,7 +35,7 @@ export class CreateUserDto {
     description: 'Contraseña del usuario.',
     example: 'Qwerty1234*',
   })
-  password: string;
+  password!: string;
 
   @IsString()
   @MinLength(8, {
@@ -49,7 +49,7 @@ export class CreateUserDto {
     example: 'Qwerty1234*',
   })
   @IsEqualTo('password')
-  confirmPassword: string;
+  confirmPassword!: string;
 
   @IsOptional()
   @ApiPropertyOptional({
@@ -60,7 +60,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @ApiProperty({ description: 'Roles del usuario.', example: [1, 2] })
-  roles: number[];
+  roles!: number[];
 
   @IsOptional()
   @ApiProperty({ description: 'Funciones del usuario.', example: [1, 2] })

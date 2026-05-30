@@ -16,6 +16,7 @@ import {
   ChangePasswordDto,
   CreateUserDto,
   FiltroGenericoDto,
+  LogHistoryDto,
   ReadUserDto,
   ResponseDto,
   SelectDto,
@@ -26,16 +27,23 @@ import { eliminarDuplicado, removeFromArr } from '../../../lib';
 import { HISTORY_ACTION } from '../../persistence/entity/log-history.entity';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { RolType } from '../../shared/enum';
+import { ConfigService } from '@nestjs/config';
+import { AppConfig } from '../../app.keys';
 
 @Injectable()
 export class UserService {
+  private readonly isProductionEnv: boolean;
   constructor(
+    private configService: ConfigService,
     private userRepository: UserRepository,
     private rolRepository: RolRepository,
     private funcionRepository: FuncionRepository,
     private logHistoryService: LogHistoryService,
     private userMapper: UserMapper,
-  ) {}
+  ) {
+    this.isProductionEnv =
+      this.configService.get(AppConfig.NODE_ENV) === 'production';
+  }
 
   /**
    * Crea el usuario administrador por defecto si no existe
@@ -91,7 +99,7 @@ export class UserService {
     if (!id) {
       throw new BadRequestException('El id no puede ser vacio');
     }
-    const user: UserEntity = await this.userRepository.findById(id);
+    const user: UserEntity | null = await this.userRepository.findById(id);
     if (!user) {
       throw new NotFoundException('El usuario no se encuentra.');
     }
@@ -102,7 +110,8 @@ export class UserService {
     if (!userName) {
       throw new BadRequestException('El userName no puede ser vacio');
     }
-    const user: UserEntity = await this.userRepository.findByName(userName);
+    const user: UserEntity | null =
+      await this.userRepository.findByName(userName);
     if (!user) {
       throw new NotFoundException('El usuario no se encuentra.');
     }
@@ -112,6 +121,7 @@ export class UserService {
   async create(
     user: UserEntity,
     createUserDto: CreateUserDto,
+    ip: string,
   ): Promise<ResponseDto> {
     const result = new ResponseDto();
     try {
@@ -119,40 +129,69 @@ export class UserService {
       const { password, roles } = createUserDto;
       let { funcions } = createUserDto;
       newUser.salt = await genSalt();
-      newUser.password = await UserService.hashPassword(password, newUser.salt);
+      newUser.password = await UserService.hashPassword(
+        password,
+        newUser.salt ?? '',
+      );
       newUser.roles = await this.rolRepository.findByIds(roles);
       if (funcions !== undefined) {
         let funcionsGrupo: FuncionEntity[] = [];
         newUser.roles.forEach((rol: RolEntity) => {
-          funcionsGrupo.concat(rol.funcions);
+          if (rol.funcions) {
+            funcionsGrupo.concat(rol.funcions);
+          }
         });
         funcionsGrupo = eliminarDuplicado(funcionsGrupo);
-        funcionsGrupo.forEach((funcion: FuncionEntity) =>
-          funcions.includes(funcion.id)
-            ? (funcions = removeFromArr(funcions, funcion.id))
-            : false,
-        );
+        funcionsGrupo.forEach((funcion: FuncionEntity) => {
+          if (funcions && funcions.includes(funcion.id)) {
+            funcions = removeFromArr(funcions, funcion.id);
+          }
+        });
         newUser.funcions = await this.funcionRepository.findByIds(funcions);
       }
-      let userEntity: UserEntity = null;
-      const existe: UserEntity = await this.userRepository.existe(
+      let userEntity: UserEntity | undefined = undefined;
+      const existe: UserEntity | null = await this.userRepository.existe(
         newUser.userName,
       );
       if (!existe) {
         userEntity = await this.userRepository.create(newUser);
       } else {
         newUser.id = existe.id;
-        (newUser.activo = true), await this.userRepository.update(newUser);
+        newUser.activo = true;
+        await this.userRepository.update(newUser);
         userEntity = newUser;
       }
 
-      delete userEntity.salt;
-      delete userEntity.password;
-      await this.logHistoryService.create(user, userEntity, HISTORY_ACTION.ADD);
+      // Para el log, creamos una copia sin datos sensibles
+      const logUser = { ...userEntity } as Partial<UserEntity>;
+      delete logUser.salt;
+      delete logUser.password;
+      const esquema: string = this.userRepository.getSchema();
+      const tabla: string = this.userRepository.getTabla();
+      if (this.isProductionEnv) {
+        const logHistoryDto: LogHistoryDto = new LogHistoryDto(
+          null,
+          user.userName,
+          new Date(),
+          tabla,
+          esquema,
+          HISTORY_ACTION.ADD,
+          logUser,
+          null,
+          userEntity.id,
+          ip,
+        );
+        await this.logHistoryService.create(logHistoryDto);
+      }
       result.successStatus = true;
       result.message = 'success';
-    } catch (error) {
-      result.message = error.response;
+    } catch (error: unknown) {
+      // TypeScript 6: manejar error de tipo unknown
+      if (error instanceof Error) {
+        result.message = (error as any).response ?? error.message;
+      } else {
+        result.message = String(error);
+      }
       result.successStatus = false;
       return result;
     }
@@ -163,55 +202,120 @@ export class UserService {
     user: UserEntity,
     id: number,
     updateUserDto: UpdateUserDto,
+    ip: string,
   ): Promise<ResponseDto> {
     const result = new ResponseDto();
-    let foundUser: UserEntity = await this.userRepository.findById(id);
+    let foundUser: UserEntity | null = await this.userRepository.findById(id);
     if (!foundUser) {
       throw new NotFoundException('No existe el user');
     }
     try {
-      foundUser = this.userMapper.dtoToUpdateEntity(updateUserDto, foundUser);
+      const updateUser: UserEntity = this.userMapper.dtoToUpdateEntity(
+        updateUserDto,
+        foundUser,
+      );
       const { roles } = updateUserDto;
       let { funcions } = updateUserDto;
-      foundUser.roles = await this.rolRepository.findByIds(roles);
+      updateUser.roles = await this.rolRepository.findByIds(roles);
       if (funcions !== undefined) {
         let funcionsGrupo: FuncionEntity[] = [];
-        foundUser.roles.forEach((rol: RolEntity) => {
-          funcionsGrupo.concat(rol.funcions);
+        updateUser.roles.forEach((rol: RolEntity) => {
+          if (rol.funcions) {
+            funcionsGrupo.concat(rol.funcions);
+          }
         });
         funcionsGrupo = eliminarDuplicado(funcionsGrupo);
-        funcionsGrupo.forEach((funcion: FuncionEntity) =>
-          funcions.includes(funcion.id)
-            ? (funcions = removeFromArr(funcions, funcion.id))
-            : false,
-        );
-        foundUser.funcions = await this.funcionRepository.findByIds(funcions);
+        funcionsGrupo.forEach((funcion: FuncionEntity) => {
+          if (funcions && funcions.includes(funcion.id)) {
+            funcions = removeFromArr(funcions, funcion.id);
+          }
+        });
+        updateUser.funcions = await this.funcionRepository.findByIds(funcions);
       }
-      await this.userRepository.update(foundUser);
-      delete foundUser.salt;
-      delete foundUser.password;
-      await this.logHistoryService.create(user, foundUser, HISTORY_ACTION.MOD);
+      await this.userRepository.update(updateUser);
+
+      // Para el log, creamos una copia sin datos sensibles
+      const logUser = { ...updateUser } as Partial<UserEntity>;
+      delete logUser.salt;
+      delete logUser.password;
+      const logFoundUser = { ...foundUser } as Partial<UserEntity>;
+      delete logUser.salt;
+      delete logUser.password;
+      const esquema: string = this.userRepository.getSchema();
+      const tabla: string = this.userRepository.getTabla();
+      if (this.isProductionEnv) {
+        const logHistoryDto: LogHistoryDto = new LogHistoryDto(
+          null,
+          user.userName,
+          new Date(),
+          tabla,
+          esquema,
+          HISTORY_ACTION.MOD,
+          logUser,
+          logFoundUser,
+          updateUser.id,
+          ip,
+        );
+        await this.logHistoryService.create(logHistoryDto);
+      }
       result.successStatus = true;
       result.message = 'success';
-    } catch (error) {
-      result.message = error.response;
+    } catch (error: unknown) {
+      // TypeScript 6: manejar error de tipo unknown
+      if (error instanceof Error) {
+        result.message = (error as any).response ?? error.message;
+      } else {
+        result.message = String(error);
+      }
       result.successStatus = false;
       return result;
     }
     return result;
   }
 
-  async delete(user: UserEntity, id: number): Promise<ResponseDto> {
+  async delete(
+    user: UserEntity,
+    id: number,
+    ip: string,
+  ): Promise<ResponseDto> {
     const result = new ResponseDto();
     if (user.id === id) {
       result.message = 'Usuario autenticado no se puede eliminar.';
       result.successStatus = false;
       return result;
     }
-    const userEntity: UserEntity = await this.userRepository.findById(id);
-    delete userEntity.salt;
-    delete userEntity.password;
-    await this.logHistoryService.create(user, userEntity, HISTORY_ACTION.DEL);
+    const userEntity: UserEntity | null =
+      await this.userRepository.findById(id);
+    let deleteEntity: UserEntity = (await this.userRepository.findById(
+      id,
+    )) as UserEntity;
+    deleteEntity.activo = false;
+    if (userEntity) {
+      // Para el log, creamos una copia sin datos sensibles
+      const logUser = { ...userEntity } as Partial<UserEntity>;
+      delete logUser.salt;
+      delete logUser.password;
+      const logDeleteEntity = { ...deleteEntity } as Partial<UserEntity>;
+      delete logDeleteEntity.salt;
+      delete logDeleteEntity.password;
+      if (this.isProductionEnv) {
+        const esquema = this.userRepository.getSchema();
+        const tabla: string = this.userRepository.getTabla();
+        const logHistoryDto: LogHistoryDto = new LogHistoryDto(
+          null,
+          user.userName,
+          new Date(),
+          tabla,
+          esquema,
+          HISTORY_ACTION.DEL,
+          logDeleteEntity,
+          logUser,
+          userEntity.id,
+          ip,
+        );
+        await this.logHistoryService.create(logHistoryDto);
+      }
+    }
     return await this.userRepository.delete(id);
   }
 
@@ -222,14 +326,23 @@ export class UserService {
     return hash(password, salt);
   }
 
-  async deleteMultiple(user: UserEntity, ids: number[]): Promise<ResponseDto> {
+  async deleteMultiple(
+    user: UserEntity,
+    ids: number[],
+    ip: string,
+  ): Promise<ResponseDto> {
     let result = new ResponseDto();
     try {
       for (const id of ids) {
-        result = await this.delete(user, id);
+        result = await this.delete(user, id, ip);
       }
-    } catch (error) {
-      result.message = error.detail;
+    } catch (error: unknown) {
+      // TypeScript 6: manejar error de tipo unknown
+      if (error instanceof Error) {
+        result.message = (error as any).detail ?? error.message;
+      } else {
+        result.message = String(error);
+      }
       result.successStatus = false;
       return result;
     }
@@ -263,7 +376,9 @@ export class UserService {
     const readDto: any[] = [];
     for (const item of items.items) {
       const user = await this.userRepository.findById(item.id);
-      readDto.push(await this.userMapper.entityToDto(user));
+      if (user) {
+        readDto.push(await this.userMapper.entityToDto(user));
+      }
     }
     return new Pagination(readDto, items.meta, items.links);
   }
@@ -272,26 +387,57 @@ export class UserService {
     user: UserEntity,
     id: number,
     changePasswordDto: ChangePasswordDto,
+    ip: string,
   ): Promise<ResponseDto> {
     const result = new ResponseDto();
-    const foundUser: UserEntity = await this.userRepository.findById(id);
+    const updateUser: UserEntity = (await this.userRepository.findById(
+      id,
+    )) as UserEntity;
+    const foundUser: UserEntity | null = await this.userRepository.findById(id);
     if (!foundUser) {
       throw new NotFoundException('No existe el user');
     }
     try {
       const { password } = changePasswordDto;
-      foundUser.password = await UserService.hashPassword(
+      updateUser.password = await UserService.hashPassword(
         password,
-        foundUser.salt,
+        updateUser.salt ?? '',
       );
-      await this.userRepository.update(foundUser);
-      delete foundUser.salt;
-      delete foundUser.password;
-      await this.logHistoryService.create(user, foundUser, HISTORY_ACTION.MOD);
+      await this.userRepository.update(updateUser);
+
+      // Para el log, creamos una copia sin datos sensibles
+      const logUser = { ...foundUser } as Partial<UserEntity>;
+      delete logUser.salt;
+      delete logUser.password;
+      const logUpdateUser = { ...updateUser } as Partial<UserEntity>;
+      delete logUpdateUser.salt;
+      delete logUpdateUser.password;
+      const esquema: string = this.userRepository.getSchema();
+      const tabla: string = this.userRepository.getTabla();
+      if (this.isProductionEnv) {
+        const logHistoryDto: LogHistoryDto = new LogHistoryDto(
+          null,
+          user.userName,
+          new Date(),
+          tabla,
+          esquema,
+          HISTORY_ACTION.MOD,
+          logUpdateUser,
+          logUser,
+          foundUser.id,
+          ip,
+        );
+        await this.logHistoryService.create(logHistoryDto);
+      }
       result.successStatus = true;
       result.message = 'success';
-    } catch (error) {
-      result.message = error.response;
+    } catch (error: unknown) {
+      // TypeScript 6: manejar error de tipo unknown
+      if (error instanceof Error) {
+        result.message = (error as any).response ?? error.message;
+      } else {
+        result.message = String(error);
+      }
       result.successStatus = false;
       return result;
     }

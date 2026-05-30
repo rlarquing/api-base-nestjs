@@ -17,12 +17,10 @@ export class RolRepository
     super(rolRepository, ['users', 'funcions']);
   }
   async findByNombre(nombre: string): Promise<RolEntity | null> {
-    const result: RolEntity = await this.rolRepository.findOne({
+    const result: RolEntity | null = await this.rolRepository.findOne({
       where: { nombre, activo: true },
+      relations: this.relations,
     });
-    if (!result) {
-      return null;
-    }
     return result;
   }
 }

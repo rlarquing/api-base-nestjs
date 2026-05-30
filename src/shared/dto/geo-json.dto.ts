@@ -13,7 +13,7 @@ export class GeoJsonDto {
   @ApiProperty({ description: 'Features.', example: [] })
   features: [];
 
-  constructor(features) {
+  constructor(features: any) {
     this.type = 'FeatureCollection';
     this.features = features;
   }

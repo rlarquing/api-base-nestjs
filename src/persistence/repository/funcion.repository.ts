@@ -1,9 +1,9 @@
-import {Injectable} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {FindOneOptions, Repository} from 'typeorm';
-import {FuncionEntity, MenuEntity} from '../entity';
-import {IRepository} from '../../shared/interface';
-import {GenericRepository} from './generic.repository';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FuncionEntity, MenuEntity } from '../entity';
+import { IRepository } from '../../shared/interface';
+import { GenericRepository } from './generic.repository';
 
 @Injectable()
 export class FuncionRepository
@@ -16,10 +16,12 @@ export class FuncionRepository
         super(funcionRepository, ['endPoints', 'menu']);
     }
 
-    async findByMenu(menu: MenuEntity): Promise<FuncionEntity> {
-        return await this.funcionRepository.createQueryBuilder('f').
-        leftJoinAndSelect('f.menu','menu').
-        leftJoinAndSelect('f.endPoints','endPoints').
-        where(`f.activo = true AND f.menu_id=:menu_id`,{menu_id: menu.id}).getOne();
+    async findByMenu(menu: MenuEntity): Promise<FuncionEntity | null> {
+        const result = await this.funcionRepository.createQueryBuilder('f')
+            .leftJoinAndSelect('f.menu', 'menu')
+            .leftJoinAndSelect('f.endPoints', 'endPoints')
+            .where('f.activo = true AND f.menu_id = :menu_id', { menu_id: menu.id })
+            .getOne();
+        return result;
     }
 }

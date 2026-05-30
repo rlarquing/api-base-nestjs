@@ -5,7 +5,7 @@ import { TipoMenuTypeEnum } from '../enum';
 export class UpdateMultipleMenuDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'id de la $name', example: 1 })
-  id: number;
+  id!: number;
 
   @IsNotEmpty()
   @IsString({ message: 'El atributo label debe ser un texto' })
@@ -13,7 +13,7 @@ export class UpdateMultipleMenuDto {
     description: 'Nombre del menu',
     example: 'Listado de los indicadores',
   })
-  label: string;
+  label!: string;
 
   @IsNotEmpty()
   @IsString({ message: 'El atributo icon debe ser un texto' })
@@ -21,14 +21,14 @@ export class UpdateMultipleMenuDto {
     description: 'Icono del menu',
     example: 'Book',
   })
-  icon: string;
+  icon!: string;
   @IsNotEmpty()
   @IsString({ message: 'El atributo to debe ser un texto' })
   @ApiProperty({
     description: 'Dirección hacia donde va el menu',
     example: '/home',
   })
-  to: string;
+  to!: string;
 
   @IsOptional()
   @IsNumber({}, { message: 'El atributo menu debe ser un número' })
@@ -44,5 +44,5 @@ export class UpdateMultipleMenuDto {
     description: 'Tipo de menu',
     example: 'reporte',
   })
-  tipo: TipoMenuTypeEnum;
+  tipo!: TipoMenuTypeEnum;
 }

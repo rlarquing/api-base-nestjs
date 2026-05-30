@@ -20,7 +20,7 @@ export class SocketGateway
   implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit
 {
   @WebSocketServer()
-  server: Server;
+  server!: Server;
 
   protected clientes: any[] = [];
   protected canales: any[] = [];

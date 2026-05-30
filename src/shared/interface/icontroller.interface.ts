@@ -1,5 +1,6 @@
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
 import {Pagination} from "nestjs-typeorm-paginate";
+import { Request } from 'express';
 
 export interface IController {
   findAll(
@@ -15,15 +16,17 @@ export interface IController {
 
   createSelect(): Promise<SelectDto[]>;
 
-  createSelectFilter(filtroGenericoDto: FiltroGenericoDto,): Promise<SelectDto[]>;
+  createSelectFilter(
+    filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]>;
 
-  create(user: any, object: any): Promise<ResponseDto>;
+  create(user: any, object: any, ip: string): Promise<ResponseDto>;
 
-  createMultiple(user: any, object: any[]): Promise<ResponseDto[]>;
+  createMultiple(user: any, object: any[], ip: string): Promise<ResponseDto[]>;
 
-  update(user: any, id: number, object: any): Promise<ResponseDto>;
+  update(user: any, id: number, object: any, ip: string): Promise<ResponseDto>;
 
-  updateMultiple(user: any, object: any[]): Promise<ResponseDto>;
+  updateMultiple(user: any, object: any[], ip: string): Promise<ResponseDto>;
 
   filter(
     page?: number,

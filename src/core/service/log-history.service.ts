@@ -14,32 +14,34 @@ export class LogHistoryService {
     private logHistoryMapper: LogHistoryMapper,
   ) {}
 
-  async findAll(options: IPaginationOptions): Promise<Pagination<LogHistoryDto>> {
-    const trazas: Pagination<LogHistoryEntity> = await this.logHistoryRepository.findAll(
-      options,
-    );
-    const trazaDto: LogHistoryDto[] = trazas.items.map((traza: LogHistoryEntity) =>
-      this.logHistoryMapper.entityToDto(traza),
+  async findAll(
+    options: IPaginationOptions,
+  ): Promise<Pagination<LogHistoryDto>> {
+    const trazas: Pagination<LogHistoryEntity> =
+      await this.logHistoryRepository.findAll(options);
+    const trazaDto: LogHistoryDto[] = trazas.items.map(
+      (traza: LogHistoryEntity) => this.logHistoryMapper.entityToDto(traza),
     );
     return new Pagination(trazaDto, trazas.meta, trazas.links);
   }
 
   async findById(id: number): Promise<LogHistoryDto> {
-    const traza: LogHistoryEntity = await this.logHistoryRepository.findById(id);
+    const traza: LogHistoryEntity =
+      await this.logHistoryRepository.findById(id);
     return this.logHistoryMapper.entityToDto(traza);
   }
 
-  async create(
-    user: UserEntity,
-    entity: any,
-    action: HISTORY_ACTION,
-  ): Promise<void> {
+  async create(logHistoryDto: LogHistoryDto): Promise<void> {
     const traza: LogHistoryEntity = new LogHistoryEntity();
-    traza.user = user;
-    traza.model = entity.constructor.name;
-    traza.data = entity;
-    traza.action = action;
-    traza.record = entity.id;
+    traza.user = logHistoryDto.user;
+    traza.tabla = logHistoryDto.tabla;
+    traza.valorNuevo = logHistoryDto.valorNuevo;
+    traza.valorAnterior = logHistoryDto.valorAnterior ?? null;
+    traza.valorNuevo = logHistoryDto.valorNuevo;
+    traza.valorAnterior = logHistoryDto.valorAnterior;
+    traza.registroId = logHistoryDto.registroId;
+    traza.direccionIp = logHistoryDto.direccionIp;
+    traza.action = logHistoryDto.action;
     await this.logHistoryRepository.create(traza);
   }
 

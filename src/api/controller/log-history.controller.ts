@@ -48,7 +48,7 @@ export class LogHistoryController {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
+   
     description: 'Trazas no encontradas.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -86,7 +86,7 @@ export class LogHistoryController {
     type: LogHistoryDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
+   
     description: 'Traza no encontrada.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })

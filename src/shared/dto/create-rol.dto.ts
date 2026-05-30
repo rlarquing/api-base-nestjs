@@ -17,7 +17,7 @@ export class CreateRolDto {
     message: 'El nombre debe tener como máximo 255 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del rol.', example: 'Administrador' })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -25,7 +25,7 @@ export class CreateRolDto {
     description: 'Descripción del rol.',
     example: 'Tiene acceso total del api.',
   })
-  descripcion: string;
+  descripcion!: string;
 
   @IsArray()
   @IsOptional()

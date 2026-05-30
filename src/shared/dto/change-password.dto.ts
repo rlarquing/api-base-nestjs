@@ -17,7 +17,7 @@ export class ChangePasswordDto {
     description: 'Contraseña del usuario.',
     example: 'Qwerty1234*',
   })
-  password: string;
+  password!: string;
 
   @IsString()
   @MinLength(8, {
@@ -31,5 +31,5 @@ export class ChangePasswordDto {
     example: 'Qwerty1234*',
   })
   @IsEqualTo('password')
-  confirmPassword: string;
+  confirmPassword!: string;
 }

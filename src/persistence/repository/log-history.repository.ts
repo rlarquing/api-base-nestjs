@@ -31,7 +31,7 @@ export class LogHistoryRepository {
       throw new BadRequestException('id must be sent');
     }
     const options = { id } as FindOptionsWhere<LogHistoryEntity>;
-    const traza: LogHistoryEntity = await this.logHistoryRepository.findOneBy(options);
+    const traza: LogHistoryEntity | null = await this.logHistoryRepository.findOneBy(options);
     if (!traza) {
       throw new NotFoundException('this trazas does not found');
     }
@@ -52,7 +52,7 @@ export class LogHistoryRepository {
   }
 
   async findByFiltrados(user: UserEntity, filtro: any): Promise<any> {
-    const wheres = {};
+    const wheres: any = {};
     let datep;
     Object.assign(wheres, user);
 

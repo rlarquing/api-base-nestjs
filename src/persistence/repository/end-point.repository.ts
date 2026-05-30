@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeleteResult,
@@ -22,12 +22,20 @@ export class EndPointRepository {
 
   async findById(id: number): Promise<EndPointEntity> {
     const options = { id } as FindOptionsWhere<EndPointEntity>;
-    return await this.endPointRepository.findOneBy(options);
+    const result = await this.endPointRepository.findOneBy(options);
+    if (!result) {
+      throw new NotFoundException(`EndPoint con id ${id} no encontrado`);
+    }
+    return result;
   }
 
   async findByNombre(nombre: string): Promise<EndPointEntity> {
     const options = { nombre: nombre } as FindOptionsWhere<EndPointEntity>;
-    return await this.endPointRepository.findOneBy(options);
+    const result = await this.endPointRepository.findOneBy(options);
+    if (!result) {
+      throw new NotFoundException(`EndPoint con nombre ${nombre} no encontrado`);
+    }
+    return result;
   }
 
   async findByController(controller: string): Promise<EndPointEntity[]> {
@@ -49,9 +57,9 @@ export class EndPointRepository {
   }
 
   async update(endPointEntity: EndPointEntity): Promise<void> {
-    const endPoint: EndPointEntity = await this.findByNombre(
-      endPointEntity.nombre,
-    );
+    const endPoint: EndPointEntity | null = await this.endPointRepository.findOneBy({
+      nombre: endPointEntity.nombre,
+    } as FindOptionsWhere<EndPointEntity>);
     if (endPoint) {
       endPointEntity.id = endPoint.id;
       await this.endPointRepository.save(endPointEntity);

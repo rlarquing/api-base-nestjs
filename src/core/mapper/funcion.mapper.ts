@@ -67,7 +67,9 @@ export class FuncionMapper {
           updateFuncionDto.menu,
         );
       } else {
-        updateFuncionEntity.menu = null;
+        // En TypeScript 6, no podemos asignar null a un tipo que es `| undefined`
+        // Por lo tanto, asignamos undefined en lugar de null
+        updateFuncionEntity.menu = undefined;
       }
     }
     updateFuncionEntity.nombre = updateFuncionDto.nombre;
@@ -85,16 +87,17 @@ export class FuncionMapper {
     for (const endPoint of funcion.endPoints) {
       endPoints.push(await this.endPointMapper.entityToDto(endPoint));
     }
-    let menu: ReadMenuDto;
-    if (funcion.menu !== null) {
+    let menu: ReadMenuDto | undefined = undefined;
+    if (funcion.menu !== null && funcion.menu !== undefined) {
       menu = await this.menuMapper.entityToDto(funcion.menu);
     }
+    const descripcion: string = funcionEntity.descripcion ? funcionEntity.descripcion :"";
     const dtoToString: string = funcionEntity.toString();
     return new ReadFuncionDto(
       dtoToString,
       funcionEntity.id,
       funcionEntity.nombre,
-      funcionEntity.descripcion,
+      descripcion,
       endPoints,
       menu,
     );

@@ -6,7 +6,7 @@ export class LoggerProvider extends ConsoleLogger {
   levels: string[] = ['error', 'warn', 'log', 'verbose', 'debug'];
   constructor(private configService: ConfigService) {
     super();
-    this.levels = this.configService.get(AppConfig.LOGGERLEVELS);
+    this.levels = this.configService.get(AppConfig.LOGGERLEVELS) ?? this.levels;
   }
 
   log(message: string, context?: string) {

@@ -13,18 +13,18 @@ export interface IService {
   createSelect(): Promise<SelectDto[]>;
 
   createSelectFilter(
-      filtroGenericoDto: FiltroGenericoDto,
+    filtroGenericoDto: FiltroGenericoDto,
   ): Promise<SelectDto[]>;
 
-  create(user: any, object: any): Promise<ResponseDto>;
+  create(user: any, object: any, ip: string): Promise<ResponseDto>;
 
-  createMultiple(user: any, object: any[]): Promise<ResponseDto[]>;
+  createMultiple(user: any, object: any[], ip: string): Promise<ResponseDto[]>;
 
-  update(user: any, id: number, object: any): Promise<ResponseDto>;
+  update(user: any, id: number, object: any, ip: string): Promise<ResponseDto>;
 
-  deleteMultiple(user: any, ids: number[]): Promise<ResponseDto>;
+  deleteMultiple(user: any, ids: number[], ip: string): Promise<ResponseDto>;
 
-  removeMultiple(user: any, ids: number[]): Promise<DeleteResult>;
+  removeMultiple(user: any, ids: number[], ip: string): Promise<DeleteResult>;
 
   count(): Promise<number>;
 

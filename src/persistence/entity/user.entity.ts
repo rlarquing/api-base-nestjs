@@ -7,25 +7,35 @@ import { GenericEntity } from './generic.entity';
 
 @Entity('user', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class UserEntity extends GenericEntity {
-  @Column({ type: 'varchar', name: 'user_name', unique: true, length: 25, nullable: false })
-  userName: string;
+  @Column({
+    type: 'varchar',
+    name: 'user_name',
+    unique: true,
+    length: 25,
+    nullable: false,
+  })
+  userName!: string;
   @Column({ type: 'varchar', nullable: true })
-  email: string;
+  email?: string;
   @Column({ type: 'varchar', nullable: false })
-  password: string;
+  password!: string;
   @Column({ nullable: true, name: 'refresh_token' })
-  refreshToken: string;
+  refreshToken?: string;
   @Column({ type: 'date', nullable: true, name: 'refresh_token_exp' })
-  refreshTokenExp: string;
+  refreshTokenExp?: string;
   @Column({ type: 'varchar', nullable: true })
-  salt: string;
+  salt?: string;
+  @Column({ type: 'integer', nullable: true, name: 'reset_password_code' })
+  resetPasswordCode?: number;
+  @Column({ type: 'date', nullable: true, name: 'reset_password_code_exp' })
+  resetPasswordCodeExp?: string;
   @ManyToMany(() => RolEntity, (rol) => rol.users, { eager: false })
   @JoinTable({
     name: 'user_rol',
     joinColumn: { name: 'user_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'rol_id', referencedColumnName: 'id' },
   })
-  roles: RolEntity[];
+  roles!: RolEntity[];
   @ManyToMany(() => FuncionEntity, (funcion) => funcion.users, { eager: false })
   @JoinTable({
     name: 'user_funcion',
@@ -47,6 +57,7 @@ export class UserEntity extends GenericEntity {
     this.funcions = funcions;
   }
   public async validatePassword(password: string): Promise<boolean> {
+    if (!this.salt || !this.password) return false;
     return this.password === (await hash(password, this.salt));
   }
   public toString(): string {

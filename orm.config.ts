@@ -1,11 +1,16 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Configuration } from './src/database/database.keys';
 import { AppConfig } from './src/app.keys';
 import { dataSource } from './config/config';
 
-const config: DataSourceOptions = {
+// Obtener el tipo de base de datos desde la configuración
+const dbType = dataSource()[AppConfig.TYPE];
+const migrationsRun = dataSource()[Configuration.DB_MIGRATIONS_RUN] === 'true';
+
+// Crear la configuración con el tipo correcto
+const config: any = {
   ssl: dataSource()[AppConfig.SSL] === 'true',
-  type: dataSource()[AppConfig.TYPE],
+  type: dbType,
   port: +dataSource()[Configuration.DB_PORT],
   host: dataSource()[Configuration.DB_HOST],
   username: dataSource()[Configuration.DB_USER],
@@ -14,6 +19,7 @@ const config: DataSourceOptions = {
   migrations: ['src/database/migrations/*{.ts,.js}'],
   entities: ['src/**/**/*.entity.{ts,js}'],
   synchronize: dataSource()[Configuration.DB_SYNC] === 'true',
-  migrationsRun: dataSource()[Configuration.DB_MIGRATIONS_RUN],
+  migrationsRun,
 };
+
 export default new DataSource(config);

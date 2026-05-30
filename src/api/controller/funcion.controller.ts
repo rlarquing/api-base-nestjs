@@ -7,7 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
+  Query, Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -24,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionGuard, RolGuard } from '../guard';
-import { GetUser, Roles } from '../decorator';
+import { GetUser, IpAddress, Roles } from '../decorator';
 import { GenericController } from './generic.controller';
 import { FuncionEntity, UserEntity } from '../../persistence/entity';
 import { FuncionService } from '../../core/service';
@@ -41,6 +41,7 @@ import {
   UpdateFuncionDto,
   UpdateMultipleFuncionDto,
 } from '../../shared/dto';
+import { Request } from 'express';
 
 @ApiTags('Funcions')
 @Controller('funcion')
@@ -64,7 +65,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -99,7 +99,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     type: ReadFuncionDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -125,7 +124,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     type: [ReadFuncionDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -146,7 +144,6 @@ export class FuncionController extends GenericController<FuncionEntity> {
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -179,8 +176,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
   async create(
     @GetUser() user: UserEntity,
     @Body() createFuncionDto: CreateFuncionDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.create(user, createFuncionDto);
+    return await super.create(user, createFuncionDto, ip);
   }
 
   @Post('/multiple')
@@ -206,8 +204,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() createFuncionDto: CreateFuncionDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.createMultiple(user, createFuncionDto);
+    return await super.createMultiple(user, createFuncionDto, ip);
   }
 
   @Post('/importar/elementos')
@@ -233,8 +232,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
   async import(
     @GetUser() user: UserEntity,
     @Body() createFuncionDto: CreateFuncionDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.import(user, createFuncionDto);
+    return await super.import(user, createFuncionDto, ip);
   }
 
   @Patch('/:id')
@@ -261,8 +261,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateFuncionDto: UpdateFuncionDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.update(user, id, updateFuncionDto);
+    return await super.update(user, id, updateFuncionDto, ip);
   }
 
   @Patch('/elementos/multiples')
@@ -289,8 +290,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
   async updateMultiple(
     @GetUser() user: UserEntity,
     @Body() updateMultipleFuncioneDto: UpdateMultipleFuncionDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.updateMultiple(user, updateMultipleFuncioneDto);
+    return await super.updateMultiple(user, updateMultipleFuncioneDto, ip);
   }
 
   @Delete('/:id')
@@ -305,8 +307,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
   async delete(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.deleteMultiple(user, [id]);
+    return await super.deleteMultiple(user, [id], ip);
   }
   @Delete('/elementos/multiples')
   @Roles(RolType.ADMINISTRADOR)
@@ -325,8 +328,9 @@ export class FuncionController extends GenericController<FuncionEntity> {
   async deleteMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.deleteMultiple(user, ids);
+    return await super.deleteMultiple(user, ids, ip);
   }
 
   @Post('/filtrar')

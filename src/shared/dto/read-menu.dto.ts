@@ -35,8 +35,9 @@ export class ReadMenuDto {
   @ApiProperty({
     description: 'Objeto para cargar el select',
     example: SelectDto,
+    required: false,
   })
-  menu: SelectDto;
+  padre?: any;
 
   @ApiProperty({
     description: 'Menu hijos que tiene',
@@ -58,7 +59,7 @@ export class ReadMenuDto {
     menus: ReadMenuDto[],
     tipo: string,
     menuPadre: string,
-    menu: SelectDto,
+    padre?: any,
   ) {
     this.dtoToString = dtoToString;
     this.id = id;
@@ -68,6 +69,6 @@ export class ReadMenuDto {
     this.menus = menus;
     this.tipo = tipo;
     this.menuPadre = menuPadre;
-    this.menu = menu;
+    this.padre = padre;
   }
 }

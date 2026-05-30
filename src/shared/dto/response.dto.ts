@@ -5,8 +5,8 @@ export class ResponseDto {
   id?: number;
 
   @ApiProperty({ description: 'Estado de la respuesta.', example: 'true' })
-  successStatus: boolean;
+  successStatus!: boolean;
 
   @ApiProperty({ description: 'mensaje de la respuesta.', example: 'success' })
-  message: string;
+  message!: string;
 }

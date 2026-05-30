@@ -8,11 +8,12 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { GetUser, Roles } from '../decorator';
+import { GetUser, IpAddress, Roles } from '../decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolGuard } from '../guard';
 import {
@@ -42,6 +43,7 @@ import {
   UpdateMultipleRolDto,
   UpdateRolDto,
 } from '../../shared/dto';
+import { Request } from 'express';
 
 @ApiTags('Roles')
 @Controller('rol')
@@ -65,7 +67,6 @@ export class RolController extends GenericController<RolEntity> {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -93,7 +94,6 @@ export class RolController extends GenericController<RolEntity> {
     type: ReadRolDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -116,7 +116,6 @@ export class RolController extends GenericController<RolEntity> {
     type: [ReadRolDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -138,7 +137,6 @@ export class RolController extends GenericController<RolEntity> {
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -150,26 +148,29 @@ export class RolController extends GenericController<RolEntity> {
   @Post('/crear/select/dependiente')
   @Roles(RolType.ADMINISTRADOR)
   @ApiOperation({
-    summary: 'Obtener los elementos del conjunto para crear un select dependiente',
+    summary:
+      'Obtener los elementos del conjunto para crear un select dependiente',
   })
   @ApiResponse({
     status: 200,
     description:
-        'Muestra la información de los elementos del conjunto para crear un select dependiente',
+      'Muestra la información de los elementos del conjunto para crear un select dependiente',
     type: [SelectDto],
   })
   @ApiBody({
-    description: 'Estructura para crear el filtrado que brinda información para el select.',
+    description:
+      'Estructura para crear el filtrado que brinda información para el select.',
     type: FiltroGenericoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  async createSelectFilter( @Body() filtroGenericoDto: FiltroGenericoDto): Promise<SelectDto[]> {
+  async createSelectFilter(
+    @Body() filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]> {
     return await this.service.createSelectFilter(filtroGenericoDto);
   }
 
@@ -196,8 +197,9 @@ export class RolController extends GenericController<RolEntity> {
   async create(
     @GetUser() user: UserEntity,
     @Body() createRoleDto: CreateRolDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.create(user, createRoleDto);
+    return await super.create(user, createRoleDto, ip);
   }
   @Post('/multiple')
   @Roles(RolType.ADMINISTRADOR)
@@ -222,8 +224,9 @@ export class RolController extends GenericController<RolEntity> {
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() createRoleDto: CreateRolDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.createMultiple(user, createRoleDto);
+    return await super.createMultiple(user, createRoleDto, ip);
   }
 
   @Post('/importar/elementos')
@@ -249,8 +252,9 @@ export class RolController extends GenericController<RolEntity> {
   async import(
     @GetUser() user: UserEntity,
     @Body() createRoleDto: CreateRolDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.import(user, createRoleDto);
+    return await super.import(user, createRoleDto, ip);
   }
   @Patch('/:id')
   @Roles(RolType.ADMINISTRADOR)
@@ -276,8 +280,9 @@ export class RolController extends GenericController<RolEntity> {
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateRoleDto: UpdateRolDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.update(user, id, updateRoleDto);
+    return await super.update(user, id, updateRoleDto, ip);
   }
   @Patch('/elementos/multiples')
   @Roles(RolType.ADMINISTRADOR)
@@ -303,8 +308,9 @@ export class RolController extends GenericController<RolEntity> {
   async updateMultiple(
     @GetUser() user: UserEntity,
     @Body() updateMultipleRolDto: UpdateMultipleRolDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.updateMultiple(user, updateMultipleRolDto);
+    return await super.updateMultiple(user, updateMultipleRolDto, ip);
   }
 
   @Delete('/:id')
@@ -319,8 +325,9 @@ export class RolController extends GenericController<RolEntity> {
   async delete(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.deleteMultiple(user, [id]);
+    return await super.deleteMultiple(user, [id], ip);
   }
   @Delete('/elementos/multiples')
   @Roles(RolType.ADMINISTRADOR)
@@ -339,8 +346,9 @@ export class RolController extends GenericController<RolEntity> {
   async deleteMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.deleteMultiple(user, ids);
+    return await super.deleteMultiple(user, ids, ip);
   }
 
   @Post('/filtrar')

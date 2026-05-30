@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  JoinColumn,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { GenericEntity } from './generic.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
 import { TipoMenuTypeEnum } from '../../shared/enum';
@@ -17,7 +11,7 @@ export class MenuEntity extends GenericEntity {
     nullable: false,
     name: 'label',
   })
-  label: string;
+  label!: string;
   @Column({
     type: 'varchar',
     length: 255,
@@ -25,7 +19,7 @@ export class MenuEntity extends GenericEntity {
     nullable: false,
     name: 'icon',
   })
-  icon: string;
+  icon!: string;
   @Column({
     type: 'varchar',
     length: 255,
@@ -33,15 +27,15 @@ export class MenuEntity extends GenericEntity {
     nullable: false,
     name: 'to',
   })
-  to: string;
+  to!: string;
   @ManyToOne(() => MenuEntity, (menu) => menu.menus, {
     onDelete: 'CASCADE',
     nullable: true,
   })
   @JoinColumn({ name: 'menu_id' })
-  menu: MenuEntity;
+  menu?: MenuEntity;
   @OneToMany(() => MenuEntity, (menu) => menu.menu)
-  menus: MenuEntity[];
+  menus!: MenuEntity[];
   @Column({
     type: 'varchar',
     length: 255,
@@ -50,7 +44,7 @@ export class MenuEntity extends GenericEntity {
     name: 'tipo',
     default: 'interno',
   })
-  tipo: TipoMenuTypeEnum;
+  tipo!: TipoMenuTypeEnum;
   @Column({
     type: 'varchar',
     length: 255,
@@ -58,7 +52,7 @@ export class MenuEntity extends GenericEntity {
     nullable: true,
     name: 'nomemclador',
   })
-  nomemclador: string;
+  nomemclador?: string;
   constructor(
     label: string,
     icon: string,
@@ -71,9 +65,9 @@ export class MenuEntity extends GenericEntity {
     this.label = label;
     this.icon = icon;
     this.to = to;
-    this.menu = menu;
+    this.menu = menu ?? undefined;
     this.tipo = tipo;
-    this.nomemclador = nomemclador;
+    this.nomemclador = nomemclador ?? undefined;
   }
   public toString(): string {
     return this.label;

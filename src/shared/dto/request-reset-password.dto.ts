@@ -8,5 +8,5 @@ export class RequestResetPasswordDto {
     description: 'Email del usuario.',
     example: 'juan@camaguey.geocuba.cu',
   })
-  email: string;
+  email!: string;
 }

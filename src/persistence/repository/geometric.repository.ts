@@ -1,10 +1,8 @@
 import { GenericRepository } from './generic.repository';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, ObjectLiteral, Repository } from 'typeorm';
 import { isBoolean, isDate, isObject, isArray } from 'class-validator';
 
-export abstract class GeometricRepository<
-  ENTITY,
-> extends GenericRepository<ENTITY> {
+export abstract class GeometricRepository<ENTITY extends ObjectLiteral> extends GenericRepository<ENTITY> {
   constructor(
     protected repository: Repository<ENTITY>,
     protected relations?: string[],
@@ -56,9 +54,9 @@ export abstract class GeometricRepository<
     }
     const salida: any[] = [];
     let objs = { properties: {}, geometry: {} };
-    let properties = {};
+    let properties: any = {};
     for (const item of data) {
-      keys.forEach((key) => {
+      keys.forEach((key: string) => {
         if (key === 'geom') {
           objs['geometry'] = item[key];
         }
@@ -126,8 +124,8 @@ export abstract class GeometricRepository<
       });
     }
     const objs = { properties: {}, geometry: {} };
-    const properties = {};
-    keys.forEach((key) => {
+    const properties: any = {};
+    keys.forEach((key: string) => {
       if (key === 'geom') {
         objs['geometry'] = data[key];
       }

@@ -16,7 +16,7 @@ export class ResetPasswordDto {
     description: 'Code',
     example: 456123,
   })
-  resetPasswordCode: number;
+  resetPasswordCode!: number;
 
   @IsString()
   @MinLength(8, {
@@ -32,7 +32,7 @@ export class ResetPasswordDto {
     description: 'Contraseña del usuario.',
     example: 'Qwerty1234*',
   })
-  password: string;
+  password!: string;
 
   @IsString()
   @MinLength(8, {
@@ -46,5 +46,5 @@ export class ResetPasswordDto {
     example: 'Qwerty1234*',
   })
   @IsEqualTo('password')
-  confirmPassword: string;
+  confirmPassword!: string;
 }

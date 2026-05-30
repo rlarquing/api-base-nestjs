@@ -1,11 +1,16 @@
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { HISTORY_ACTION } from '../../persistence/entity/log-history.entity';
 
 export class LogHistoryDto {
-  @IsNumber()
   @ApiProperty({ description: 'id de la traza.', example: 1 })
-  id: number;
+  id: number | null;
 
   @IsString()
   @ApiProperty({ description: 'Nombre del usuario.', example: 'Juan' })
@@ -20,41 +25,62 @@ export class LogHistoryDto {
 
   @IsString()
   @ApiProperty({
-    description: 'Nombre del modelo que se modifico.',
-    example: 'RoleEntity',
+    description: 'Nombre del la tabla que se modifico.',
+    example: 'rol',
   })
-  model: string;
+  tabla: string;
 
-  @IsNotEmpty()
-  @ApiProperty({ description: 'Datos que se introducieron.' })
-  data: object;
+  @ApiProperty({ description: 'Datos nuevos.' })
+  valorNuevo?: object | null | undefined;
+
+  @ApiProperty({ description: 'Datos viejos.' })
+  valorAnterior?: object | null | undefined;
+
+  @ApiProperty({
+    description: 'Registro que se modifico.',
+    example: 1,
+  })
+  registroId?: number | null | undefined;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Direccion IP .',
+    example: '192.168.1.1',
+  })
+  direccionIp?: string | null | undefined;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Esquema.',
+    example: 'PUBLIC',
+  })
+  esquema: string;
 
   @IsNotEmpty()
   @ApiProperty({ description: 'Acción que se realizó.', example: 'ADD' })
   action: HISTORY_ACTION;
 
-  @IsNumber()
-  @ApiProperty({
-    description: 'Numero de registro que se modifico.',
-    example: '1',
-  })
-  record: number;
-
   constructor(
-    id: number,
+    id: number | null,
     user: string,
     date: Date,
-    model: string,
-    data: object,
+    tabla: string,
+    esquema: string,
     action: HISTORY_ACTION,
-    record: number,
+    valorNuevo: object | null | undefined,
+    valorAnterior: object | null | undefined,
+    registroId: number | null | undefined,
+    direccionIp: string | null | undefined,
   ) {
     this.id = id;
     this.user = user;
     this.date = date;
-    this.model = model;
-    this.data = data;
+    this.tabla = tabla;
+    this.esquema = esquema;
     this.action = action;
-    this.record = record;
+    this.valorNuevo = valorNuevo;
+    this.valorAnterior = valorAnterior;
+    this.registroId = registroId;
+    this.direccionIp = direccionIp;
   }
 }

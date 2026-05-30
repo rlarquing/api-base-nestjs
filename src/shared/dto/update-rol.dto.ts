@@ -17,7 +17,7 @@ export class UpdateRolDto {
     message: 'El nombre debe tener como máximo 255 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del rol.', example: 'Administrador' })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -25,7 +25,7 @@ export class UpdateRolDto {
     description: 'Descripción del rol.',
     example: 'Tiene endPoint total del api.',
   })
-  descripcion: string;
+  descripcion!: string;
 
   @IsArray()
   @IsOptional()

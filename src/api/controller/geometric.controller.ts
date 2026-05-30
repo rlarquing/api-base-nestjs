@@ -6,9 +6,10 @@ import { GeometricService } from '../../core/service';
 import { Servicio } from '../decorator';
 import { PermissionGuard } from '../guard';
 import { GeoJsonDto, TypeDto } from '../../shared/dto';
+import { ObjectLiteral } from 'typeorm';
 
 export abstract class GeometricController<
-  ENTITY,
+  ENTITY extends ObjectLiteral
 > extends GenericController<ENTITY> {
   protected constructor(
     protected service: GeometricService<ENTITY>,

@@ -7,12 +7,15 @@ export class LogHistoryMapper {
   entityToDto(logHistoryEntity: LogHistoryEntity): LogHistoryDto {
     return new LogHistoryDto(
       logHistoryEntity.id,
-      logHistoryEntity.user.userName,
+      logHistoryEntity.user,
       logHistoryEntity.date,
-      logHistoryEntity.model,
-      logHistoryEntity.data,
+      logHistoryEntity.tabla,
+      logHistoryEntity.esquema,
       logHistoryEntity.action,
-      logHistoryEntity.record,
+      logHistoryEntity.valorNuevo,
+      logHistoryEntity.valorAnterior,
+      logHistoryEntity.registroId,
+      logHistoryEntity.direccionIp,
     );
   }
 }

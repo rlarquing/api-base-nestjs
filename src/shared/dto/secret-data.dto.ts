@@ -11,7 +11,7 @@ export class SecretDataDto {
     example:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imp1YW4iLCJpYXQiOjE2Mjg4NTY5MzAsImV4cCI6MTYyODg2MDUzMH0.Ayxt1eCbRKbx7ya1QkZAjAHMWKWNL2BCZdqOHKVbb0g',
   })
-  accessToken: string;
+  accessToken!: string;
 
   @IsString()
   @IsNotEmpty()
@@ -19,19 +19,19 @@ export class SecretDataDto {
     description: 'Nombre del usuario.',
     example: 'OCbvl7fnhhzg5KVm',
   })
-  refreshToken: string;
+  refreshToken!: string;
 
   @IsNotEmpty()
   @ApiProperty({
     description: 'Funciones del usuario.',
     example: [ReadFuncionDto],
   })
-  functions: ReadFuncionDto[];
+  functions!: ReadFuncionDto[];
 
   @IsNotEmpty()
   @ApiProperty({
     description: 'Menu del usuario.',
     example: [ReadMenuDto],
   })
-  menus: ReadMenuDto[];
+  menus!: ReadMenuDto[];
 }

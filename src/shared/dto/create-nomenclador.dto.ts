@@ -13,7 +13,7 @@ export class CreateNomencladorDto {
     description: 'Denominación de la alerta.',
     example: 'Alerta 1',
   })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -27,5 +27,5 @@ export class CreateNomencladorDto {
     description: 'Denominación de la alerta.',
     example: 'Alerta 1',
   })
-  descripcion: string;
+  descripcion!: string;
 }

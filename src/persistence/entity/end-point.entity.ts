@@ -11,7 +11,7 @@ import { SchemaEnum } from '../../database/schema/schema.enum';
 @Entity('end_point', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class EndPointEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
   @Column({
     type: 'varchar',
     length: 255,
@@ -19,7 +19,7 @@ export class EndPointEntity {
     nullable: false,
     name: 'controller',
   })
-  controller: string;
+  controller!: string;
   @Column({
     type: 'varchar',
     length: 255,
@@ -27,7 +27,7 @@ export class EndPointEntity {
     nullable: false,
     name: 'servicio',
   })
-  servicio: string;
+  servicio!: string;
   @Column({
     type: 'varchar',
     length: 255,
@@ -35,7 +35,7 @@ export class EndPointEntity {
     nullable: false,
     name: 'ruta',
   })
-  ruta: string;
+  ruta!: string;
   @Column({
     type: 'varchar',
     length: 255,
@@ -43,7 +43,7 @@ export class EndPointEntity {
     nullable: false,
     name: 'nombre',
   })
-  nombre: string;
+  nombre!: string;
   @Column({
     type: 'varchar',
     length: 255,
@@ -51,10 +51,12 @@ export class EndPointEntity {
     nullable: false,
     name: 'metodo',
   })
-  metodo: string;
-  @ManyToMany(() => FuncionEntity, (funcion) => funcion.endPoints,{ onDelete: 'CASCADE'})
+  metodo!: string;
+  @ManyToMany(() => FuncionEntity, (funcion) => funcion.endPoints, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
-  funcions: FuncionEntity[];
+  funcions!: FuncionEntity[];
   constructor(
     controller: string,
     servicio: string,

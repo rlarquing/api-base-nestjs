@@ -7,7 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
+  Query, Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -29,7 +29,7 @@ import { GenericController } from './generic.controller';
 import { MenuEntity, UserEntity } from '../../persistence/entity';
 import { MenuService } from '../../core/service';
 import { RolType } from '../../shared/enum';
-import { GetUser, Roles } from '../decorator';
+import { GetUser, IpAddress, Roles } from '../decorator';
 import {
   BadRequestDto,
   BuscarDto,
@@ -41,6 +41,7 @@ import {
   UpdateMenuDto,
   UpdateMultipleMenuDto,
 } from '../../shared/dto';
+import { Request } from 'express';
 
 @ApiTags('Menus')
 @Controller('menu')
@@ -61,7 +62,6 @@ export class MenuController extends GenericController<MenuEntity> {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -92,7 +92,6 @@ export class MenuController extends GenericController<MenuEntity> {
     type: ReadMenuDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -116,7 +115,6 @@ export class MenuController extends GenericController<MenuEntity> {
     type: ReadMenuDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -140,7 +138,6 @@ export class MenuController extends GenericController<MenuEntity> {
     type: [ReadMenuDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -178,8 +175,9 @@ export class MenuController extends GenericController<MenuEntity> {
   async create(
     @GetUser() user: UserEntity,
     @Body() createMenuDto: CreateMenuDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.create(user, createMenuDto);
+    return await super.create(user, createMenuDto, ip);
   }
 
   @Post('/multiple')
@@ -207,8 +205,9 @@ export class MenuController extends GenericController<MenuEntity> {
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() createMenuDto: CreateMenuDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.createMultiple(user, createMenuDto);
+    return await super.createMultiple(user, createMenuDto, ip);
   }
 
   @Post('/importar/elementos')
@@ -236,8 +235,9 @@ export class MenuController extends GenericController<MenuEntity> {
   async import(
     @GetUser() user: UserEntity,
     @Body() createMenuDto: CreateMenuDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.import(user, createMenuDto);
+    return await super.import(user, createMenuDto, ip);
   }
 
   @Patch('/:id')
@@ -266,8 +266,9 @@ export class MenuController extends GenericController<MenuEntity> {
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMenuDto: UpdateMenuDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.update(user, id, updateMenuDto);
+    return await super.update(user, id, updateMenuDto, ip);
   }
 
   @Patch('/elementos/multiples')
@@ -296,8 +297,9 @@ export class MenuController extends GenericController<MenuEntity> {
   async updateMultiple(
     @GetUser() user: UserEntity,
     @Body() updateMultipleMenueDto: UpdateMultipleMenuDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.updateMultiple(user, updateMultipleMenueDto);
+    return await super.updateMultiple(user, updateMultipleMenueDto, ip);
   }
 
   @Delete('/:id')
@@ -314,8 +316,9 @@ export class MenuController extends GenericController<MenuEntity> {
   async delete(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.deleteMultiple(user, [id]);
+    return await super.deleteMultiple(user, [id], ip);
   }
   @Delete('/elementos/multiples')
   @Roles(RolType.ADMINISTRADOR)
@@ -336,8 +339,9 @@ export class MenuController extends GenericController<MenuEntity> {
   async deleteMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.deleteMultiple(user, ids);
+    return await super.deleteMultiple(user, ids, ip);
   }
 
   @Post('/filtrar')

@@ -1,10 +1,4 @@
-import {
-  Entity,
-  ManyToMany,
-  JoinColumn,
-  JoinTable,
-  Column,
-} from 'typeorm';
+import { Entity, ManyToMany, JoinColumn, JoinTable, Column } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { FuncionEntity } from './funcion.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
@@ -13,13 +7,13 @@ import { GenericEntity } from './generic.entity';
 @Entity('rol', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class RolEntity extends GenericEntity {
   @Column({ type: 'varchar', unique: true, length: 255, nullable: false })
-  nombre: string;
+  nombre!: string;
 
   @Column({ type: 'text', nullable: false })
-  descripcion: string;
+  descripcion!: string;
   @ManyToMany(() => UserEntity, (user) => user.roles)
   @JoinColumn()
-  users: UserEntity[];
+  users!: UserEntity[];
   @ManyToMany(() => FuncionEntity, (funcion) => funcion.rols, { eager: false })
   @JoinTable({
     name: 'rol_funcion',
@@ -32,7 +26,7 @@ export class RolEntity extends GenericEntity {
       referencedColumnName: 'id',
     },
   })
-  funcions: FuncionEntity[];
+  funcions!: FuncionEntity[];
   constructor(
     nombre: string,
     descripcion: string,
@@ -42,8 +36,6 @@ export class RolEntity extends GenericEntity {
     super();
     this.nombre = nombre;
     this.descripcion = descripcion;
-    this.users = users;
-    this.funcions = funcions;
   }
   public toString(): string {
     return this.nombre;

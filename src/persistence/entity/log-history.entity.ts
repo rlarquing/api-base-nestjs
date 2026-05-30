@@ -21,25 +21,57 @@ export enum HISTORY_ACTION {
   orderBy: { id: 'ASC' },
 })
 export class LogHistoryEntity {
-  @PrimaryGeneratedColumn({ type: 'int8'})
-  id: number;
+  @PrimaryGeneratedColumn({ type: 'int8' })
+  id!: number;
 
-  @ManyToOne(() => UserEntity, { eager: true })
-  @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
+  @Column({
+    type: 'varchar',
+    length: 255,
+    unique: false,
+    nullable: false,
+    name: 'user',
+  })
+  user!: string;
 
   @CreateDateColumn({ type: 'timestamp', name: 'date', nullable: true })
-  date: Date;
+  date!: Date;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+    unique: false,
+    nullable: false,
+    name: 'tabla',
+  })
+  tabla!: string;
+
+  @Column({ type: 'jsonb', nullable: true, name: 'valor_nuevo' })
+  valorNuevo?: object | null;
+
+  @Column({ type: 'jsonb', nullable: true, name: 'valor_anterior' })
+  valorAnterior?: object | null;
+
+  @Column({ type: 'int8', unique: false, nullable: false, name: 'registro_id' })
+  registroId?: number | null | undefined;
+
+  @Column({
+    type: 'varchar',
+    length: 45,
+    unique: false,
+    nullable: false,
+    name: 'direccion_ip',
+  })
+  direccionIp?: string | null;
+
+  @Column({
+    type: 'varchar',
+    length: 100,
+    unique: false,
+    nullable: false,
+    name: 'esquema',
+  })
+  esquema!: string;
 
   @Column()
-  model: string;
-
-  @Column({ type: 'jsonb', nullable: true })
-  data: object;
-
-  @Column()
-  action: HISTORY_ACTION;
-
-  @Column({ nullable: true })
-  record: number;
+  action!: HISTORY_ACTION;
 }

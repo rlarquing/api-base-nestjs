@@ -22,36 +22,37 @@ export class FuncionEntity extends GenericEntity {
     nullable: false,
     name: 'nombre',
   })
-  nombre: string;
+  nombre!: string;
   @Column({
     type: 'varchar',
     length: 255,
     unique: false,
-    nullable: false,
+    nullable: true,
     name: 'descripcion',
   })
-  descripcion: string;
+  descripcion?: string;
   @ManyToMany(() => EndPointEntity, (end_point) => end_point.funcions, {
-    eager: false, onDelete: 'CASCADE',
+    eager: false,
+    onDelete: 'CASCADE',
   })
   @JoinTable({
     name: 'funcion_end_point',
     joinColumn: { name: 'funcion_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'end_point_id', referencedColumnName: 'id' },
   })
-  endPoints: EndPointEntity[];
+  endPoints!: EndPointEntity[];
   @OneToOne(() => MenuEntity, { onDelete: 'CASCADE', nullable: true })
   @JoinColumn({ name: 'menu_id' })
   menu?: MenuEntity;
   @ManyToMany(() => RolEntity, (rol) => rol.funcions)
   @JoinColumn()
-  rols: RolEntity[];
+  rols!: RolEntity[];
   @ManyToMany(() => UserEntity, (user) => user.funcions)
   @JoinColumn()
-  users: UserEntity[];
+  users!: UserEntity[];
   constructor(
     nombre: string,
-    descripcion: string,
+    descripcion: string | undefined,
     endPoints: EndPointEntity[],
     menu?: MenuEntity,
   ) {

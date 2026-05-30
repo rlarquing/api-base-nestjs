@@ -13,14 +13,16 @@ export class MenuMapper {
   constructor(protected menuRepository: MenuRepository) {}
 
   async dtoToEntity(createMenuDto: CreateMenuDto): Promise<MenuEntity> {
-    const menu: MenuEntity = await this.menuRepository.findById(
-      createMenuDto.menu,
-    );
+    // Manejar el caso cuando menu es undefined
+    let menu: MenuEntity | undefined = undefined;
+    if (createMenuDto.menu !== undefined) {
+      menu = await this.menuRepository.findById(createMenuDto.menu);
+    }
     return new MenuEntity(
       createMenuDto.label,
       createMenuDto.icon,
       createMenuDto.to,
-      menu,
+      menu as MenuEntity,
       createMenuDto.tipo,
     );
   }
@@ -29,9 +31,11 @@ export class MenuMapper {
     updateMenuDto: UpdateMenuDto,
     updateMenuEntity: MenuEntity,
   ): Promise<MenuEntity> {
-    const menu: MenuEntity = await this.menuRepository.findById(
-      updateMenuDto.menu,
-    );
+    // Manejar el caso cuando menu es undefined
+    let menu: MenuEntity | undefined = undefined;
+    if (updateMenuDto.menu !== undefined) {
+      menu = await this.menuRepository.findById(updateMenuDto.menu);
+    }
     updateMenuEntity.label = updateMenuDto.label;
     updateMenuEntity.icon = updateMenuDto.icon;
     updateMenuEntity.tipo = updateMenuDto.tipo;
@@ -43,17 +47,20 @@ export class MenuMapper {
   async entityToDto(menuEntity: MenuEntity): Promise<ReadMenuDto> {
     const menu: MenuEntity = await this.menuRepository.findById(menuEntity.id);
     let menuPadre = '';
-    let menuSelectDto: SelectDto;
+    let padre: any | undefined = undefined;
     const menuDto: ReadMenuDto[] = [];
-    if (menu.menu === null) {
-      for (const menuHijo of menu.menus) {
-        if (menuHijo.activo === true) {
-          menuDto.push(await this.entityToDto(menuHijo));
+    if (menu.menu === null || menu.menu === undefined) {
+      // Verificar que menus existe antes de iterar
+      if (menu.menus) {
+        for (const menuHijo of menu.menus) {
+          if (menuHijo.activo === true) {
+            menuDto.push(await this.entityToDto(menuHijo));
+          }
         }
       }
     } else {
       menuPadre = menu.menu.toString();
-      menuSelectDto = new SelectDto(menu.menu.id, menu.menu.toString());
+      padre = { value: menu.menu.id, label: menu.menu.toString(), icon: menu.menu.icon };
     }
 
     const dtoToString: string = menuEntity.toString();
@@ -66,7 +73,7 @@ export class MenuMapper {
       menuDto,
       menuEntity.tipo,
       menuPadre,
-      menuSelectDto,
+      padre,
     );
   }
 }

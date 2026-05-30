@@ -14,14 +14,14 @@ export const encuentra = (array: any[], elem: any, field: any): boolean => {
 export const buscarValor = (objetos: any[], valor: string): any[] => {
   return objetos.filter((objeto: any) => {
     return Object.values(objeto).some(
-        (campo) => String(campo).indexOf(valor) !== -1,
+      (campo) => String(campo).indexOf(valor) !== -1,
     );
   });
 };
 export const paginarArreglo = (
-    arreglo: any[],
-    limit: number,
-    offset: number,
+  arreglo: any[],
+  limit: number,
+  offset: number,
 ): any[] => {
   return arreglo.slice(offset, offset + limit);
 };
@@ -215,7 +215,7 @@ export const parseFormula = (expression: string, solver?: any) => {
       return prefijo + subStr + sufijo;
     }
     // Sintactical analizer (where the operator in position ends, else position of next char).
-    function sintaxCheck(cadena: string, posicion: number) {
+    function sintaxCheck(cadena: string, posicion: number): number {
       let endComment;
       if (
         !cadena ||
@@ -490,7 +490,7 @@ export const promedio = (array: number[]): number => {
   return suma / array.length;
 };
 
-export const zPositiva = (x: number, xMin, xMax): number => {
+export const zPositiva = (x: number, xMin: number, xMax: number): number => {
   let z: number;
   if (x === xMin) {
     z = 0;
@@ -502,7 +502,7 @@ export const zPositiva = (x: number, xMin, xMax): number => {
   return z;
 };
 
-export const zNegativa = (x: number, xMin, xMax): number => {
+export const zNegativa = (x: number, xMin: number, xMax: number): number => {
   let z: number;
   if (x === xMax) {
     z = 0;
@@ -524,10 +524,13 @@ export const generarNuevoColor = () => {
   }
   return color;
 };
-export const groupBy = (list: any, keyGetter: any) => {
-  const map: any = new Map();
-  list.forEach((item) => {
-    const key: any = keyGetter(item);
+export const groupBy = <T>(
+  list: T[],
+  keyGetter: (item: T) => string | number,
+): Map<string | number, T[]> => {
+  const map: Map<string | number, T[]> = new Map();
+  list.forEach((item: T) => {
+    const key = keyGetter(item);
     const collection = map.get(key);
     if (!collection) {
       map.set(key, [item]);

@@ -8,21 +8,21 @@ export class UpdateFuncionDto {
     description: 'Nombre de la función',
     example: 'Crear reportes',
   })
-  nombre: string;
-  @IsNotEmpty()
+  nombre!: string;
+  @IsOptional()
   @IsString({ message: 'El atributo descripcion debe ser un texto' })
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Descripción de la funcion',
     example: 'Crea reportes',
   })
-  descripcion: string;
+  descripcion?: string;
 
   @IsArray({ message: 'El atributo endPoints debe de ser un arreglo' })
   @ApiProperty({
     description: 'Los endPoints necesarios para que esta funcion trabaje',
     example: [1],
   })
-  endPoints: number[];
+  endPoints!: number[];
 
   @IsOptional()
   @ApiPropertyOptional({

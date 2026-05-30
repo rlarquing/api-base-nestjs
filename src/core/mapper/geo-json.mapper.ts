@@ -5,7 +5,7 @@ import { GeoJsonDto } from '../../shared/dto';
 export class GeoJsonMapper {
   entitiesToDto(entities: any): GeoJsonDto {
     const geom: any = [];
-    entities.map((entity) => {
+    entities.map((entity: any) => {
       geom.push({
         type: 'Feature',
         properties: entity.properties,

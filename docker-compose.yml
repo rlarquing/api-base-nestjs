@@ -1,22 +1,72 @@
-version: '2'
+version: '3.8'
 
 services:
-  nodejs:
-    image: api-base-nestjs
-    container_name: api-base-nestjs
-    ports:
-      - "${PORT}:${PORT}"
-    restart: always  
+  # --- PostgreSQL Database ---
+  db:
+    image: postgres:16-alpine
+    container_name: navecopa-db
+    restart: always
     environment:
-      - NODE_PROJECT=/nodejs_project
-      - NPM_REGISTRY=https://npm.geocuba.cu/
-      - NODEJS_MIRROR=http://static.geocuba.cu/nodejs.org/
-      - NODEJS_ORG_MIRROR=http://static.geocuba.cu/nodejs.org/dist/
-      - no_proxy=https://npm.geocuba.cu
-      - PROJECTS_START_SCRIPT=start:prod
-    extra_hosts:
-      - "npm.geocuba.cu:10.11.1.244"
-      - "static.geocuba.cu:10.11.1.244"
+      POSTGRES_DB: ${DB_NAME:-api-navecopa}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
     volumes:
-      - /home/jsprojects/api-base-nestjs:/app
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - navecopa-network
 
+  # --- NestJS API ---
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: navecopa-api
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      URL: ${URL:-http://localhost:3000}
+      TYPE: postgres
+      SSL: "false"
+      DB_NAME: ${DB_NAME:-api-navecopa}
+      DB_PORT: 5432
+      DB_HOST: db
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS:-postgres}
+      DB_SYNC: "false"
+      DB_MIGRATIONS_RUN: "true"
+      SECRET: ${SECRET:-topSecret51}
+      CORS: "true"
+      LOGGER: "true"
+      LOGGER_LEVELS: error,warn,log
+      # --- Email (descomentar si se usa) ---
+      # EMAIL_SMTP: smtp.gmail.com
+      # EMAIL_PORT: 465
+      # EMAIL_SECURE: true
+      # EMAIL_ID: your-email@gmail.com
+      # EMAIL_PASS: your-app-password
+      # EMAIL_FROM: noreply@example.com
+    volumes:
+      - api_logs:/app/logs
+    networks:
+      - navecopa-network
+
+networks:
+  navecopa-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  api_logs:

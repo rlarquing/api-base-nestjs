@@ -6,11 +6,11 @@ export class TypeDto {
   @IsArray({ message: 'El atributo debe de ser un arreglo' })
   @IsOptional()
   @ApiProperty({ description: 'Exclución de atributos', example: [] })
-  exclude: string[];
+  exclude!: string[];
 
   @ApiProperty({
     description: 'Reproyectar la geometríaa',
     example: ReproyectarDto,
   })
-  reproyectar: ReproyectarDto;
+  reproyectar!: ReproyectarDto;
 }

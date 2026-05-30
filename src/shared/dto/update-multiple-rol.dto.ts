@@ -10,7 +10,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateMultipleRolDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'id del rol.', example: 1 })
-  id: number;
+  id!: number;
 
   @IsNotEmpty()
   @IsString()
@@ -21,7 +21,7 @@ export class UpdateMultipleRolDto {
     message: 'El nombre debe tener como máximo 255 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del rol.', example: 'Administrador' })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -29,7 +29,7 @@ export class UpdateMultipleRolDto {
     description: 'Descripción del rol.',
     example: 'Tiene endPoint total del api.',
   })
-  descripcion: string;
+  descripcion!: string;
 
   @IsArray()
   @IsOptional()

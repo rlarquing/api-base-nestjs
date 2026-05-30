@@ -17,7 +17,7 @@ export class AuthCredentialsDto {
     message: 'El nombre debe de tener como máximo 20 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del usuario.', example: 'juan' })
-  userName: string;
+  userName!: string;
 
   @IsString()
   @MinLength(8, {
@@ -33,5 +33,5 @@ export class AuthCredentialsDto {
     description: 'Contraseña del usuario.',
     example: 'Qwerty1234*',
   })
-  password: string;
+  password!: string;
 }

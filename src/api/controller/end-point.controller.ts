@@ -40,7 +40,6 @@ export class EndPointController {
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })

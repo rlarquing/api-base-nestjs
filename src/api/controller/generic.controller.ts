@@ -17,7 +17,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { AppConfig } from '../../app.keys';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, ObjectLiteral } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { IController } from '../../shared/interface';
@@ -28,12 +28,14 @@ import {
   ResponseDto,
   SelectDto,
 } from '../../shared/dto';
-import { GetUser, Servicio } from '../decorator';
+import { GetUser, IpAddress, Servicio } from '../decorator';
 import { PermissionGuard, RolGuard } from '../guard';
 import { UserEntity } from '../../persistence/entity';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-export abstract class GenericController<ENTITY> implements IController {
+export abstract class GenericController<
+  ENTITY extends ObjectLiteral,
+> implements IController {
   protected constructor(
     protected service: GenericService<ENTITY>,
     protected configService: ConfigService,
@@ -45,13 +47,13 @@ export abstract class GenericController<ENTITY> implements IController {
     limit?: number,
     sinPaginacion?: boolean,
   ): Promise<Pagination<any> | any[]> {
-    limit = limit > 100 ? 100 : limit;
+    limit = limit ?? 100;
     const url = this.configService.get(AppConfig.URL);
     return await this.service.findAll(
       {
-        page,
+        page: page ?? 1,
         limit,
-        route: url + '/api/' + this.ruta,
+        route: (url ?? '') + '/api/' + this.ruta,
       },
       sinPaginacion,
     );
@@ -75,7 +77,6 @@ export abstract class GenericController<ENTITY> implements IController {
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -87,26 +88,29 @@ export abstract class GenericController<ENTITY> implements IController {
 
   @Post('/crear/select/dependiente')
   @ApiOperation({
-    summary: 'Obtener los elementos del conjunto para crear un select dependiente',
+    summary:
+      'Obtener los elementos del conjunto para crear un select dependiente',
   })
   @ApiResponse({
     status: 200,
     description:
-        'Muestra la información de los elementos del conjunto para crear un select dependiente',
+      'Muestra la información de los elementos del conjunto para crear un select dependiente',
     type: [SelectDto],
   })
   @ApiBody({
-    description: 'Estructura para crear el filtrado que brinda información para el select.',
+    description:
+      'Estructura para crear el filtrado que brinda información para el select.',
     type: FiltroGenericoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
   @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
   @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
-  async createSelectFilter( @Body() filtroGenericoDto: FiltroGenericoDto): Promise<SelectDto[]> {
+  async createSelectFilter(
+    @Body() filtroGenericoDto: FiltroGenericoDto,
+  ): Promise<SelectDto[]> {
     return await this.service.createSelectFilter(filtroGenericoDto);
   }
 
@@ -114,23 +118,26 @@ export abstract class GenericController<ENTITY> implements IController {
   async create(
     @GetUser() user: UserEntity,
     @Body() object: any,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await this.service.create(user, object);
+    return await this.service.create(user, object, ip);
   }
   @Post('/multiple')
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() objects: any[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await this.service.createMultiple(user, objects);
+    return await this.service.createMultiple(user, objects, ip);
   }
 
   @Post('/importar/elementos')
   async import(
     @GetUser() user: UserEntity,
     @Body() objects: any[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await this.service.import(user, objects);
+    return await this.service.import(user, objects, ip);
   }
 
   @Patch('/:id')
@@ -138,17 +145,19 @@ export abstract class GenericController<ENTITY> implements IController {
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() object: any,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await this.service.update(user, id, object);
+    return await this.service.update(user, id, object, ip);
   }
   @Patch('/elementos/multiples')
   async updateMultiple(
     @GetUser() user: UserEntity,
     @Body() objects: any[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
     let result = new ResponseDto();
     for (const item of objects) {
-      result = await this.service.update(user, item.id, item);
+      result = await this.service.update(user, item.id, item, ip);
     }
     return result;
   }
@@ -166,8 +175,9 @@ export abstract class GenericController<ENTITY> implements IController {
   async delete(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await this.service.deleteMultiple(user, [id]);
+    return await this.service.deleteMultiple(user, [id], ip);
   }
   @Delete('/elementos/multiples')
   @ApiOperation({
@@ -188,8 +198,9 @@ export abstract class GenericController<ENTITY> implements IController {
   async deleteMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await this.service.deleteMultiple(user, ids);
+    return await this.service.deleteMultiple(user, ids, ip);
   }
   @Delete('/:id/delete/real')
   @ApiOperation({
@@ -205,8 +216,9 @@ export abstract class GenericController<ENTITY> implements IController {
   async remove(
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<DeleteResult> {
-    return await this.service.removeMultiple(user, [id]);
+    return await this.service.removeMultiple(user, [id], ip);
   }
   @Delete('/delete/real/elementos/multiples')
   @ApiOperation({
@@ -227,8 +239,9 @@ export abstract class GenericController<ENTITY> implements IController {
   async removeMultiple(
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<DeleteResult> {
-    return await this.service.removeMultiple(user, ids);
+    return await this.service.removeMultiple(user, ids, ip);
   }
   @ApiOperation({
     summary: 'Mostrar la cantidad de elementos que tiene el conjunto.',
@@ -253,13 +266,13 @@ export abstract class GenericController<ENTITY> implements IController {
     @Query('limit') limit = 10,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<Pagination<any>> {
-    limit = limit > 100 ? 100 : limit;
+    limit = limit ?? 100;
     const url = this.configService.get(AppConfig.URL);
     return await this.service.filter(
       {
         page,
         limit,
-        route: url + '/api/' + this.ruta + '/filtro/por',
+        route: (url ?? '') + '/api/' + this.ruta + '/filtro/por',
       },
       filtroGenericoDto,
     );
@@ -270,13 +283,13 @@ export abstract class GenericController<ENTITY> implements IController {
     @Query('limit') limit = 10,
     @Body() buscarDto: BuscarDto,
   ): Promise<Pagination<any>> {
-    limit = limit > 100 ? 100 : limit;
+    limit = limit ?? 100;
     const url = this.configService.get(AppConfig.URL);
     return await this.service.search(
       {
         page,
         limit,
-        route: url + '/api/' + this.ruta + '/buscar',
+        route: (url ?? '') + '/api/' + this.ruta + '/buscar',
       },
       buscarDto,
     );

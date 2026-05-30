@@ -7,6 +7,7 @@ import {
   FindOneOptions,
   ILike,
   In,
+  ObjectLiteral,
   Repository,
 } from 'typeorm';
 import { IRepository } from '../../shared/interface';
@@ -23,11 +24,27 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 
-export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
+export abstract class GenericRepository<
+  ENTITY extends ObjectLiteral,
+> implements IRepository<ENTITY> {
   protected constructor(
     protected repository: Repository<ENTITY>,
     protected relations?: string[],
   ) {}
+
+  /**
+   * Obtiene el nombre del schema de la entidad desde metadata de TypeORM
+   */
+  getSchema(): string {
+    return this.repository.metadata?.schema || 'public';
+  }
+
+  /**
+   * Obtiene el nombre de la tabla de la entidad
+   */
+  getTabla(): string {
+    return this.repository.metadata?.name || '';
+  }
 
   async findAll(
     options: IPaginationOptions,
@@ -36,7 +53,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     const findOptions = {
       where: { activo: true },
       relations: this.relations,
-    } as FindManyOptions;
+    } as unknown as FindManyOptions<ENTITY>;
     if (sinPaginacion === true) {
       return await this.repository.find(findOptions);
     } else {
@@ -48,15 +65,19 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     const options = {
       where: { id, activo: true },
       relations: this.relations,
-    } as FindOneOptions;
-    return await this.repository.findOne(options);
+    } as unknown as FindOneOptions<ENTITY>;
+    const result = await this.repository.findOne(options);
+    if (!result) {
+      throw new NotFoundException(`Entidad con id ${id} no encontrada`);
+    }
+    return result;
   }
 
-  async findOne(id: number): Promise<ENTITY> {
+  async findOne(id: number): Promise<ENTITY | null> {
     const options = {
       where: { id },
       relations: this.relations,
-    } as FindOneOptions;
+    } as unknown as FindOneOptions<ENTITY>;
     return await this.repository.findOne(options);
   }
 
@@ -64,7 +85,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     const options = {
       where: { id: In(ids), activo: true },
       relations: this.relations,
-    } as FindManyOptions;
+    } as unknown as FindManyOptions<ENTITY>;
     return await this.repository.find(options);
   }
 
@@ -72,7 +93,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     const options = {
       where: { activo: true },
       relations: this.relations,
-    } as FindManyOptions;
+    } as unknown as FindManyOptions<ENTITY>;
     return await this.repository.find(options);
   }
 
@@ -87,12 +108,12 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
   async delete(id: number): Promise<ENTITY> {
     const options = {
       where: { id, activo: true },
-    } as FindOneOptions;
-    const obj: any = await this.repository.findOne(options);
+    } as unknown as FindOneOptions<ENTITY>;
+    const obj: ENTITY | null = await this.repository.findOne(options);
     if (!obj) {
       throw new NotFoundException('No existe');
     }
-    obj.activo = false;
+    (obj as any).activo = false;
     return await this.repository.save(obj);
   }
 
@@ -109,9 +130,9 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     claves: string[],
     valores: any[],
   ): Promise<Pagination<ENTITY>> {
-    const wheres = { activo: true };
+    const wheres: any = { activo: true };
     for (let i = 0; i < claves.length; i++) {
-      if (this.relations.includes(claves[i])) {
+      if (this.relations && this.relations.includes(claves[i])) {
         wheres[claves[i]] = { id: valores[i] };
       } else {
         if (isNumber(valores[i])) {
@@ -133,7 +154,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     const where = {
       where: wheres,
       relations: this.relations,
-    } as FindManyOptions;
+    } as unknown as FindManyOptions<ENTITY>;
     return await paginate<ENTITY>(this.repository, options, where);
   }
 
@@ -145,7 +166,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     if (!isEmpty(search)) {
       const findOptions = {
         where: { activo: true },
-      } as FindManyOptions;
+      } as unknown as FindManyOptions<ENTITY>;
       const result = await this.repository.find(findOptions);
       const objs = new Map<string, string>();
       const keys = new Map<string, string>();
@@ -159,26 +180,28 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       }
       keys.forEach((key) => {
         for (const item of result) {
-          if (isString(item[key]) && isString(search)) {
-            if (item[key].toLowerCase().includes(search.toLowerCase())) {
+          if (isString((item as any)[key]) && isString(search)) {
+            if (
+              (item as any)[key].toLowerCase().includes(search.toLowerCase())
+            ) {
               if (!objs.has(key)) {
                 objs.set(key, `LOWER(q.${key}) ILIKE LOWER(:search)`);
               }
             }
           } else if (
-            isNumber(item[key]) &&
+            isNumber((item as any)[key]) &&
             isNumber(search) &&
-            item[key] === search
+            (item as any)[key] === search
           ) {
             if (!objs.has(key)) {
               objs.set(key, `${key} = :search`);
             }
           } else if (
-            isDate(item[key]) &&
+            isDate((item as any)[key]) &&
             isDate(search) &&
-            item[key] === search
+            (item as any)[key] === search
           ) {
-            const datep = item[key];
+            const datep = (item as any)[key];
             const start = new Date(datep.setHours(0, 0, 0, 0));
             const end = new Date(datep.setHours(23, 59, 59, 999));
             const date = {
@@ -188,9 +211,9 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
               objs.set(key, `${key}=${date}`);
             }
           } else if (
-            isBoolean(item[key]) &&
+            isBoolean((item as any)[key]) &&
             isBoolean(search) &&
-            item[key] === search
+            (item as any)[key] === search
           ) {
             if (!objs.has(key)) {
               objs.set(key, `${key}= :search`);
@@ -204,13 +227,13 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
         }
       }
       if (objs.size === 0) {
-        queryBuilder.where('q.active = :estado', { estado: true });
+        queryBuilder.where('q.activo = :estado', { estado: true });
       } else {
         const where: string[] = [];
         objs.forEach((item) => {
           where.push(item);
         });
-        queryBuilder.where('q.active = :estado', { estado: true });
+        queryBuilder.where('q.activo = :estado', { estado: true });
         queryBuilder.andWhere(
           new Brackets((qb) => {
             where.forEach((condition) => {
@@ -220,7 +243,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
         );
       }
     } else {
-      queryBuilder.where('q.active = :estado', { estado: true });
+      queryBuilder.where('q.activo = :estado', { estado: true });
     }
     return await paginate<ENTITY>(queryBuilder, options);
   }
@@ -231,7 +254,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     order?: any,
     take?: number,
   ): Promise<ENTITY[]> {
-    const wheres = { activo: true };
+    const wheres: any = { activo: true };
     for (let i = 0; i < claves.length; i++) {
       if (claves[i].includes('.')) {
         // Si la clave incluye un punto, asumimos que es una relación
@@ -257,7 +280,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       relations: this.relations,
       order: order,
       take: take,
-    } as FindManyOptions;
+    } as unknown as FindManyOptions<ENTITY>;
     return await this.repository.find(options);
   }
 
@@ -265,8 +288,8 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     claves: string[],
     valores: any[],
     order?: any,
-  ): Promise<ENTITY> {
-    const wheres = { activo: true };
+  ): Promise<ENTITY | null> {
+    const wheres: any = { activo: true };
     for (let i = 0; i < claves.length; i++) {
       if (claves[i].includes('.')) {
         // Si la clave incluye un punto, asumimos que es una relación
@@ -291,7 +314,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
       where: wheres,
       relations: this.relations,
       order: order,
-    } as FindOneOptions;
+    } as unknown as FindOneOptions<ENTITY>;
     return await this.repository.findOne(options);
   }
 
@@ -299,9 +322,9 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     claves: string[],
     valores: any[],
   ): Promise<ENTITY[]> {
-    const wheres = { activo: true };
+    const wheres: any = { activo: true };
     for (let i = 0; i < claves.length; i++) {
-      if (this.relations.includes(claves[i])) {
+      if (this.relations && this.relations.includes(claves[i])) {
         wheres[claves[i]] = { id: valores[i] };
       } else {
         if (isNumber(valores[i])) {
@@ -323,7 +346,7 @@ export abstract class GenericRepository<ENTITY> implements IRepository<ENTITY> {
     const options = {
       where: wheres,
       relations: this.relations,
-    } as FindManyOptions;
+    } as unknown as FindManyOptions<ENTITY>;
     return await this.repository.find(options);
   }
 }

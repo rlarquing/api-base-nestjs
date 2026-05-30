@@ -10,7 +10,7 @@ export class UpdateNomencladorDto {
     message: 'El nombre debe tener como máximo 255 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del nomenclador.', example: 'Nom 1' })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -24,5 +24,5 @@ export class UpdateNomencladorDto {
     description: 'Descripción del nomenclador.',
     example: 'Descripción del nom',
   })
-  descripcion: string;
+  descripcion!: string;
 }

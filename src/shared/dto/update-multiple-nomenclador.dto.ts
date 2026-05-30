@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateMultipleNomencladorDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'id de la alert.', example: 1 })
-  id: number;
+  id!: number;
 
   @IsNotEmpty()
   @IsString()
@@ -14,7 +14,7 @@ export class UpdateMultipleNomencladorDto {
     message: 'El nombre debe tener como máximo 255 carácteres.',
   })
   @ApiProperty({ description: 'Nombre del nomenclador.', example: 'Nom 1' })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -28,5 +28,5 @@ export class UpdateMultipleNomencladorDto {
     description: 'Descripción del nomenclador.',
     example: 'Descripción del nom',
   })
-  descripcion: string;
+  descripcion!: string;
 }

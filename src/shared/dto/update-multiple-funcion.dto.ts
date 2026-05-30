@@ -4,7 +4,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class UpdateMultipleFuncionDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'id de la $name', example: 1 })
-  id: number;
+  id!: number;
 
   @IsNotEmpty()
   @IsString({ message: 'El atributo nombre debe ser un strings' })
@@ -12,21 +12,21 @@ export class UpdateMultipleFuncionDto {
     description: 'Nombre de la función',
     example: 'Crear reportes',
   })
-  nombre: string;
-  @IsNotEmpty()
+  nombre!: string;
+  @IsOptional()
   @IsString({ message: 'El atributo descripcion debe ser un texto' })
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Descripción de la funcion',
     example: 'Crea reportes',
   })
-  descripcion: string;
+  descripcion?: string;
 
   @IsArray({ message: 'El atributo endPoints debe de ser un arreglo' })
   @ApiProperty({
     description: 'Los endPoints necesarios para que esta funcion trabaje',
     example: [1],
   })
-  endPoints: number[];
+  endPoints!: number[];
 
   @IsOptional()
   @ApiPropertyOptional({

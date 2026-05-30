@@ -37,7 +37,7 @@ import {
   UpdateMultipleNomencladorDto,
   UpdateNomencladorDto,
 } from '../../shared/dto';
-import { GetUser, Servicio } from '../decorator';
+import { GetUser, IpAddress, Servicio } from '../decorator';
 import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
 import { NomencladorTypeEnum } from '../../shared/enum';
@@ -62,7 +62,6 @@ export class GenericNomencladorController {
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -82,7 +81,6 @@ export class GenericNomencladorController {
     type: ReadNomencladorDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -109,7 +107,6 @@ export class GenericNomencladorController {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -148,7 +145,6 @@ export class GenericNomencladorController {
     type: [ReadNomencladorDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -183,11 +179,13 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Body() createNomencladorDto: CreateNomencladorDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
     return await this.nomencladorService.create(
       name,
       user,
       createNomencladorDto,
+      ip,
     );
   }
   @Post('/:name/multiple')
@@ -212,11 +210,13 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Body() createNomencladorDto: CreateNomencladorDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
     return await this.nomencladorService.createMultiple(
       name,
       user,
       createNomencladorDto,
+      ip,
     );
   }
 
@@ -242,11 +242,13 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Body() createNomencladorDto: CreateNomencladorDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
     return await this.nomencladorService.importar(
       name,
       user,
       createNomencladorDto,
+      ip,
     );
   }
   @Patch('/:name/:id')
@@ -272,12 +274,14 @@ export class GenericNomencladorController {
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateNomencladorDto: UpdateNomencladorDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
     return await this.nomencladorService.update(
       name,
       user,
       id,
       updateNomencladorDto,
+      ip,
     );
   }
   @Patch('/:name/elementos/multiples')
@@ -303,10 +307,17 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Body() updateMultipleNomencladorDto: UpdateMultipleNomencladorDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
     let result = new ResponseDto();
     for (const item of updateMultipleNomencladorDto) {
-      result = await this.nomencladorService.update(name, user, item.id, item);
+      result = await this.nomencladorService.update(
+        name,
+        user,
+        item.id,
+        item,
+        ip,
+      );
     }
     return result;
   }
@@ -326,8 +337,9 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await this.nomencladorService.deleteMultiple(name, user, [id]);
+    return await this.nomencladorService.deleteMultiple(name, user, [id], ip);
   }
   @Delete('/:name/elementos/multiples')
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
@@ -350,8 +362,9 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await this.nomencladorService.deleteMultiple(name, user, ids);
+    return await this.nomencladorService.deleteMultiple(name, user, ids, ip);
   }
   @Delete('/:name/:id/delete/real')
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
@@ -369,8 +382,9 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
+    @IpAddress() ip: string,
   ): Promise<DeleteResult> {
-    return await this.nomencladorService.removeMultiple(name, user, [id]);
+    return await this.nomencladorService.removeMultiple(name, user, [id], ip);
   }
   @Delete('/:name/delete/real/elementos/multiples')
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
@@ -393,8 +407,9 @@ export class GenericNomencladorController {
     @Param('name') name: string,
     @GetUser() user: UserEntity,
     @Body() ids: number[],
+    @IpAddress() ip: string,
   ): Promise<DeleteResult> {
-    return await this.nomencladorService.removeMultiple(name, user, ids);
+    return await this.nomencladorService.removeMultiple(name, user, ids, ip);
   }
   @Get('/:name/cantidad/elementos')
   @ApiParam({ name: 'name', example: 'sector' })

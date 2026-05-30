@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # --- PostgreSQL Database ---
+  db:
+    image: postgres:16-alpine
+    container_name: navecopa-db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME:-api-navecopa}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASS:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - navecopa-network
+
+  # --- NestJS API ---
+  api:
+    build:
+      context: ./api-navecopa
+      dockerfile: Dockerfile
+    container_name: navecopa-api
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      URL: ${URL:-http://localhost:3000}
+      TYPE: postgres
+      SSL: "false"
+      DB_NAME: ${DB_NAME:-api-navecopa}
+      DB_PORT: 5432
+      DB_HOST: db
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASS: ${DB_PASS:-postgres}
+      DB_SYNC: "false"
+      DB_MIGRATIONS_RUN: "true"
+      SECRET: ${SECRET:-topSecret51}
+      CORS: "true"
+      LOGGER: "true"
+      LOGGER_LEVELS: error,warn,log
+    volumes:
+      - api_logs:/app/logs
+    networks:
+      - navecopa-network
+
+  # --- Next.js Frontend ---
+  web:
+    build:
+      context: ./web-navecopa
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000/api/}
+    container_name: navecopa-web
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - api
+    environment:
+      NODE_ENV: production
+    networks:
+      - navecopa-network
+
+networks:
+  navecopa-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  api_logs:

@@ -33,7 +33,7 @@ export class PermissionGuard implements CanActivate {
       const funcionalidad = endPoint.split('.')[1];
       const ruta: string[] = request.route.path
         .split(`/`)
-        .filter((path) => path !== '');
+        .filter((path: string) => path !== '');
       let controlador = ruta[1];
       controlador = aInicialMinuscula(quitarSeparador(controlador, '-'));
       endPoint = controlador + '.' + funcionalidad;

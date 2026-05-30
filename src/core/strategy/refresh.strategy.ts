@@ -14,10 +14,12 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     private configService: ConfigService,
     private userRepository: UserRepository,
   ) {
+    // TypeScript 6: Asegurar que secretOrKey no sea undefined
+    const secret = configService.get<string>(AppConfig.SECRET) ?? 'default-secret-key';
     super({
       ignoreExpiration: true,
       passReqToCallback: true,
-      secretOrKey: configService.get(AppConfig.SECRET),
+      secretOrKey: secret,
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }

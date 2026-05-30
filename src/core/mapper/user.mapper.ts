@@ -17,31 +17,35 @@ export class UserMapper {
     protected funcionMapper: FuncionMapper,
   ) {}
   dtoToEntity(userDto: UserDto): UserEntity {
-    return new UserEntity(userDto.userName, userDto.email);
+    return new UserEntity(userDto.userName, userDto.email ?? '');
   }
   dtoToUpdateEntity(
     updateUserDto: UpdateUserDto,
     updateUserEntity: UserEntity,
   ): UserEntity {
     updateUserEntity.userName = updateUserDto.userName;
-    updateUserEntity.email = updateUserDto.email;
+    updateUserEntity.email = updateUserDto.email ?? updateUserEntity.email;
     return updateUserEntity;
   }
   async entityToDto(userEntity: UserEntity): Promise<ReadUserDto> {
     const readRolDto: ReadRolDto[] = [];
-    for (const rol of userEntity.roles) {
-      readRolDto.push(await this.rolMapper.entityToDto(rol));
+    if (userEntity.roles) {
+      for (const rol of userEntity.roles) {
+        readRolDto.push(await this.rolMapper.entityToDto(rol));
+      }
     }
     const readFuncionDto: ReadFuncionDto[] = [];
-    for (const funcion of userEntity.funcions) {
-      readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
+    if (userEntity.funcions) {
+      for (const funcion of userEntity.funcions) {
+        readFuncionDto.push(await this.funcionMapper.entityToDto(funcion));
+      }
     }
     const dtoToString: string = userEntity.toString();
     return new ReadUserDto(
       dtoToString,
       userEntity.id,
       userEntity.userName,
-      userEntity.email,
+      userEntity.email ?? '',
       readRolDto,
       readFuncionDto,
     );
