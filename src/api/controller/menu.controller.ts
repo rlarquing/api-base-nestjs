@@ -7,13 +7,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query, Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -29,7 +27,7 @@ import { GenericController } from './generic.controller';
 import { MenuEntity, UserEntity } from '../../persistence/entity';
 import { MenuService } from '../../core/service';
 import { RolType } from '../../shared/enum';
-import { GetUser, IpAddress, Roles } from '../decorator';
+import { GetUser, IpAddress, Roles, PaginationParams } from '../decorator';
 import {
   BadRequestDto,
   BuscarDto,
@@ -41,7 +39,7 @@ import {
   UpdateMenuDto,
   UpdateMultipleMenuDto,
 } from '../../shared/dto';
-import { Request } from 'express';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 @ApiTags('Menus')
 @Controller('menu')
@@ -49,9 +47,9 @@ import { Request } from 'express';
 export class MenuController extends GenericController<MenuEntity> {
   constructor(
     protected menuService: MenuService,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
   ) {
-    super(menuService, configService, 'menu');
+    super(menuService, paginationService, 'menu');
   }
 
   @Get('/')
@@ -74,11 +72,9 @@ export class MenuController extends GenericController<MenuEntity> {
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
   @ApiBearerAuth()
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('sinPaginacion') sinPaginacion = false,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<any> {
-    const data = await super.findAll(page, limit, sinPaginacion);
+    const data = await super.findAll(params);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
     const key: string[] = ['id', 'label', 'icon', 'to', 'menuPadre'];
     return new ListadoDto(header, key, data);
@@ -366,11 +362,10 @@ export class MenuController extends GenericController<MenuEntity> {
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
   @ApiBearerAuth()
   async filter(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<any> {
-    const data = await super.filter(page, limit, filtroGenericoDto);
+    const data = await super.filter(params, filtroGenericoDto);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
     const key: string[] = ['id', 'label', 'icon', 'to', 'menuPadre'];
     return new ListadoDto(header, key, data);
@@ -397,11 +392,10 @@ export class MenuController extends GenericController<MenuEntity> {
   @UseGuards(AuthGuard('jwt'), RolGuard, PermissionGuard)
   @ApiBearerAuth()
   async search(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<any> {
-    const data = await super.search(page, limit, buscarDto);
+    const data = await super.search(params, buscarDto);
     const header: string[] = ['id', 'Label', 'Icon', 'To', 'Menu'];
     const key: string[] = ['id', 'label', 'icon', 'to', 'menuPadre'];
     return new ListadoDto(header, key, data);

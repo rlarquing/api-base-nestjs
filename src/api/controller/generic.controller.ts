@@ -6,7 +6,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -16,10 +15,8 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
-import { AppConfig } from '../../app.keys';
 import { DeleteResult, ObjectLiteral } from 'typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
 import { IController } from '../../shared/interface';
 import { GenericService } from '../../core/service';
 import {
@@ -28,44 +25,41 @@ import {
   ResponseDto,
   SelectDto,
 } from '../../shared/dto';
-import { GetUser, IpAddress, Servicio } from '../decorator';
+import { GetUser, IpAddress, Servicio, PaginationParams } from '../decorator';
 import { PermissionGuard, RolGuard } from '../guard';
 import { UserEntity } from '../../persistence/entity';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import { Pagination } from '../../shared/pagination';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 export abstract class GenericController<
   ENTITY extends ObjectLiteral,
 > implements IController {
   protected constructor(
     protected service: GenericService<ENTITY>,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
     protected ruta: string,
   ) {}
+
   @Get('/')
   async findAll(
-    page?: number,
-    limit?: number,
-    sinPaginacion?: boolean,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<Pagination<any> | any[]> {
-    limit = limit ?? 100;
-    const url = this.configService.get(AppConfig.URL);
-    return await this.service.findAll(
-      {
-        page: page ?? 1,
-        limit,
-        route: (url ?? '') + '/api/' + this.ruta,
-      },
-      sinPaginacion,
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, this.ruta, params.sinPaginacion,
     );
+    return await this.service.findAll(options, params.sinPaginacion);
   }
+
   @Get('/:id')
   async findById(@Param('id', ParseIntPipe) id: number): Promise<any> {
     return await this.service.findById(id);
   }
+
   @Post('/elementos/multiples')
   async findByIds(@Body() ids: number[]): Promise<any[]> {
     return await this.service.findByIds(ids);
   }
+
   @Get('/crear/select')
   @ApiOperation({
     summary: 'Obtener los elementos del conjunto para crear un select',
@@ -122,6 +116,7 @@ export abstract class GenericController<
   ): Promise<ResponseDto> {
     return await this.service.create(user, object, ip);
   }
+
   @Post('/multiple')
   async createMultiple(
     @GetUser() user: UserEntity,
@@ -149,6 +144,7 @@ export abstract class GenericController<
   ): Promise<ResponseDto> {
     return await this.service.update(user, id, object, ip);
   }
+
   @Patch('/elementos/multiples')
   async updateMultiple(
     @GetUser() user: UserEntity,
@@ -161,6 +157,7 @@ export abstract class GenericController<
     }
     return result;
   }
+
   @Delete('/:id')
   @ApiOperation({
     summary: 'Eliminar un elemento del conjunto utilizando borrado virtual.',
@@ -179,6 +176,7 @@ export abstract class GenericController<
   ): Promise<ResponseDto> {
     return await this.service.deleteMultiple(user, [id], ip);
   }
+
   @Delete('/elementos/multiples')
   @ApiOperation({
     summary:
@@ -202,6 +200,7 @@ export abstract class GenericController<
   ): Promise<ResponseDto> {
     return await this.service.deleteMultiple(user, ids, ip);
   }
+
   @Delete('/:id/delete/real')
   @ApiOperation({
     summary: 'Eliminar un elemento del conjunto utilizando borrado real.',
@@ -220,6 +219,7 @@ export abstract class GenericController<
   ): Promise<DeleteResult> {
     return await this.service.removeMultiple(user, [id], ip);
   }
+
   @Delete('/delete/real/elementos/multiples')
   @ApiOperation({
     summary:
@@ -243,6 +243,7 @@ export abstract class GenericController<
   ): Promise<DeleteResult> {
     return await this.service.removeMultiple(user, ids, ip);
   }
+
   @ApiOperation({
     summary: 'Mostrar la cantidad de elementos que tiene el conjunto.',
   })
@@ -260,38 +261,26 @@ export abstract class GenericController<
   async count(): Promise<number> {
     return await this.service.count();
   }
+
   @Post('/filtrar')
   async filter(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<Pagination<any>> {
-    limit = limit ?? 100;
-    const url = this.configService.get(AppConfig.URL);
-    return await this.service.filter(
-      {
-        page,
-        limit,
-        route: (url ?? '') + '/api/' + this.ruta + '/filtro/por',
-      },
-      filtroGenericoDto,
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, `${this.ruta}/filtro/por`,
     );
+    return await this.service.filter(options, filtroGenericoDto);
   }
+
   @Post('/buscar')
   async search(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<Pagination<any>> {
-    limit = limit ?? 100;
-    const url = this.configService.get(AppConfig.URL);
-    return await this.service.search(
-      {
-        page,
-        limit,
-        route: (url ?? '') + '/api/' + this.ruta + '/buscar',
-      },
-      buscarDto,
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, `${this.ruta}/buscar`,
     );
+    return await this.service.search(options, buscarDto);
   }
 }

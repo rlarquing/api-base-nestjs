@@ -16,7 +16,7 @@ import {
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
   isBoolean,
   isDate,
@@ -26,11 +26,7 @@ import {
 } from 'class-validator';
 import { RolType } from '../../shared/enum';
 import { ResponseDto } from '../../shared/dto';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
 
 @Injectable()
 export class UserRepository {
@@ -186,7 +182,7 @@ export class UserRepository {
     userName: string,
     refreshToken: string,
   ): Promise<UserEntity | null> {
-    const currentDate = moment().format('YYYY/MM/DD');
+    const currentDate = dayjs().format('YYYY/MM/DD');
     const options = {
       activo: true,
       userName: userName,
@@ -328,7 +324,7 @@ export class UserRepository {
   }
 
   async findByResetCode(code: number): Promise<UserEntity | null> {
-    const currentDate = moment().format('YYYY/MM/DD');
+    const currentDate = dayjs().format('YYYY/MM/DD');
     const options = {
       where: {
         activo: true,

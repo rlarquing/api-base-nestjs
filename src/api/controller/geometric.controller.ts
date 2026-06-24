@@ -1,22 +1,22 @@
 import { Body, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { GenericController } from './generic.controller';
 import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
 import { GeometricService } from '../../core/service';
 import { Servicio } from '../decorator';
 import { PermissionGuard } from '../guard';
 import { GeoJsonDto, TypeDto } from '../../shared/dto';
 import { ObjectLiteral } from 'typeorm';
+import { PaginationService } from '../../shared/pagination';
 
 export abstract class GeometricController<
   ENTITY extends ObjectLiteral
 > extends GenericController<ENTITY> {
   protected constructor(
     protected service: GeometricService<ENTITY>,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
     protected ruta: string,
   ) {
-    super(service, configService, ruta);
+    super(service, paginationService, ruta);
   }
   @Post('/obtener/json')
   @Servicio(undefined, 'geoJson')

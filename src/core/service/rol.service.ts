@@ -6,7 +6,7 @@ import { FuncionEntity, RolEntity } from '../../persistence/entity';
 import { FuncionRepository, RolRepository } from '../../persistence/repository';
 import { ConfigService } from '@nestjs/config';
 import { RolType } from '../../shared/enum';
-import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions } from '../../shared/pagination';
 
 @Injectable()
 export class RolService extends GenericService<RolEntity> {

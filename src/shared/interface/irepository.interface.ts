@@ -1,5 +1,5 @@
 import { DeleteResult } from 'typeorm';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../pagination/types';
 
 export interface IRepository<ENTITY> {
   findAll(

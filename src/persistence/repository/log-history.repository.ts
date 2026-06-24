@@ -7,11 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
 import { LogHistoryEntity, UserEntity } from '../entity';
 import { UserRepository } from './user.repository';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
 
 @Injectable()
 export class LogHistoryRepository {

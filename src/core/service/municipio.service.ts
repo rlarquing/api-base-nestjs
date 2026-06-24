@@ -13,7 +13,7 @@ import { GeoJsonDto, ReadMunicipioDto, SelectDto } from '../../shared/dto';
 import { MunicipioEntity, ProvinciaEntity } from '../../persistence/entity';
 import { AppConfig } from '../../app.keys';
 import { ConfigService } from '@nestjs/config';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../../shared/pagination';
 
 @Injectable()
 export class MunicipioService {

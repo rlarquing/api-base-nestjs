@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../../shared/pagination';
 import cubejs, { CubeApi, ResultSet } from '@cubejs-client/core';
 import { AppConfig } from '../../app.keys';
 import { ConfigService } from '@nestjs/config';

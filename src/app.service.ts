@@ -12,4 +12,5 @@ export const module = [
   ApiModule,
   MailModule,
   DashboardModule,
+   ...(process.env.SOCKET_ENABLED === 'true' ? [require('./socket/socket.module').SocketModule] : []),
 ];

@@ -7,12 +7,10 @@ import {
     ParseIntPipe,
     Patch,
     Post,
-    Query,
     UseGuards,
 } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport';
-import { GetUser, IpAddress } from '../decorator';
-import {Roles} from '../decorator';
+import { GetUser, IpAddress, Roles, PaginationParams } from '../decorator';
 import {
     ApiBearerAuth,
     ApiBody,
@@ -23,7 +21,6 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 import {PermissionGuard, RolGuard} from '../guard';
-import {ConfigService} from '@nestjs/config';
 import {RolType} from '../../shared/enum';
 import {UserService} from '../../core/service';
 import {
@@ -36,8 +33,8 @@ import {
     ResponseDto, SelectDto,
     UpdateUserDto,
 } from '../../shared/dto';
-import {AppConfig} from '../../app.keys';
 import {UserEntity} from '../../persistence/entity';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 @ApiTags('Users')
 @Controller('user')
@@ -47,7 +44,7 @@ import {UserEntity} from '../../persistence/entity';
 export class UserController {
   constructor(
     protected userService: UserService,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
   ) {}
 
   @Get('/')
@@ -67,16 +64,12 @@ export class UserController {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<ListadoDto> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
-    const data = await this.userService.findAll({
-      page,
-      limit,
-      route: url + '/user',
-    });
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, 'user',
+    );
+    const data = await this.userService.findAll(options);
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     const key: string[] = ['id', 'userName', 'email', 'roles', 'funcions'];
     return new ListadoDto(header, key, data);
@@ -203,20 +196,13 @@ export class UserController {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async filter(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<ListadoDto> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
-    const data = await this.userService.filter(
-      {
-        page,
-        limit,
-        route: url + '/user',
-      },
-      filtroGenericoDto,
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, 'user',
     );
+    const data = await this.userService.filter(options, filtroGenericoDto);
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     const key: string[] = ['id', 'userName', 'email', 'roles', 'funcions'];
     return new ListadoDto(header, key, data);
@@ -242,20 +228,13 @@ export class UserController {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async search(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<ListadoDto> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
-    const data = await this.userService.search(
-      {
-        page,
-        limit,
-        route: url + '/user',
-      },
-      buscarDto,
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, 'user',
     );
+    const data = await this.userService.search(options, buscarDto);
     const header: string[] = ['id', 'Nombre', 'Email', 'Roles', 'Funciones'];
     const key: string[] = ['id', 'userName', 'email', 'rol', 'funcion'];
     return new ListadoDto(header, key, data);

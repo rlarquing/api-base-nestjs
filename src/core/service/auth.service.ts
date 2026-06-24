@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { genSalt, hash } from 'bcryptjs';
 import * as randomToken from 'rand-token';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import {
   FuncionRepository,
   MenuRepository,
@@ -134,7 +134,7 @@ export class AuthService {
       throw new UnauthorizedException('Usuario no encontrado');
     }
     userEntity.refreshToken = randomToken.generate(16);
-    userEntity.refreshTokenExp = moment().add(1, 'days').format('YYYY/MM/DD');
+    userEntity.refreshTokenExp = dayjs().add(1, 'day').format('YYYY/MM/DD');
     await this.userRepository.update(userEntity);
     return userEntity.refreshToken;
   }
@@ -222,7 +222,7 @@ export class AuthService {
     // Generar código numérico de 6 dígitos
     const code = Math.floor(100000 + Math.random() * 900000);
     user.resetPasswordCode = code;
-    user.resetPasswordCodeExp = moment().add(24, 'hours').format('YYYY/MM/DD');
+    user.resetPasswordCodeExp = dayjs().add(24, 'hour').format('YYYY/MM/DD');
 
     try {
       await this.userRepository.update(user);

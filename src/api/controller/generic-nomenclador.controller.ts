@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -23,7 +22,6 @@ import {
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { DeleteResult } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
 import { PermissionGuard, RolGuard } from '../guard';
 import { GenericNomencladorService } from '../../core/service';
 import {
@@ -37,10 +35,10 @@ import {
   UpdateMultipleNomencladorDto,
   UpdateNomencladorDto,
 } from '../../shared/dto';
-import { GetUser, IpAddress, Servicio } from '../decorator';
-import { AppConfig } from '../../app.keys';
+import { GetUser, IpAddress, Servicio, PaginationParams } from '../decorator';
 import { UserEntity } from '../../persistence/entity';
 import { NomencladorTypeEnum } from '../../shared/enum';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 @ApiTags('Nomencladores')
 @Controller('nomenclador')
@@ -48,7 +46,7 @@ import { NomencladorTypeEnum } from '../../shared/enum';
 export class GenericNomencladorController {
   constructor(
     protected nomencladorService: GenericNomencladorService,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
   ) {}
   @Get('/:name/create/select')
   @ApiParam({ name: 'name', example: 'sector' })
@@ -115,16 +113,12 @@ export class GenericNomencladorController {
   @Servicio('nomenclador', 'findAll')
   async findAll(
     @Param('name') name: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<ListadoDto> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
-    const data = await this.nomencladorService.findAll(name, {
-      page,
-      limit,
-      route: url + '/api/nomenclador/' + name,
-    });
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, `nomenclador/${name}`,
+    );
+    const data = await this.nomencladorService.findAll(name, options);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
     const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);
@@ -451,20 +445,14 @@ export class GenericNomencladorController {
   @Servicio('nomenclador', 'filter')
   async filter(
     @Param('name') name: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<ListadoDto> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, `nomenclador/${name}/filtrar/por`,
+    );
     const data = await this.nomencladorService.filter(
-      name,
-      {
-        page,
-        limit,
-        route: url + '/api/nomenclador' + name + '/filtrar/por',
-      },
-      filtroGenericoDto,
+      name, options, filtroGenericoDto,
     );
     const header: string[] = ['id', 'Nombre', 'Descripción'];
     const key: string[] = ['id', 'nombre', 'descripcion'];
@@ -494,20 +482,14 @@ export class GenericNomencladorController {
   @Servicio('nomenclador', 'search')
   async search(
     @Param('name') name: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<ListadoDto> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, `nomenclador/${name}/buscar`,
+    );
     const data = await this.nomencladorService.search(
-      name,
-      {
-        page,
-        limit,
-        route: url + '/api/nomenclador/' + name + '/buscar',
-      },
-      buscarDto,
+      name, options, buscarDto,
     );
     const header: string[] = ['id', 'Nombre', 'Descripción'];
     const key: string[] = ['id', 'nombre', 'descripcion'];

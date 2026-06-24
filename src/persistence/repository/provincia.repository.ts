@@ -2,11 +2,7 @@ import { ProvinciaEntity } from '../entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
 
 @Injectable()
 export class ProvinciaRepository {

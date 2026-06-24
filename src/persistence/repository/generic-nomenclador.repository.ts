@@ -14,11 +14,7 @@ import {
   isNumber,
   isString,
 } from 'class-validator';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   RolComercialEntity,

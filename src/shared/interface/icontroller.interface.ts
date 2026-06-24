@@ -1,5 +1,5 @@
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
-import {Pagination} from "nestjs-typeorm-paginate";
+import { Pagination } from '../pagination/types';
 import { Request } from 'express';
 
 export interface IController {

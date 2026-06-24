@@ -1,6 +1,6 @@
 import { DeleteResult } from 'typeorm';
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../pagination/types';
 
 export interface IService {
   findAll(

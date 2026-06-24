@@ -5,13 +5,10 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from '../decorator';
-import { Roles } from '../decorator';
+import { GetUser, Roles, PaginationParams } from '../decorator';
 import { RolGuard } from '../guard';
 import { DeleteResult } from 'typeorm';
 import {
@@ -23,12 +20,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
 import { RolType } from '../../shared/enum';
 import { LogHistoryService } from '../../core/service';
 import { FiltroDto, ListadoDto, LogHistoryDto } from '../../shared/dto';
-import { AppConfig } from '../../app.keys';
 import { UserEntity } from '../../persistence/entity';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 @ApiTags('Log-histories')
 @Controller('log-history')
@@ -38,7 +34,7 @@ import { UserEntity } from '../../persistence/entity';
 export class LogHistoryController {
   constructor(
     private logHistoryService: LogHistoryService,
-    private configService: ConfigService,
+    private paginationService: PaginationService,
   ) {}
   @Get('/')
   @ApiOperation({ summary: 'Obtener el listado de las trazas' })
@@ -48,7 +44,6 @@ export class LogHistoryController {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-   
     description: 'Trazas no encontradas.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -57,16 +52,12 @@ export class LogHistoryController {
   @ApiQuery({ required: false, name: 'page', example: 1 })
   @ApiQuery({ required: false, name: 'limit', example: 10 })
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<any> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
-    const data = await this.logHistoryService.findAll({
-      page,
-      limit,
-      route: url + '/api/traza',
-    });
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, 'traza',
+    );
+    const data = await this.logHistoryService.findAll(options);
     const header: string[] = [
       'id',
       'Usuario',

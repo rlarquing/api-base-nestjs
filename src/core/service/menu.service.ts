@@ -18,7 +18,7 @@ import { CreateFuncionDto, CreateMenuDto, ReadMenuDto } from '../../shared/dto';
 import { ConfigService } from '@nestjs/config';
 import { RolType, TipoMenuTypeEnum } from '../../shared/enum';
 import { aInicialMinuscula, formatearNombre } from '../../../lib';
-import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions } from '../../shared/pagination';
 
 @Injectable()
 export class MenuService extends GenericService<MenuEntity> {

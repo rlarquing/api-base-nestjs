@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { LogHistoryMapper } from '../mapper';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../../shared/pagination';
 import { LogHistoryRepository } from '../../persistence/repository';
 import { LogHistoryDto } from '../../shared/dto';
 import { LogHistoryEntity, UserEntity } from '../../persistence/entity';

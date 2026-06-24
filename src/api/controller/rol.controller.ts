@@ -7,13 +7,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query,
-  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { GetUser, IpAddress, Roles } from '../decorator';
+import { GetUser, IpAddress, Roles, PaginationParams } from '../decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RolGuard } from '../guard';
 import {
@@ -26,7 +24,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionGuard } from '../guard';
-import { ConfigService } from '@nestjs/config';
 import { GenericController } from './generic.controller';
 import { RolEntity, UserEntity } from '../../persistence/entity';
 import { RolService } from '../../core/service';
@@ -43,7 +40,7 @@ import {
   UpdateMultipleRolDto,
   UpdateRolDto,
 } from '../../shared/dto';
-import { Request } from 'express';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 @ApiTags('Roles')
 @Controller('rol')
@@ -53,9 +50,9 @@ import { Request } from 'express';
 export class RolController extends GenericController<RolEntity> {
   constructor(
     protected rolService: RolService,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
   ) {
-    super(rolService, configService, 'rol');
+    super(rolService, paginationService, 'rol');
   }
 
   @Get('/')
@@ -76,11 +73,9 @@ export class RolController extends GenericController<RolEntity> {
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   @ApiQuery({ required: false, name: 'sinPaginacion', example: false })
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('sinPaginacion') sinPaginacion = false,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<any> {
-    const data = await super.findAll(page, limit, sinPaginacion);
+    const data = await super.findAll(params);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
     const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);
@@ -371,11 +366,10 @@ export class RolController extends GenericController<RolEntity> {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async filter(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<any> {
-    const data = await super.filter(page, limit, filtroGenericoDto);
+    const data = await super.filter(params, filtroGenericoDto);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
     const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);
@@ -400,11 +394,10 @@ export class RolController extends GenericController<RolEntity> {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async search(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<any> {
-    const data = await super.search(page, limit, buscarDto);
+    const data = await super.search(params, buscarDto);
     const header: string[] = ['id', 'Nombre', 'Descripción'];
     const key: string[] = ['id', 'nombre', 'descripcion'];
     return new ListadoDto(header, key, data);

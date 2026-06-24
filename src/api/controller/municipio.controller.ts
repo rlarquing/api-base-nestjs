@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import {
   ApiNotFoundResponse,
   ApiOperation,
@@ -6,18 +6,18 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
 import { MunicipioService } from '../../core/service';
 import { GeoJsonDto, ReadMunicipioDto, SelectDto } from '../../shared/dto';
-import { AppConfig } from '../../app.keys';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import { Pagination } from '../../shared/pagination';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
+import { PaginationParams } from '../decorator';
 
 @ApiTags('Municipios')
 @Controller('municipio')
 export class MunicipioController {
   constructor(
     private municipioService: MunicipioService,
-    private configService: ConfigService,
+    private paginationService: PaginationService,
   ) {}
 
   @Get()
@@ -34,16 +34,12 @@ export class MunicipioController {
   @ApiQuery({ required: false, name: 'page', example: 1 })
   @ApiQuery({ required: false, name: 'limit', example: 10 })
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<Pagination<ReadMunicipioDto>> {
-    limit = limit > 100 ? 100 : limit;
-    const url = this.configService.get(AppConfig.URL);
-    return await this.municipioService.findAll({
-      page,
-      limit,
-      route: url + '/municipios',
-    });
+    const options = this.paginationService.buildOptions(
+      params.page, params.limit, 'municipio',
+    );
+    return await this.municipioService.findAll(options);
   }
 
   @Get('/:id')

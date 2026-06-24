@@ -4,3 +4,4 @@ export { Roles } from './rol.decorator';
 export { IsEqualTo } from './IsEqualTo.decorator';
 export { Servicio } from './servicio.decorator';
 export { IpAddress } from './ip-address.decorator';
+export { PaginationParams } from '../../shared/pagination/decorator/pagination-params.decorator';

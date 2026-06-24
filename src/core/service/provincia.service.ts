@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../../shared/pagination';
 import { GeoJsonMapper, ProvinciaMapper } from '../mapper';
 import { ProvinciaRepository } from '../../persistence/repository';
 import { GeoJsonDto, ReadProvinciaDto } from '../../shared/dto';

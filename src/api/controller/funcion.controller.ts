@@ -7,13 +7,11 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Query, Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -24,7 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PermissionGuard, RolGuard } from '../guard';
-import { GetUser, IpAddress, Roles } from '../decorator';
+import { GetUser, IpAddress, Roles, PaginationParams } from '../decorator';
 import { GenericController } from './generic.controller';
 import { FuncionEntity, UserEntity } from '../../persistence/entity';
 import { FuncionService } from '../../core/service';
@@ -41,7 +39,7 @@ import {
   UpdateFuncionDto,
   UpdateMultipleFuncionDto,
 } from '../../shared/dto';
-import { Request } from 'express';
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
 @ApiTags('Funcions')
 @Controller('funcion')
@@ -51,9 +49,9 @@ import { Request } from 'express';
 export class FuncionController extends GenericController<FuncionEntity> {
   constructor(
     protected funcionService: FuncionService,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
   ) {
-    super(funcionService, configService, 'funcion');
+    super(funcionService, paginationService, 'funcion');
   }
 
   @Get('/')
@@ -74,18 +72,10 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   @ApiQuery({ required: false, name: 'sinPaginacion', example: false })
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('sinPaginacion') sinPaginacion = false,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<any> {
-    const data = await super.findAll(page, limit, sinPaginacion);
-    const header: string[] = [
-      'id',
-      'Nombre',
-      'Descripción',
-      'EndPoints',
-      'Menu',
-    ];
+    const data = await super.findAll(params);
+    const header: string[] = ['id', 'Nombre', 'Descripción', 'EndPoints', 'Menu'];
     const key: string[] = ['id', 'nombre', 'descripcion', 'endPoints', 'menu'];
     return new ListadoDto(header, key, data);
   }
@@ -353,18 +343,11 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async filter(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<any> {
-    const data = await super.filter(page, limit, filtroGenericoDto);
-    const header: string[] = [
-      'id',
-      'Nombre',
-      'Descripcion',
-      'EndPoints',
-      'Menu',
-    ];
+    const data = await super.filter(params, filtroGenericoDto);
+    const header: string[] = ['id', 'Nombre', 'Descripcion', 'EndPoints', 'Menu'];
     const key: string[] = ['id', 'nombre', 'descripcion', 'endPoints', 'menu'];
     return new ListadoDto(header, key, data);
   }
@@ -388,18 +371,11 @@ export class FuncionController extends GenericController<FuncionEntity> {
   @ApiQuery({ required: false, name: 'page', example: '1' })
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   async search(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<any> {
-    const data = await super.search(page, limit, buscarDto);
-    const header: string[] = [
-      'id',
-      'Nombre',
-      'Descripcion',
-      'EndPoints',
-      'Menu',
-    ];
+    const data = await super.search(params, buscarDto);
+    const header: string[] = ['id', 'Nombre', 'Descripcion', 'EndPoints', 'Menu'];
     const key: string[] = ['id', 'nombre', 'descripcion', 'endPoints', 'menu'];
     return new ListadoDto(header, key, data);
   }

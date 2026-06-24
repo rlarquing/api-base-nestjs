@@ -18,11 +18,7 @@ import {
   isNumber,
   isString,
 } from 'class-validator';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
 
 export abstract class GenericRepository<
   ENTITY extends ObjectLiteral,

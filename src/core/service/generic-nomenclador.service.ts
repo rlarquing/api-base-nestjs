@@ -13,7 +13,7 @@ import {
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
 import { HISTORY_ACTION } from '../../persistence/entity/log-history.entity';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from '../../shared/pagination';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../../app.keys';
 
