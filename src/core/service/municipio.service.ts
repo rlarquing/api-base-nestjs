@@ -42,7 +42,7 @@ export class MunicipioService {
     if (!id) {
       throw new BadRequestException('El id no puede ser vacio');
     }
-    const municipio: MunicipioEntity = await this.municipioRepository.findById(
+    const municipio = await this.municipioRepository.findById(
       id,
     );
     if (!municipio) {
@@ -67,9 +67,12 @@ export class MunicipioService {
   }
 
   async geoJsonByProvincia(): Promise<GeoJsonDto> {
-    const nombreCorto: string = this.configService.get(AppConfig.PROVINCIA);
-    const provincia: ProvinciaEntity =
-      await this.provinciaRepository.findByNombreCorto(nombreCorto);
+    const nombreCorto: string =
+      this.configService.get<string>(AppConfig.PROVINCIA) ?? '';
+    const provincia = await this.provinciaRepository.findByNombreCorto(nombreCorto);
+    if (!provincia) {
+      throw new NotFoundException('La provincia no se encuentra.');
+    }
     const municipios = await this.municipioRepository.geoJsonByProvincia(
       provincia,
     );
@@ -81,10 +84,13 @@ export class MunicipioService {
     return this.geoJsonMapper.entityToDto(municipio);
   }
   async createSelect(): Promise<SelectDto[]> {
-    const nombreCorto: string = this.configService.get(AppConfig.PROVINCIA);
+    const nombreCorto: string =
+      this.configService.get<string>(AppConfig.PROVINCIA) ?? '';
     const selectDto: SelectDto[] = [];
-    const provincia: ProvinciaEntity =
-      await this.provinciaRepository.findByNombreCorto(nombreCorto);
+    const provincia = await this.provinciaRepository.findByNombreCorto(nombreCorto);
+    if (!provincia) {
+      throw new NotFoundException('La provincia no se encuentra.');
+    }
     const municipios: MunicipioEntity[] =
       await this.municipioRepository.findByProvincia(provincia);
     for (const municipio of municipios) {

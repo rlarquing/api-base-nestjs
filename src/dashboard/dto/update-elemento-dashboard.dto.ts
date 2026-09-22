@@ -14,7 +14,7 @@ export class UpdateElementoDashboardDto {
     description: 'Nombre del elemento',
     example: 'grafico',
   })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -28,17 +28,17 @@ export class UpdateElementoDashboardDto {
     description: 'Tipo de elemento.',
     example: 'linea',
   })
-  tipo: string;
+  tipo!: string;
 
   @ApiProperty({
     description: 'Objeto para guardar las propiedades de la capa del elemento',
     example: {},
   })
-  capa: object;
+  capa!: object;
 
   @ApiProperty({
     description: 'Objeto para guardar la consulta del elemento',
     example: {},
   })
-  consulta: object;
+  consulta!: object;
 }

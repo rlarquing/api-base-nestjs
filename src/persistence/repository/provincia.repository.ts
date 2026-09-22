@@ -17,12 +17,12 @@ export class ProvinciaRepository {
     return await paginate<ProvinciaEntity>(this.provinciaRepository, options);
   }
 
-  async findById(id: number): Promise<ProvinciaEntity> {
+  async findById(id: number): Promise<ProvinciaEntity | null> {
     const options = { id } as FindOptionsWhere<ProvinciaEntity>;
     return await this.provinciaRepository.findOneBy(options);
   }
 
-  async findByNombreCorto(nombreCorto: string): Promise<ProvinciaEntity> {
+  async findByNombreCorto(nombreCorto: string): Promise<ProvinciaEntity | null> {
     const options = {
       nombreCorto: nombreCorto,
     } as FindOptionsWhere<ProvinciaEntity>;

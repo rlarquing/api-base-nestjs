@@ -1,14 +1,10 @@
 import { BuscarDto, FiltroGenericoDto, ResponseDto, SelectDto } from '../dto';
 import { Pagination } from '../pagination/types';
+import { PaginationParamsDto } from '../pagination';
 import { Request } from 'express';
 
 export interface IController {
-  findAll(
-    page?: number,
-    limit?: number,
-    sinPaginacion?: boolean,
-    user?: any,
-  ): Promise<Pagination<any> | any[]>;
+  findAll(params: PaginationParamsDto): Promise<Pagination<any> | any[]>;
 
   findById(id: any): Promise<any>;
 
@@ -29,13 +25,12 @@ export interface IController {
   updateMultiple(user: any, object: any[], ip: string): Promise<ResponseDto>;
 
   filter(
-    page?: number,
-    limit?: number,
-    filtroGenericoDto?: FiltroGenericoDto,
+    params: PaginationParamsDto,
+    filtroGenericoDto: FiltroGenericoDto,
   ): Promise<Pagination<any>>;
+
   search(
-    page?: number,
-    limit?: number,
-    buscarDto?: BuscarDto,
+    params: PaginationParamsDto,
+    buscarDto: BuscarDto,
   ): Promise<Pagination<any>>;
 }

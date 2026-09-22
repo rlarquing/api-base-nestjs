@@ -26,7 +26,6 @@ export class CubeController {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Cubes no encontradas.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -58,7 +57,6 @@ export class CubeController {
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Cubes no encontradas.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })

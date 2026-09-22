@@ -36,7 +36,7 @@ export class ProvinciaService {
     if (!id) {
       throw new BadRequestException('El id no puede ser vacio');
     }
-    const provincia: ProvinciaEntity = await this.provinciaRepository.findById(
+    const provincia = await this.provinciaRepository.findById(
       id,
     );
     if (!provincia) {
@@ -56,7 +56,8 @@ export class ProvinciaService {
   }
 
   async centroide(): Promise<GeoJsonDto> {
-    const nombreCorto: string = this.configService.get(AppConfig.PROVINCIA);
+    const nombreCorto: string =
+      this.configService.get<string>(AppConfig.PROVINCIA) ?? '';
     const provincia = await this.provinciaRepository.centroide(nombreCorto);
     return this.geoJsonMapper.entityToDto(provincia);
   }

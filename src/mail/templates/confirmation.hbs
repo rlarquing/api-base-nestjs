@@ -1,2 +1,70 @@
-<p>Hey {{ name }},</p>
-<p>Prueba de correo</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>Bienvenido a SACP</title>
+  <base target="_blank">
+</head>
+<body style="margin:0; padding:0; background-color:#f3f4f6; font-family:Arial,Helvetica,sans-serif; -webkit-text-size-adjust:100%;">
+
+  <!-- Texto de vista previa del correo (oculto en el cuerpo) -->
+  <div style="display:none; max-height:0; overflow:hidden; mso-hide:all;">
+    Tu cuenta en SACP ha sido creada correctamente.
+  </div>
+
+  <!-- Contenedor principal -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f3f4f6;">
+    <tr>
+      <td align="center" style="padding:40px 16px;">
+
+        <!-- Tarjeta -->
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:480px; background-color:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+
+          <!-- Header de marca -->
+          <tr>
+            <td style="padding:20px 32px; background-color:#1d4ed8; text-align:center;">
+              <span style="color:#ffffff; font-size:18px; font-weight:bold; letter-spacing:3px;">SACP</span>
+            </td>
+          </tr>
+
+          <!-- Saludo -->
+          <tr>
+            <td style="padding:32px 32px 8px; text-align:center;">
+              <div style="font-size:44px; margin-bottom:12px;">👋</div>
+              <h1 style="margin:0; color:#111827; font-size:22px; font-weight:600;">¡Hola, {{name}}!</h1>
+              <p style="margin:12px 0 0; color:#4b5563; font-size:15px; line-height:22px;">
+                Tu cuenta ha sido creada correctamente. Ya puedes iniciar sesión
+                con tu usuario y tu contraseña.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Nota de seguridad -->
+          <tr>
+            <td style="padding:16px 32px 28px;">
+              <p style="margin:0; color:#6b7280; font-size:13px; line-height:19px; text-align:center;">
+                🔒 Si <strong style="color:#374151;">no creaste</strong> esta cuenta,
+                avisa al administrador del sistema para que la revise.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 32px; text-align:center; border-top:1px solid #e5e7eb; background-color:#f9fafb;">
+              <p style="margin:0; color:#9ca3af; font-size:12px;">
+                Este es un mensaje automático, por favor no respondas a este correo.<br>
+                © {{anno}} SACP
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

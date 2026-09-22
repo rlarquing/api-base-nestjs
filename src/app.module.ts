@@ -23,7 +23,7 @@ export class AppModule {
   static loggerProvider: LoggerProvider;
 
   constructor(private configService: ConfigService) {
-    AppModule.port = parseInt(this.configService.get(AppConfig.PORT));
+    AppModule.port = parseInt(this.configService.get<string>(AppConfig.PORT) ?? '3000');
     AppModule.cors = this.configService.get(AppConfig.CORS) === 'true';
     AppModule.logger = this.configService.get(AppConfig.LOGGER) === 'true';
     AppModule.loggerProvider = new LoggerProvider(configService);

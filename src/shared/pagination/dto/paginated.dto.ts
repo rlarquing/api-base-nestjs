@@ -25,17 +25,17 @@ export class PaginationMetaDto {
  * Links de navegación de la paginación
  */
 export class PaginationLinksDto {
-  @ApiProperty({ description: 'Primera página' })
-  first!: string;
+  @ApiProperty({ description: 'Primera página', required: false })
+  first?: string;
 
-  @ApiProperty({ description: 'Página anterior' })
-  previous!: string;
+  @ApiProperty({ description: 'Página anterior', required: false })
+  previous?: string;
 
-  @ApiProperty({ description: 'Página siguiente' })
-  next!: string;
+  @ApiProperty({ description: 'Página siguiente', required: false })
+  next?: string;
 
-  @ApiProperty({ description: 'Última página' })
-  last!: string;
+  @ApiProperty({ description: 'Última página', required: false })
+  last?: string;
 }
 
 /**
@@ -53,7 +53,7 @@ export class PaginatedDto<T = any> {
   meta!: PaginationMetaDto;
 
   @ApiProperty({ type: PaginationLinksDto })
-  links!: PaginationLinksDto;
+  links?: PaginationLinksDto;
 
   constructor(items: T[], pagination: Pagination<any>) {
     this.items = items;

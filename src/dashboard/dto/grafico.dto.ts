@@ -15,11 +15,11 @@ export class GraficoDto {
     description: 'Las categorias a mostrar en el gráfico',
     example: [],
   })
-  categories: string[];
+  categories!: string[];
 
   @ApiProperty({
     description: 'Los datos que tiene el gráfico',
     example: [{}],
   })
-  series: any[];
+  series!: any[];
 }

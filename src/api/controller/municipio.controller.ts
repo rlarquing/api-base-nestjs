@@ -28,7 +28,6 @@ export class MunicipioController {
     type: ReadMunicipioDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Municipios no encontrados.',
   })
   @ApiQuery({ required: false, name: 'page', example: 1 })
@@ -50,7 +49,6 @@ export class MunicipioController {
     type: ReadMunicipioDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Municipio no encontrado.',
   })
   async findById(
@@ -66,7 +64,6 @@ export class MunicipioController {
     type: ReadMunicipioDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Municipios no encontrados.',
   })
   @Get('/provincia/:id')
@@ -124,7 +121,6 @@ export class MunicipioController {
     type: [SelectDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })

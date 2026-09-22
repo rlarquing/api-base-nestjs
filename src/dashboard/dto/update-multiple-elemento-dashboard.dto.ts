@@ -9,7 +9,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UpdateMultipleElementoDashboardDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'id de la dimension.', example: 1 })
-  id: number;
+  id!: number;
 
   @IsNotEmpty()
   @IsString()
@@ -23,7 +23,7 @@ export class UpdateMultipleElementoDashboardDto {
     description: 'Nombre del elemento',
     example: 'grafico',
   })
-  nombre: string;
+  nombre!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -37,17 +37,17 @@ export class UpdateMultipleElementoDashboardDto {
     description: 'Tipo de elemento.',
     example: 'linea',
   })
-  tipo: string;
+  tipo!: string;
 
   @ApiProperty({
     description: 'Objeto para guardar las propiedades de la capa del elemento',
     example: {},
   })
-  capa: object;
+  capa!: object;
 
   @ApiProperty({
     description: 'Objeto para guardar la consulta del elemento',
     example: {},
   })
-  consulta: object;
+  consulta!: object;
 }

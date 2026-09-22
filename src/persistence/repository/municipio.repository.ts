@@ -17,7 +17,7 @@ export class MunicipioRepository {
     return await paginate<MunicipioEntity>(this.municipioRepository, options);
   }
 
-  async findById(id: number): Promise<MunicipioEntity> {
+  async findById(id: number): Promise<MunicipioEntity | null> {
     const options = {
       where: { id },
       relations: { provincia: true },

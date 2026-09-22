@@ -1,4 +1,9 @@
-import { FindManyOptions, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  FindManyOptions,
+  ObjectLiteral,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { IPaginationOptions, Pagination, PaginationLinks, PaginationMeta } from './types';
 
 /**
@@ -25,7 +30,7 @@ function buildLinks(
 /**
  * Paginación para repositorio.
  */
-export async function paginate<T>(
+export async function paginate<T extends ObjectLiteral>(
   repository: Repository<T>,
   options: IPaginationOptions,
   findOptions?: FindManyOptions<T>,
@@ -34,12 +39,12 @@ export async function paginate<T>(
 /**
  * Paginación para query builder.
  */
-export async function paginate<T>(
+export async function paginate<T extends ObjectLiteral>(
   queryBuilder: SelectQueryBuilder<T>,
   options: IPaginationOptions,
 ): Promise<Pagination<T>>;
 
-export async function paginate<T>(
+export async function paginate<T extends ObjectLiteral>(
   repoOrQb: Repository<T> | SelectQueryBuilder<T>,
   options: IPaginationOptions,
   findOptions?: FindManyOptions<T>,

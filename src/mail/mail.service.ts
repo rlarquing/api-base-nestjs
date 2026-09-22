@@ -6,15 +6,38 @@ import { UserEntity } from '../persistence/entity';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendUserConfirmation(user: UserEntity) {
+  /**
+   * Email de bienvenida tras crear una cuenta.
+   * Plantilla: src/mail/templates/confirmation.hbs
+   * Variables de la plantilla: name, anno
+   */
+  async sendUserConfirmation(user: UserEntity): Promise<void> {
     await this.mailerService.sendMail({
       to: user.email,
-      // from: '"Support Team" <support@example.com>', // override default from
-      subject: 'Hola',
-      template: 'confirmation', // `.hbs` extension is appended automatically
+      subject: 'Bienvenido a SACP',
+      template: 'confirmation', // la extensión `.hbs` se añade automáticamente
       context: {
-        // ✏️ filling curly brackets with content
         name: user.userName,
+        anno: new Date().getFullYear(),
+      },
+    });
+  }
+
+  /**
+   * Email con el código de recuperación de contraseña.
+   * Plantilla: src/mail/templates/request-password.hbs
+   * El código lo genera y expira (24 h) AuthService.requestPasswordReset.
+   * Variables de la plantilla: name, code, anno
+   */
+  async sendPasswordResetEmail(user: UserEntity, code: number): Promise<void> {
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Recuperación de contraseña · Tu código de acceso',
+      template: 'request-password',
+      context: {
+        name: user.userName,
+        code: String(code),
+        anno: new Date().getFullYear(),
       },
     });
   }

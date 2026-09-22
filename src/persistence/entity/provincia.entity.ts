@@ -10,7 +10,7 @@ import { SchemaEnum } from '../../database/schema/schema.enum';
 
 @Entity('provincia', { schema: SchemaEnum.MOD_DPA, orderBy: { id: 'ASC' } })
 export class ProvinciaEntity {
-  @PrimaryGeneratedColumn('increment') id: number;
+  @PrimaryGeneratedColumn('increment') id!: number;
   @Column({
     type: 'varchar',
     length: 255,
@@ -18,11 +18,11 @@ export class ProvinciaEntity {
     nullable: false,
     name: 'nombre',
   })
-  nombre: string;
-  @Column({ type: 'varchar', length: 2, nullable: false }) codigo: string;
-  @Column('geometry', { name: 'geom', nullable: true }) geom: string | null;
+  nombre!: string;
+  @Column({ type: 'varchar', length: 2, nullable: false }) codigo!: string;
+  @Column('geometry', { name: 'geom', nullable: true }) geom!: string | null;
   @Column('geometry', { name: 'centroide', nullable: true })
-  centroide: string | null;
+  centroide!: string | null;
   @Column({
     type: 'varchar',
     length: 255,
@@ -30,13 +30,13 @@ export class ProvinciaEntity {
     nullable: false,
     name: 'nombre_corto',
   })
-  nombreCorto: string | null;
+  nombreCorto!: string | null;
   @OneToMany(() => MunicipioEntity, (municipio) => municipio.provincia)
-  municipios: MunicipioEntity[];
+  municipios!: MunicipioEntity[];
   @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: true })
-  createdAt: Date;
+  createdAt!: Date;
   @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: true })
-  updatedAt: Date;
+  updatedAt!: Date;
   public toString(): string {
     return this.nombre;
   }

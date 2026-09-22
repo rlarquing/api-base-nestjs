@@ -80,7 +80,6 @@ export class LogHistoryRepository {
     const page = filtro.page || 1;
     const [result, total] = await this.logHistoryRepository.findAndCount({
       where: wheres,
-      relations: ['user'],
       take: page * take,
       skip: (page - 1) * take,
     });

@@ -15,8 +15,10 @@ export class CubeService {
     private configService: ConfigService,
     private elementoDashboardRepository: ElementoDashboardRepository,
   ) {
-    this.cubejsApi = cubejs({
-      apiUrl: this.configService.get("CUBE_URL"), // reemplaza con la URL de tu Cube.js en Docker
+    // cubejs(apiToken, options): el token es obligatorio en @cubejs-client/core 1.x;
+    // se toma de CUBE_TOKEN si está configurado, cadena vacía si no.
+    this.cubejsApi = cubejs(String(this.configService.get('CUBE_TOKEN') ?? ''), {
+      apiUrl: String(this.configService.get('CUBE_URL') ?? ''),
     });
   }
 
@@ -30,7 +32,7 @@ export class CubeService {
     consulta.limit = options.limit;
     consulta.offset = +options.limit * (+options.page - 1);
     const resultSet = await this.cubejsApi.load(elementoDashboard.consulta);
-    const totalItems: number = resultSet.totalRows();
+    const totalItems: number = resultSet.totalRows() ?? 0;
     const itemsPerPage: number = +options.limit;
     const currentPage: number = +options.page;
     const totalPages: number = intlRound(totalItems / itemsPerPage, 0);

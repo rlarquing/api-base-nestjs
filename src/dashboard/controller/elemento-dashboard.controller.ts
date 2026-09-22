@@ -12,7 +12,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -34,7 +33,8 @@ import {PermissionGuard, RolGuard} from "../../api/guard";
 import {GenericController} from "../../api/controller";
 import {ElementoDashboardEntity} from "../entity/elemento-dashboard.entity";
 import {ElementoDashboardService} from "../service";
-import {GetUser, Servicio} from "../../api/decorator";
+import {GetUser, Servicio, IpAddress, PaginationParams} from "../../api/decorator";
+import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 import {
   CreateElementoDashboardDto,
   ReadElementoDashboardDto,
@@ -51,9 +51,9 @@ import {UserEntity} from "../../persistence/entity";
 export class ElementoDashboardController extends GenericController<ElementoDashboardEntity> {
   constructor(
     protected elementoDashboardService: ElementoDashboardService,
-    protected configService: ConfigService,
+    protected paginationService: PaginationService,
   ) {
-    super(elementoDashboardService, configService, 'elemento-dashboard');
+    super(elementoDashboardService, paginationService, 'elemento-dashboard');
   }
 
   @Get('/')
@@ -64,7 +64,6 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
     type: ListadoDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -74,10 +73,9 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
   @ApiParam({ required: false, name: 'limit', example: '10' })
   @Servicio('elementoDashboard', 'findAll')
   async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
   ): Promise<any> {
-    const data = await super.findAll(page, limit);
+    const data = await super.findAll(params);
     const header: string[] = ['id', 'Nombre', 'Tipo', 'Capa', 'Consulta'];
     const key: string[] = ['id', 'nombre', 'tipo', 'capa', 'consulta'];
     return new ListadoDto(header, key, data);
@@ -91,7 +89,6 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
     type: ReadElementoDashboardDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elemento del conjunto no encontrado.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -117,7 +114,6 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
     type: [ReadElementoDashboardDto],
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Elementos del conjunto no encontrados.',
   })
   @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
@@ -151,8 +147,9 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
   async create(
     @GetUser() user: UserEntity,
     @Body() createElementoDashboardDto: CreateElementoDashboardDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.create(user, createElementoDashboardDto);
+    return await super.create(user, createElementoDashboardDto, ip);
   }
 
   @Post('/multiple')
@@ -178,8 +175,9 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
   async createMultiple(
     @GetUser() user: UserEntity,
     @Body() createElementoDashboardDto: CreateElementoDashboardDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.createMultiple(user, createElementoDashboardDto);
+    return await super.createMultiple(user, createElementoDashboardDto, ip);
   }
 
   @Post('/importar/elementos')
@@ -205,8 +203,9 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
   async importar(
     @GetUser() user: UserEntity,
     @Body() createElementoDashboardDto: CreateElementoDashboardDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto[]> {
-    return await super.import(user, createElementoDashboardDto);
+    return await super.import(user, createElementoDashboardDto, ip);
   }
 
   @Patch('/:id')
@@ -233,8 +232,9 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
     @GetUser() user: UserEntity,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateElementoDashboardDto: UpdateElementoDashboardDto,
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
-    return await super.update(user, id, updateElementoDashboardDto);
+    return await super.update(user, id, updateElementoDashboardDto, ip);
   }
 
   @Patch('/elementos/multiples')
@@ -262,10 +262,12 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
     @GetUser() user: UserEntity,
     @Body()
     updateMultipleElementoDashboardeDto: UpdateMultipleElementoDashboardDto[],
+    @IpAddress() ip: string,
   ): Promise<ResponseDto> {
     return await super.updateMultiple(
       user,
       updateMultipleElementoDashboardeDto,
+      ip,
     );
   }
 
@@ -289,11 +291,10 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   @Servicio('elementoDashboard', 'filter')
   async filter(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() filtroGenericoDto: FiltroGenericoDto,
   ): Promise<any> {
-    const data = await super.filter(page, limit, filtroGenericoDto);
+    const data = await super.filter(params, filtroGenericoDto);
     const header: string[] = ['id', 'Nombre', 'Tipo', 'Capa', 'Consulta'];
     const key: string[] = ['id', 'nombre', 'tipo', 'capa', 'consulta'];
     return new ListadoDto(header, key, data);
@@ -318,11 +319,10 @@ export class ElementoDashboardController extends GenericController<ElementoDashb
   @ApiQuery({ required: false, name: 'limit', example: '10' })
   @Servicio('elementoDashboard', 'search')
   async search(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
+    @PaginationParams() params: PaginationParamsDto,
     @Body() buscarDto: BuscarDto,
   ): Promise<any> {
-    const data = await super.search(page, limit, buscarDto);
+    const data = await super.search(params, buscarDto);
     const header: string[] = ['id', 'Nombre', 'Tipo', 'Capa', 'Consulta'];
     const key: string[] = ['id', 'nombre', 'tipo', 'capa', 'consulta'];
     return new ListadoDto(header, key, data);

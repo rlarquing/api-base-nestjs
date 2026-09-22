@@ -28,7 +28,6 @@ export class ProvinciaController {
     type: ReadProvinciaDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'Provincias no encontradas.',
   })
   @ApiQuery({ required: false, name: 'page', example: 1 })
@@ -50,7 +49,6 @@ export class ProvinciaController {
     type: ReadProvinciaDto,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'provincia no encontrada.',
   })
   async findById(

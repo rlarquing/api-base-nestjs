@@ -11,7 +11,7 @@ export class ProvinciaMapper {
       provinciaEntity.id,
       provinciaEntity.nombre,
       provinciaEntity.codigo,
-      provinciaEntity.nombreCorto,
+      provinciaEntity.nombreCorto ?? '',
     );
   }
 }

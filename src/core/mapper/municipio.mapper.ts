@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MunicipioEntity } from '../../persistence/entity';
 import { ReadMunicipioDto, ReadProvinciaDto } from '../../shared/dto';
 import { MunicipioRepository } from '../../persistence/repository';
@@ -13,9 +13,12 @@ export class MunicipioMapper {
   async entityToDto(
     municipioEntity: MunicipioEntity,
   ): Promise<ReadMunicipioDto> {
-    const municipio: MunicipioEntity = await this.municipioRepository.findById(
+    const municipio = await this.municipioRepository.findById(
       municipioEntity.id,
     );
+    if (!municipio) {
+      throw new NotFoundException('El municipio no se encuentra.');
+    }
     const readProvinciaDto: ReadProvinciaDto = this.provinciaMapper.entityToDto(
       municipio.provincia,
     );

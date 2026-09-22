@@ -4,6 +4,7 @@ import {
   FindManyOptions,
   ILike,
   FindOneOptions,
+  In,
   Repository,
 } from 'typeorm';
 import { NotFoundException } from '@nestjs/common';
@@ -15,15 +16,6 @@ import {
   isString,
 } from 'class-validator';
 import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
-import { InjectRepository } from '@nestjs/typeorm';
-import {
-  RolComercialEntity,
-  TipoCargaEntity,
-  TipoNavegacionEntity,
-  TipoOperacionEntity,
-  UnidadMedidaEntity,
-} from '../entity';
-import { NomencladorTypeEnum } from "../../shared/enum";
 
 // Tipo para repositorios dinámicos
 type RepositoryMap = Record<string, Repository<any>>;
@@ -32,36 +24,10 @@ export class GenericNomencladorRepository {
   // Definir los repositorios disponibles
   protected repositories: RepositoryMap = {};
 
-  constructor(
-    @InjectRepository(TipoOperacionEntity)
-    protected tipoOperacionRepository: Repository<TipoOperacionEntity>,
-    @InjectRepository(TipoCargaEntity)
-    protected tipoCargaRepository: Repository<TipoCargaEntity>,
-    @InjectRepository(UnidadMedidaEntity)
-    protected unidadMedidaRepository: Repository<UnidadMedidaEntity>,
-    @InjectRepository(TipoNavegacionEntity)
-    protected tipoNavegacionRepository: Repository<TipoNavegacionEntity>,
-    @InjectRepository(RolComercialEntity)
-    protected rolComercialRepository: Repository<RolComercialEntity>,
-  ) {
-    // Registro automático basado en el enum
-    this.registerRepository(
-      NomencladorTypeEnum.TIPOOPERACION,
-      tipoOperacionRepository,
-    );
-    this.registerRepository(NomencladorTypeEnum.TIPOCARGA, tipoCargaRepository);
-    this.registerRepository(
-      NomencladorTypeEnum.UNIDADMEDIDA,
-      unidadMedidaRepository,
-    );
-    this.registerRepository(
-      NomencladorTypeEnum.TIPONAVEGACION,
-      tipoNavegacionRepository,
-    );
-    this.registerRepository(
-      NomencladorTypeEnum.ROLCOMERCIAL,
-      rolComercialRepository,
-    );
+  constructor() {
+    // Registro dinámico: los nomencladores concretos se registran mediante
+    // registerRepository(nombre, repositorio). La base no trae dominios
+    // precargados.
   }
   /**
    * Obtiene el nombre del schema de la entidad desde metadata de TypeORM
@@ -141,8 +107,8 @@ export class GenericNomencladorRepository {
 
   async findByIds(name: string, ids: any[]): Promise<any[]> {
     const repo = this.getRepository(name);
-    // findByIds en TypeORM moderno solo acepta un array de IDs
-    return await repo.findByIds(ids);
+    // findByIds fue eliminado en TypeORM 1.0: se usa findBy con In()
+    return await repo.findBy({ id: In(ids) });
   }
 
   async create(name: string, newObj: any): Promise<any> {
