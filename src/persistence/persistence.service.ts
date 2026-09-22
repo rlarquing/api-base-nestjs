@@ -1,8 +1,11 @@
 import {
   EndPointRepository,
   FuncionRepository,
+  FuncionTraduccionRepository,
   GenericNomencladorRepository,
+  IdiomaRepository,
   MenuRepository,
+  MenuTraduccionRepository,
   MunicipioRepository,
   ProvinciaRepository,
   RolRepository,
@@ -12,8 +15,11 @@ import {
 import {
   EndPointEntity,
   FuncionEntity,
+  FuncionTraduccionEntity,
+  IdiomaEntity,
   LogHistoryEntity,
   MenuEntity,
+  MenuTraduccionEntity,
   MunicipioEntity,
   ProvinciaEntity,
   RolEntity, UserEntity
@@ -29,6 +35,9 @@ export const repository = [
   GenericNomencladorRepository,
   MunicipioRepository,
   ProvinciaRepository,
+  IdiomaRepository,
+  MenuTraduccionRepository,
+  FuncionTraduccionRepository,
 ];
 export  const entity = [
   EndPointEntity,
@@ -39,4 +48,7 @@ export  const entity = [
   RolEntity,
   LogHistoryEntity,
   UserEntity,
+  IdiomaEntity,
+  MenuTraduccionEntity,
+  FuncionTraduccionEntity,
 ]

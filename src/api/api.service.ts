@@ -1,7 +1,9 @@
 import {
   AuthController, EndPointController, FuncionController,
+  FuncionTraduccionController,
   GenericNomencladorController,
-  LogHistoryController, MenuController, MunicipioController, ProvinciaController,
+  IdiomaController,
+  LogHistoryController, MenuController, MenuTraduccionController, MunicipioController, ProvinciaController,
   RolController, SocketController,
   UserController
 } from "./controller";
@@ -19,4 +21,7 @@ export const controller = [
   FuncionController,
   MenuController,
   SocketController,
+  IdiomaController,
+  MenuTraduccionController,
+  FuncionTraduccionController,
 ];

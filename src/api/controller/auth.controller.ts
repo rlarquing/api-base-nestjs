@@ -29,6 +29,7 @@ import {
   SelfChangePasswordDto,
   UserDto,
   ReadUserDto,
+  ReadMenuDto,
 } from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
 
@@ -181,5 +182,18 @@ export class AuthController {
     @Body(ValidationPipe) selfChangePasswordDto: SelfChangePasswordDto,
   ): Promise<ResponseDto> {
     return await this.authService.changeOwnPassword(user, selfChangePasswordDto);
+  }
+
+  @Get('/mis-menus')
+  @ApiOperation({ summary: 'Obtener menús del usuario' })
+  @ApiResponse({
+    status: 200,
+    description: 'Menús del usuario',
+    type: ReadMenuDto,
+  })
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  async getMisMenus(@GetUser() user: UserEntity): Promise<ReadMenuDto[]> {
+    return this.authService.getUserMenus(user);
   }
 }

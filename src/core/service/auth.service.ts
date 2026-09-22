@@ -31,6 +31,9 @@ import { eliminarDuplicado } from '../../../lib';
 import { IJwtPayload } from '../../shared/interface';
 import { FuncionMapper, MenuMapper, UserMapper } from '../mapper';
 import { MailService } from '../../mail/mail.service';
+import { MenuTraduccionService } from './menu-traduccion.service';
+import { FuncionTraduccionService } from './funcion-traduccion.service';
+import { idiomaActual, traducir } from '../../shared/util/i18n.util';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +47,29 @@ export class AuthService {
     private userMapper: UserMapper,
     private jwtService: JwtService,
     private mailService: MailService,
+    private menuTraduccionService: MenuTraduccionService,
+    private funcionTraduccionService: FuncionTraduccionService,
   ) {}
+
+  /**
+   * Traduce el contenido dinamico (menus y funciones) al idioma resuelto para la
+   * peticion en curso, tomado de Accept-Language. Sin cabecera de idioma o sin
+   * traducciones cargadas, se devuelven los textos base tal como hoy.
+   *
+   * readMenuDtos comparte las referencias con readFuncionDtos[].menu, por lo que
+   * traducir el arbol de menus tambien deja traducido el menu anidado en cada funcion.
+   */
+  private async traducirContenido(
+    readFuncionDtos: ReadFuncionDto[],
+    readMenuDtos: ReadMenuDto[],
+  ): Promise<void> {
+    const codigo = idiomaActual();
+    await this.funcionTraduccionService.traducirFunciones(
+      readFuncionDtos,
+      codigo,
+    );
+    await this.menuTraduccionService.traducirMenus(readMenuDtos, codigo);
+  }
   async signUp(userDto: UserDto,): Promise<ResponseDto> {
     const result = new ResponseDto();
     const { userName, password, email } = userDto;
@@ -77,11 +102,15 @@ export class AuthService {
       password,
     );
     if (!credential) {
-      throw new UnauthorizedException('Credenciales inválidas.');
+      throw new UnauthorizedException(
+        traducir('auth.INVALID_CREDENTIALS', 'Credenciales inválidas.'),
+      );
     }
     const user: UserEntity | null = await this.userRepository.findByName(userName);
     if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado.');
+      throw new UnauthorizedException(
+        traducir('auth.USER_NOT_FOUND', 'Usuario no encontrado.'),
+      );
     }
     const funcionsIndiv: FuncionEntity[] = user.funcions ?? [];
     let funcions: FuncionEntity[] = [];
@@ -111,6 +140,7 @@ export class AuthService {
         readMenuDtos.push(readFuncionDto.menu);
       }
     }
+    await this.traducirContenido(readFuncionDtos, readMenuDtos);
     const payload: IJwtPayload = { userName };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
@@ -131,7 +161,9 @@ export class AuthService {
   public async getRefreshToken(id: number): Promise<string> {
     const userEntity: UserEntity | null = await this.userRepository.findById(id);
     if (!userEntity) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException(
+        traducir('auth.USER_NOT_FOUND', 'Usuario no encontrado.'),
+      );
     }
     userEntity.refreshToken = randomToken.generate(16);
     userEntity.refreshTokenExp = dayjs().add(1, 'day').format('YYYY/MM/DD');
@@ -142,7 +174,9 @@ export class AuthService {
     const userName = user.userName;
     const userEntity: UserEntity | null = await this.userRepository.findById(user.id);
     if (!userEntity) {
-      throw new UnauthorizedException('Usuario no encontrado');
+      throw new UnauthorizedException(
+        traducir('auth.USER_NOT_FOUND', 'Usuario no encontrado.'),
+      );
     }
     const funcionsIndiv: FuncionEntity[] = userEntity.funcions ?? [];
     let funcions: FuncionEntity[] = [];
@@ -171,6 +205,7 @@ export class AuthService {
         readMenuDtos.push(readFuncionDto.menu);
       }
     }
+    await this.traducirContenido(readFuncionDtos, readMenuDtos);
     const payload: IJwtPayload = { userName };
     const accessToken = this.jwtService.sign(payload);
     const refreshToken = await this.getRefreshToken(user.id);
@@ -215,7 +250,10 @@ export class AuthService {
 
     if (!user.email) {
       result.successStatus = false;
-      result.message = 'El usuario no tiene un email asociado.';
+      result.message = traducir(
+        'auth.NO_EMAIL',
+        'El usuario no tiene un email asociado.',
+      );
       return result;
     }
 
@@ -255,7 +293,10 @@ export class AuthService {
       await this.userRepository.findByResetCode(resetPasswordCode);
     if (!user) {
       throw new BadRequestException(
-        'Código de recuperación inválido o expirado.',
+        traducir(
+          'auth.RESET_CODE_INVALID',
+          'Código de recuperación inválido o expirado.',
+        ),
       );
     }
 
@@ -274,7 +315,10 @@ export class AuthService {
     try {
       await this.userRepository.update(user);
       result.successStatus = true;
-      result.message = 'Contraseña actualizada correctamente.';
+      result.message = traducir(
+        'auth.PASSWORD_UPDATED',
+        'Contraseña actualizada correctamente.',
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         result.message = error.message;
@@ -295,7 +339,9 @@ export class AuthService {
       user.id,
     );
     if (!userEntity) {
-      throw new NotFoundException('Usuario no encontrado.');
+      throw new NotFoundException(
+        traducir('auth.USER_NOT_FOUND', 'Usuario no encontrado.'),
+      );
     }
     return await this.userMapper.entityToDto(userEntity);
   }
@@ -314,7 +360,9 @@ export class AuthService {
       user.id,
     );
     if (!userEntity) {
-      throw new NotFoundException('Usuario no encontrado.');
+      throw new NotFoundException(
+        traducir('auth.USER_NOT_FOUND', 'Usuario no encontrado.'),
+      );
     }
 
     // Verificar la contraseña actual
@@ -322,7 +370,12 @@ export class AuthService {
       selfChangePasswordDto.currentPassword,
     );
     if (!isValidPassword) {
-      throw new UnauthorizedException('La contraseña actual es incorrecta.');
+      throw new UnauthorizedException(
+        traducir(
+          'auth.CURRENT_PASSWORD_INCORRECT',
+          'La contraseña actual es incorrecta.',
+        ),
+      );
     }
 
     // Generar nuevo salt y hashear la nueva contraseña
@@ -339,7 +392,10 @@ export class AuthService {
     try {
       await this.userRepository.update(userEntity);
       result.successStatus = true;
-      result.message = 'Contraseña actualizada correctamente.';
+      result.message = traducir(
+        'auth.PASSWORD_UPDATED',
+        'Contraseña actualizada correctamente.',
+      );
     } catch (error: unknown) {
       if (error instanceof Error) {
         result.message = error.message;
@@ -350,5 +406,37 @@ export class AuthService {
     }
 
     return result;
+  }
+
+  /**
+   * Menús del usuario autenticado (funciones individuales + funciones de sus roles),
+   * traducidos al idioma resuelto para la petición en curso.
+   */
+  async getUserMenus(user: UserEntity): Promise<ReadMenuDto[]> {
+    const funcions: FuncionEntity[] = user.funcions ? [...user.funcions] : [];
+    let item: RolEntity;
+    for (const rol of user.roles || []) {
+      item = await this.rolRepository.findById(rol.id);
+      if (item.funcions) {
+        item.funcions.forEach((funcion: FuncionEntity) =>
+          funcion.activo ? funcions.push(funcion) : null,
+        );
+      }
+    }
+    const uniqueFuncions = funcions.filter(
+      (v, i, a) => a.findIndex((t) => t.id === v.id) === i,
+    );
+    const readFuncionDtos: ReadFuncionDto[] = [];
+    for (const funcion of uniqueFuncions) {
+      readFuncionDtos.push(await this.funcionMapper.entityToDto(funcion));
+    }
+    const readMenuDtos: ReadMenuDto[] = [];
+    for (const readFuncionDto of readFuncionDtos) {
+      if (readFuncionDto.menu !== undefined) {
+        readMenuDtos.push(readFuncionDto.menu);
+      }
+    }
+    await this.traducirContenido(readFuncionDtos, readMenuDtos);
+    return readMenuDtos;
   }
 }

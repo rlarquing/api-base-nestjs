@@ -8,3 +8,6 @@ export { ProvinciaMapper } from './provincia.mapper';
 export { RolMapper } from './rol.mapper';
 export { LogHistoryMapper } from './log-history.mapper';
 export { UserMapper } from './user.mapper';
+export { IdiomaMapper } from './idioma.mapper';
+export { MenuTraduccionMapper } from './menu-traduccion.mapper';
+export { FuncionTraduccionMapper } from './funcion-traduccion.mapper';

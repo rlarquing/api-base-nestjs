@@ -9,6 +9,7 @@ import {
   In,
   ObjectLiteral,
   Repository,
+  SelectQueryBuilder,
 } from 'typeorm';
 import { IRepository } from '../../shared/interface';
 import {
@@ -19,6 +20,7 @@ import {
   isString,
 } from 'class-validator';
 import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
+import { traducir } from '../../shared/util/i18n.util';
 
 export abstract class GenericRepository<
   ENTITY extends ObjectLiteral,
@@ -27,6 +29,30 @@ export abstract class GenericRepository<
     protected repository: Repository<ENTITY>,
     protected relations?: string[],
   ) {}
+
+  /**
+   * Aplica joins jerárquicos al queryBuilder manejando rutas anidadas (ej. 'muelle.terminal').
+   * TypeORM QueryBuilder no resuelve relaciones anidadas desde la raíz,
+   * por lo que cada nivel debe unirse secuencialmente usando el alias del padre.
+   */
+  protected applyRelationsToQueryBuilder(
+    queryBuilder: SelectQueryBuilder<ENTITY>,
+  ): void {
+    if (!this.relations) return;
+    const joined = new Set<string>();
+    for (const relation of this.relations) {
+      const parts = relation.split('.');
+      let parentAlias = 'q';
+      for (const part of parts) {
+        const fullPath = `${parentAlias}.${part}`;
+        if (!joined.has(fullPath)) {
+          queryBuilder.leftJoinAndSelect(fullPath, part);
+          joined.add(fullPath);
+        }
+        parentAlias = part;
+      }
+    }
+  }
 
   /**
    * Obtiene el nombre del schema de la entidad desde metadata de TypeORM
@@ -64,7 +90,11 @@ export abstract class GenericRepository<
     } as unknown as FindOneOptions<ENTITY>;
     const result = await this.repository.findOne(options);
     if (!result) {
-      throw new NotFoundException(`Entidad con id ${id} no encontrada`);
+      throw new NotFoundException(
+        traducir('common.NOT_FOUND_ID', `Entidad con id ${id} no encontrada`, {
+          id,
+        }),
+      );
     }
     return result;
   }
@@ -107,7 +137,9 @@ export abstract class GenericRepository<
     } as unknown as FindOneOptions<ENTITY>;
     const obj: ENTITY | null = await this.repository.findOne(options);
     if (!obj) {
-      throw new NotFoundException('No existe');
+      throw new NotFoundException(
+        traducir('common.NOT_FOUND', 'El elemento no se encuentra.'),
+      );
     }
     (obj as any).activo = false;
     return await this.repository.save(obj);
@@ -176,52 +208,31 @@ export abstract class GenericRepository<
       }
       keys.forEach((key) => {
         for (const item of result) {
-          if (isString((item as any)[key]) && isString(search)) {
-            if (
-              (item as any)[key].toLowerCase().includes(search.toLowerCase())
-            ) {
+          const val = (item as any)[key];
+          if (isString(val) && isString(search)) {
+            if (val.toLowerCase().includes(search.toLowerCase())) {
               if (!objs.has(key)) {
                 objs.set(key, `LOWER(q.${key}) ILIKE LOWER(:search)`);
               }
             }
-          } else if (
-            isNumber((item as any)[key]) &&
-            isNumber(search) &&
-            (item as any)[key] === search
-          ) {
-            if (!objs.has(key)) {
-              objs.set(key, `${key} = :search`);
+          } else if (isNumber(val) && isString(search)) {
+            if (String(val).includes(search)) {
+              if (!objs.has(key)) {
+                objs.set(key, `CAST(q.${key} AS TEXT) ILIKE :search`);
+              }
             }
-          } else if (
-            isDate((item as any)[key]) &&
-            isDate(search) &&
-            (item as any)[key] === search
-          ) {
-            const datep = (item as any)[key];
-            const start = new Date(datep.setHours(0, 0, 0, 0));
-            const end = new Date(datep.setHours(23, 59, 59, 999));
-            const date = {
-              date: Between(start.toISOString(), end.toISOString()),
-            };
+          } else if (isNumber(val) && isNumber(search) && val === search) {
             if (!objs.has(key)) {
-              objs.set(key, `${key}=${date}`);
+              objs.set(key, `CAST(q.${key} AS TEXT) ILIKE :search`);
             }
-          } else if (
-            isBoolean((item as any)[key]) &&
-            isBoolean(search) &&
-            (item as any)[key] === search
-          ) {
+          } else if (isBoolean(val) && isBoolean(search) && val === search) {
             if (!objs.has(key)) {
-              objs.set(key, `${key}= :search`);
+              objs.set(key, `CAST(q.${key} AS TEXT) ILIKE :search`);
             }
           }
         }
       });
-      if (this.relations) {
-        for (const relation of this.relations) {
-          queryBuilder.leftJoinAndSelect(`q.${relation}`, relation);
-        }
-      }
+      this.applyRelationsToQueryBuilder(queryBuilder);
       if (objs.size === 0) {
         queryBuilder.where('q.activo = :estado', { estado: true });
       } else {
@@ -239,7 +250,10 @@ export abstract class GenericRepository<
         );
       }
     } else {
-      queryBuilder.where('q.activo = :estado', { estado: true });
+      // Sin termino de busqueda no hay condiciones dinamicas, por lo que se usa el
+      // camino de FindManyOptions: carga las relaciones sin multiplicar filas en
+      // las relaciones to-many, algo que el join del queryBuilder si haria.
+      return (await this.findAll(options, false)) as Pagination<ENTITY>;
     }
     return await paginate<ENTITY>(queryBuilder, options);
   }

@@ -15,6 +15,7 @@ import { HISTORY_ACTION } from '../../persistence/entity/log-history.entity';
 import { ConfigService } from '@nestjs/config';
 import { AppConfig } from '../../app.keys';
 import { IPaginationOptions, Pagination } from '../../shared/pagination';
+import { traducir } from '../../shared/util/i18n.util';
 import { ObjectLiteral } from 'typeorm';
 
 // Interfaz auxiliar para entidades con id y toString
@@ -65,11 +66,15 @@ export abstract class GenericService<
 
   async findById(id: any): Promise<any> {
     if (!id) {
-      throw new BadRequestException('El id no puede ser vacio');
+      throw new BadRequestException(
+        traducir('common.EMPTY_ID', 'El id no puede estar vacío.'),
+      );
     }
     const obj: ENTITY = await this.genericRepository.findById(id);
     if (!obj) {
-      throw new NotFoundException('El obj no se encuentra.');
+      throw new NotFoundException(
+        traducir('common.NOT_FOUND', 'El elemento no se encuentra.'),
+      );
     }
     return await this.mapper.entityToDto(obj);
   }
@@ -114,10 +119,10 @@ export abstract class GenericService<
     ip: string,
   ): Promise<ResponseDto> {
     const result = new ResponseDto();
-    const newEntity = await this.mapper.dtoToEntity(createDto);
     const esquema: string = this.genericRepository.getSchema();
     const tabla: string = this.genericRepository.getTabla();
     try {
+      const newEntity = await this.mapper.dtoToEntity(createDto);
       const objEntity: any = await this.genericRepository.create(newEntity);
       if (this.traza && this.isProductionEnv) {
         const logHistoryDto: LogHistoryDto = new LogHistoryDto(
@@ -189,7 +194,10 @@ export abstract class GenericService<
         result.push({
           id: 0,
           successStatus: false,
-          message: 'Ya existe en la base de datos.',
+          message: traducir(
+            'common.ALREADY_EXISTS',
+            'Ya existe en la base de datos.',
+          ),
         });
       }
     }
@@ -205,7 +213,9 @@ export abstract class GenericService<
     const result = new ResponseDto();
     const foundObj: ENTITY = await this.genericRepository.findById(id);
     if (!foundObj) {
-      throw new NotFoundException('No existe');
+      throw new NotFoundException(
+        traducir('common.NOT_FOUND', 'El elemento no se encuentra.'),
+      );
     }
     const updateEntity = await this.mapper.dtoToUpdateEntity(
       updateDto,
@@ -296,7 +306,9 @@ export abstract class GenericService<
     for (const id of ids) {
       const objEntity: ENTITY | null = await this.genericRepository.findOne(id);
       if (!objEntity) {
-        throw new NotFoundException('No existe');
+        throw new NotFoundException(
+          traducir('common.NOT_FOUND', 'El elemento no se encuentra.'),
+        );
       }
       if (this.traza && this.isProductionEnv) {
         const logHistoryDto: LogHistoryDto = new LogHistoryDto(

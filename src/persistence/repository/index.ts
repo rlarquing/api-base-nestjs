@@ -9,3 +9,6 @@ export { ProvinciaRepository } from './provincia.repository';
 export { RolRepository } from './rol.repository';
 export { LogHistoryRepository } from './log-history.repository';
 export { UserRepository } from './user.repository';
+export { IdiomaRepository } from './idioma.repository';
+export { MenuTraduccionRepository } from './menu-traduccion.repository';
+export { FuncionTraduccionRepository } from './funcion-traduccion.repository';

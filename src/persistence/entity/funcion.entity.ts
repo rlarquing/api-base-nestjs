@@ -5,6 +5,7 @@ import {
   JoinTable,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { EndPointEntity } from './end-point.entity';
 import { RolEntity } from './rol.entity';
@@ -12,6 +13,7 @@ import { UserEntity } from './user.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
 import { GenericEntity } from './generic.entity';
 import { MenuEntity } from './menu.entity';
+import { FuncionTraduccionEntity } from './funcion-traduccion.entity';
 
 @Entity('funcion', { schema: SchemaEnum.MOD_AUTH, orderBy: { id: 'ASC' } })
 export class FuncionEntity extends GenericEntity {
@@ -50,6 +52,11 @@ export class FuncionEntity extends GenericEntity {
   @ManyToMany(() => UserEntity, (user) => user.funcions)
   @JoinColumn()
   users!: UserEntity[];
+  @OneToMany(
+    () => FuncionTraduccionEntity,
+    (traduccion) => traduccion.funcion,
+  )
+  traducciones!: FuncionTraduccionEntity[];
   constructor(
     nombre: string,
     descripcion: string | undefined,

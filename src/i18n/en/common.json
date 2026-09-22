@@ -1,0 +1,7 @@
+{
+  "NOT_FOUND": "The item was not found.",
+  "NOT_FOUND_ID": "The entity with id {id} was not found.",
+  "EMPTY_ID": "The id cannot be empty.",
+  "EMPTY_USERNAME": "The user name cannot be empty.",
+  "ALREADY_EXISTS": "It already exists in the database."
+}

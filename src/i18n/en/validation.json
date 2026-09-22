@@ -1,0 +1,14 @@
+{
+  "IS_NOT_EMPTY": "The {property} attribute cannot be empty.",
+  "IS_STRING": "The {property} attribute must be a text.",
+  "IS_NUMBER": "The {property} attribute must be a number.",
+  "IS_BOOLEAN": "The {property} attribute must be a boolean.",
+  "IS_EMAIL": "The {property} attribute must be a valid email.",
+  "IS_DATE": "The {property} attribute must be a valid date.",
+  "IS_ARRAY": "The {property} attribute must be an array.",
+  "MIN_LENGTH": "The {property} attribute must be at least {constraints.0} characters long.",
+  "MAX_LENGTH": "The {property} attribute must be at most {constraints.0} characters long.",
+  "MIN": "The {property} attribute must be at least {constraints.0}.",
+  "MAX": "The {property} attribute must be at most {constraints.0}.",
+  "WEAK_PASSWORD": "The password is too weak."
+}

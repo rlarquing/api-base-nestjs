@@ -1,0 +1,14 @@
+{
+  "IS_NOT_EMPTY": "El atributo {property} no puede estar vacío.",
+  "IS_STRING": "El atributo {property} debe ser un texto.",
+  "IS_NUMBER": "El atributo {property} debe ser un número.",
+  "IS_BOOLEAN": "El atributo {property} debe ser un booleano.",
+  "IS_EMAIL": "El atributo {property} debe ser un correo válido.",
+  "IS_DATE": "El atributo {property} debe ser una fecha válida.",
+  "IS_ARRAY": "El atributo {property} debe ser un arreglo.",
+  "MIN_LENGTH": "El atributo {property} debe tener al menos {constraints.0} carácteres.",
+  "MAX_LENGTH": "El atributo {property} debe tener como máximo {constraints.0} carácteres.",
+  "MIN": "El atributo {property} debe ser como mínimo {constraints.0}.",
+  "MAX": "El atributo {property} debe ser como máximo {constraints.0}.",
+  "WEAK_PASSWORD": "La contraseña es muy débil."
+}

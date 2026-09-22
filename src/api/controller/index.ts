@@ -12,3 +12,6 @@ export { RolController } from './rol.controller';
 export { LogHistoryController } from './log-history.controller';
 export { UserController } from './user.controller';
 export { GenericImportacionController } from './generic-importacion.controller';
+export { IdiomaController } from './idioma.controller';
+export { MenuTraduccionController } from './menu-traduccion.controller';
+export { FuncionTraduccionController } from './funcion-traduccion.controller';

@@ -2,6 +2,7 @@ import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { GenericEntity } from './generic.entity';
 import { SchemaEnum } from '../../database/schema/schema.enum';
 import { TipoMenuTypeEnum } from '../../shared/enum';
+import { MenuTraduccionEntity } from './menu-traduccion.entity';
 @Entity('menu', { schema: SchemaEnum.PUBLIC, orderBy: { id: 'ASC' } })
 export class MenuEntity extends GenericEntity {
   @Column({
@@ -36,6 +37,11 @@ export class MenuEntity extends GenericEntity {
   menu?: MenuEntity;
   @OneToMany(() => MenuEntity, (menu) => menu.menu)
   menus!: MenuEntity[];
+  @OneToMany(
+    () => MenuTraduccionEntity,
+    (traduccion) => traduccion.menu,
+  )
+  traducciones!: MenuTraduccionEntity[];
   @Column({
     type: 'varchar',
     length: 255,

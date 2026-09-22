@@ -27,6 +27,7 @@ import {
 import { RolType } from '../../shared/enum';
 import { ResponseDto } from '../../shared/dto';
 import { IPaginationOptions, paginate, Pagination } from '../../shared/pagination';
+import { traducir } from '../../shared/util/i18n.util';
 
 @Injectable()
 export class UserRepository {
@@ -59,7 +60,9 @@ export class UserRepository {
     const rol: RolEntity | null = await this.rolRepository.findOneBy(wheres);
 
     if (!rol) {
-      throw new NotFoundException('No existe el rol');
+      throw new NotFoundException(
+        traducir('auth.ROL_NOT_FOUND', 'El rol no existe.'),
+      );
     }
     userEntity.roles = [rol];
     try {
@@ -72,7 +75,10 @@ export class UserRepository {
         error.code === '23505'
       ) {
         throw new ConflictException(
-          'El nombre del usuario ya existe en el sistema.',
+          traducir(
+            'auth.USER_NAME_EXISTS',
+            'El nombre del usuario ya existe en el sistema.',
+          ),
         );
       } else {
         throw new InternalServerErrorException();
@@ -139,7 +145,9 @@ export class UserRepository {
     const options = { id, activo: true } as FindOptionsWhere<UserEntity>;
     const user = await this.userRepository.findOneBy(options);
     if (!user) {
-      throw new NotFoundException('No existe el usuario');
+      throw new NotFoundException(
+        traducir('auth.USER_NOT_FOUND', 'Usuario no encontrado.'),
+      );
     }
     user.activo = false;
     try {
@@ -245,7 +253,7 @@ export class UserRepository {
               -1
           ) {
             if (!objs.has(key)) {
-              objs.set(key, `${key} ILIKE '%${search}%'`);
+              objs.set(key, `${key} ILIKE :search`);
             }
           } else if (
             isNumber((item as any)[key]) &&
@@ -290,7 +298,7 @@ export class UserRepository {
           where.push(`u.${item}`);
         });
         queryBuilder.where(`u.activo = true AND ${where.join(' OR ')}`, {
-          search: search,
+          search: `%${search}%`,
         });
       }
       return await paginate<UserEntity>(queryBuilder, options);

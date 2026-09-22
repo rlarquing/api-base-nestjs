@@ -1,0 +1,7 @@
+{
+  "MENU_NOT_FOUND": "The menu with id {id} was not found.",
+  "FUNCION_NOT_FOUND": "The function with id {id} was not found.",
+  "IDIOMA_NOT_FOUND": "The language with id {id} was not found.",
+  "MENU_TRANSLATION_EXISTS": "A translation already exists for menu {menuId} in language {idiomaId}.",
+  "FUNCION_TRANSLATION_EXISTS": "A translation already exists for function {funcionId} in language {idiomaId}."
+}

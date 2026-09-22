@@ -11,3 +11,6 @@ export { ProvinciaService } from './provincia.service';
 export { RolService } from './rol.service';
 export { LogHistoryService } from './log-history.service';
 export { UserService } from './user.service';
+export { IdiomaService } from './idioma.service';
+export { MenuTraduccionService } from './menu-traduccion.service';
+export { FuncionTraduccionService } from './funcion-traduccion.service';

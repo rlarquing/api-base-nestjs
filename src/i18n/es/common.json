@@ -1,0 +1,7 @@
+{
+  "NOT_FOUND": "El elemento no se encuentra.",
+  "NOT_FOUND_ID": "La entidad con id {id} no fue encontrada.",
+  "EMPTY_ID": "El id no puede estar vacío.",
+  "EMPTY_USERNAME": "El nombre de usuario no puede estar vacío.",
+  "ALREADY_EXISTS": "Ya existe en la base de datos."
+}

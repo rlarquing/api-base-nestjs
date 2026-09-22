@@ -8,3 +8,6 @@ export { MunicipioEntity } from './municipio.entity';
 export { ProvinciaEntity } from './provincia.entity';
 export { RolEntity } from './rol.entity';
 export { LogHistoryEntity } from './log-history.entity';
+export { IdiomaEntity } from './idioma.entity';
+export { MenuTraduccionEntity } from './menu-traduccion.entity';
+export { FuncionTraduccionEntity } from './funcion-traduccion.entity';

@@ -42,3 +42,21 @@ export { TablaDto } from './tabla.dto';
 export { RequestResetPasswordDto } from './request-reset-password.dto';
 export { ResetPasswordDto } from './reset-password.dto';
 export { SelfChangePasswordDto } from './self-change-password.dto';
+export { CreateIdiomaDto } from './create-idioma.dto';
+export { ReadIdiomaDto } from './read-idioma.dto';
+export { UpdateIdiomaDto } from './update-idioma.dto';
+export { UpdateMultipleIdiomaDto } from './update-multiple-idioma.dto';
+export { CreateMenuTraduccionDto } from './create-menu-traduccion.dto';
+export { ReadMenuTraduccionDto } from './read-menu-traduccion.dto';
+export { UpdateMenuTraduccionDto } from './update-menu-traduccion.dto';
+export { UpdateMultipleMenuTraduccionDto } from './update-multiple-menu-traduccion.dto';
+export { CreateFuncionTraduccionDto } from './create-funcion-traduccion.dto';
+export { ReadFuncionTraduccionDto } from './read-funcion-traduccion.dto';
+export { UpdateFuncionTraduccionDto } from './update-funcion-traduccion.dto';
+export { UpdateMultipleFuncionTraduccionDto } from './update-multiple-funcion-traduccion.dto';
+export {
+  EstadisticaTrazaDto,
+  TrazaPorAccionDto,
+  TrazaPorTablaDto,
+  TrazaPorDiaDto,
+} from './estadistica-traza.dto';

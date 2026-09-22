@@ -23,7 +23,12 @@ import {
 } from '@nestjs/swagger';
 import { RolType } from '../../shared/enum';
 import { LogHistoryService } from '../../core/service';
-import { FiltroDto, ListadoDto, LogHistoryDto } from '../../shared/dto';
+import {
+  EstadisticaTrazaDto,
+  FiltroDto,
+  ListadoDto,
+  LogHistoryDto,
+} from '../../shared/dto';
 import { UserEntity } from '../../persistence/entity';
 import { PaginationParamsDto, PaginationService } from '../../shared/pagination';
 
@@ -70,6 +75,23 @@ export class LogHistoryController {
     const key: string[] = ['id', 'user', 'date', 'model', 'action', 'record'];
     return new ListadoDto(header, key, data);
   }
+  @Get('/estadisticas/resumen')
+  @ApiOperation({
+    summary: 'Resumen de trazas para el panel de administración',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Totales de trazas, desglose por acción y tabla, y serie de los últimos 7 días',
+    type: EstadisticaTrazaDto,
+  })
+  @ApiResponse({ status: 401, description: 'Sin autorizacion.' })
+  @ApiResponse({ status: 403, description: 'Sin autorizacion al recurso.' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor.' })
+  async estadisticas(): Promise<EstadisticaTrazaDto> {
+    return await this.logHistoryService.estadisticas();
+  }
+
   @Get('/:id')
   @ApiOperation({ summary: 'Obtener una traza' })
   @ApiResponse({
